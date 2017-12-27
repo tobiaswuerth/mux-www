@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MUX API Exmample</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div>
+    Login credentials:
+
+    User: <input type="text" id="txtUsername" value=""/>
+    Password: <input type="password" id="txtPassword" value=""/>
+
+</div>
+
+<button id="btnGo">Fetch example data</button>
+
+<script>
+    let auth;
+    let pageArtists = 0;
+    let pageSize = 10;
+    let dataArtists;
+    let pageArtistsLookup = 0;
+    let dataArtistsLookup;
+    let currentArtistLookup;
+    let selectedArtist;
+    let pageReleases = 0;
+    let pageRecords = 0;
+    let dataReleases;
+    let dataRecords;
+    let selectedRelease;
+    let pageReleaseRecords = 0;
+    let selectedRecord;
+    let pageTracks = 0;
+    let dataTracks;
+
+    function log(text) {
+        $('<div />').text(text).appendTo(document.body);
+    }
+
+    function scrollDown() {
+        $('html, body').animate({scrollTop: $(document).height()}, 'fast');
+    }
+
+    function displayTracks(){
+        log('---------------');
+        log('Tracks @ page [' + pageTracks + ']');
+
+        let prevPage = $("<button />");
+        prevPage.text('< previous page');
+        if (pageTracks > 0) {
+            prevPage.click(function (e) {
+                pageTracks--;
+                loadTracks();
+            });
+        } else {
+            prevPage.attr("disabled", true);
+        }
+        prevPage.appendTo(document.body);
+
+        let nextPage = $("<button />");
+        nextPage.text('next page >');
+        nextPage.click(function (e) {
+            pageTracks++;
+            loadTracks();
+        });
+        nextPage.appendTo(document.body);
+
+        log('Found this data:');
+
+        let ul = $('<ul />');
+        ul.appendTo(document.body);
+
+        let lastGeneratedBtn;
+        dataTracks.forEach(function (value) {
+            let li = $('<li />');
+            li.appendTo(ul);
+
+            let btn = $('<p />');
+            btn.appendTo(li);
+            btn.text("LOAD FILE HERE USING HTML5 AUDIO COMPONENT" + JSON.stringify(value));
+            lastGeneratedBtn = btn;
+        });
+
+        if (dataReleases.length == 1) {
+            log('Foun exactly one match. Autoselect.');
+            scrollDown();
+            lastGeneratedBtn.click();
+        }
+
+        scrollDown();
+    }
+
+    function loadTracks(){
+        log('---------------');
+        log('Selected artist: ' + selectedArtist.Name);
+        log('Selected record: ' + selectedRecord.Title);
+        log('[*] Fetching tracks...');
+
+        $.ajax({
+            method: "get",
+            url: "https://mux.fooo.ooo/api/v0.1/auth/records/" + selectedRecord.UniqueId + "/tracks?ps=" + pageSize + "&p=" + pageTracks,
+            headers: {
+                "Authorization": "Bearer " + auth.token
+            },
+            error: function (e) {
+                log('error');
+            },
+            done: function (e) {
+                log('[*] Done fetching tracks');
+            },
+            success: function (e) {
+                log('[*] Successfully fetched tracks');
+                dataTracks = e;
+                displayTracks();
+            }
+        });
+
+        scrollDown();
+    }
+
+    function loadReleaseRecords(){
+        log('---------------');
+        log('Selected artist: ' + selectedArtist.Name);
+        log('Selected release: ' + selectedRelease.Title);
+        log('[*] Fetching records...');
+
+        $.ajax({
+            method: "get",
+            url: "https://mux.fooo.ooo/api/v0.1/auth/releases/" + selectedRelease.UniqueId + "/records?ps=" + pageSize + "&p=" + pageReleaseRecords,
+            headers: {
+                "Authorization": "Bearer " + auth.token
+            },
+            error: function (e) {
+                log('error');
+            },
+            done: function (e) {
+                log('[*] Done fetching records');
+            },
+            success: function (e) {
+                log('[*] Successfully fetched records');
+                dataRecords = e;
+                displayRecords(loadReleaseRecords);
+            }
+        });
+
+        scrollDown();
+    }
+
+    function displayReleases() {
+        log('---------------');
+        log('Releases @ page [' + pageReleases + ']');
+
+        let prevPage = $("<button />");
+        prevPage.text('< previous page');
+        if (pageReleases > 0) {
+            prevPage.click(function (e) {
+                pageReleases--;
+                loadReleases();
+            });
+        } else {
+            prevPage.attr("disabled", true);
+        }
+        prevPage.appendTo(document.body);
+
+        let nextPage = $("<button />");
+        nextPage.text('next page >');
+        nextPage.click(function (e) {
+            pageReleases++;
+            loadReleases();
+        });
+        nextPage.appendTo(document.body);
+
+        log('Found this data:');
+
+        let ul = $('<ul />');
+        ul.appendTo(document.body);
+
+        let lastGeneratedBtn;
+        dataReleases.forEach(function (value) {
+            let li = $('<li />');
+            li.appendTo(ul);
+
+            let btn = $('<button />');
+            btn.appendTo(li);
+            btn.text(JSON.stringify(value));
+            lastGeneratedBtn = btn;
+
+            btn.click(function (e) {
+                selectedRelease = value;
+                loadReleaseRecords();
+            });
+        });
+
+        scrollDown();
+    }
+
+    function displayRecords(callback) {
+
+        log('---------------');
+        log('Records @ page [' + pageRecords + ']');
+
+        let prevPage = $("<button />");
+        prevPage.text('< previous page');
+        if (pageRecords > 0) {
+            prevPage.click(function (e) {
+                pageRecords--;
+                callback();
+            });
+        } else {
+            prevPage.attr("disabled", true);
+        }
+        prevPage.appendTo(document.body);
+
+        let nextPage = $("<button />");
+        nextPage.text('next page >');
+        nextPage.click(function (e) {
+            pageRecords++;
+            callback();
+        });
+        nextPage.appendTo(document.body);
+
+        log('Found this data:');
+
+        let ul = $('<ul />');
+        ul.appendTo(document.body);
+
+        let lastGeneratedBtn;
+        dataRecords.forEach(function (value) {
+            let li = $('<li />');
+            li.appendTo(ul);
+
+            let btn = $('<button />');
+            btn.appendTo(li);
+            btn.text(JSON.stringify(value));
+            lastGeneratedBtn = btn;
+
+            btn.click(function (e) {
+                selectedRecord = value;
+                loadTracks();
+            });
+        });
+
+        if (dataRecords.length == 1) {
+            log('Foun exactly one match. Autoselect.');
+            scrollDown();
+            lastGeneratedBtn.click();
+        }
+
+        scrollDown();
+    }
+
+    function loadRecords() {
+        log('---------------');
+        log('Selected artist: ' + selectedArtist.Name);
+        log('[*] Fetching records...');
+
+        $.ajax({
+            method: "get",
+            url: "https://mux.fooo.ooo/api/v0.1/auth/artists/" + selectedArtist.UniqueId + "/records?ps=" + pageSize + "&p=" + pageRecords,
+            headers: {
+                "Authorization": "Bearer " + auth.token
+            },
+            error: function (e) {
+                log('error');
+            },
+            done: function (e) {
+                log('[*] Done fetching records');
+            },
+            success: function (e) {
+                log('[*] Successfully fetched records');
+                dataRecords = e;
+                displayRecords(loadRecords);
+            }
+        });
+
+        scrollDown();
+    }
+
+    function loadReleases() {
+        log('---------------');
+        log('Selected artist: ' + selectedArtist.Name);
+        log('[*] Fetching releases...');
+        $.ajax({
+            method: "get",
+            url: "https://mux.fooo.ooo/api/v0.1/auth/artists/" + selectedArtist.UniqueId + "/releases?ps=" + pageSize + "&p=" + pageReleases,
+            headers: {
+                "Authorization": "Bearer " + auth.token
+            },
+            error: function (e) {
+                log('error');
+            },
+            done: function (e) {
+                log('[*] Done fetching releases');
+            },
+            success: function (e) {
+                log('[*] Successfully fetched releases');
+                dataReleases = e;
+                displayReleases();
+            }
+        });
+
+        scrollDown();
+    }
+
+    function displayFlowChoices() {
+        log('---------------');
+        log('Selected artist: ' + selectedArtist.Name);
+        log('Would you like to display records or releases?');
+
+        let btnRecords = $("<button />");
+        btnRecords.text('records');
+        btnRecords.click(function (e) {
+            loadRecords();
+        });
+        btnRecords.appendTo(document.body);
+        let btnRelease = $("<button />");
+        btnRelease.text('releases');
+        btnRelease.click(function (e) {
+            loadReleases();
+        });
+        btnRelease.appendTo(document.body);
+
+        scrollDown();
+    }
+
+    function displayArtistsLookup() {
+        log('---------------');
+        log('Artist lookup @ page [' + pageArtistsLookup + ']');
+
+        let prevPage = $("<button />");
+        prevPage.text('< previous page');
+        if (pageArtistsLookup > 0) {
+            prevPage.click(function (e) {
+                pageArtistsLookup--;
+                lookupArtist();
+            });
+        } else {
+            prevPage.attr("disabled", true);
+        }
+        prevPage.appendTo(document.body);
+
+        let nextPage = $("<button />");
+        nextPage.text('next page >');
+        nextPage.click(function (e) {
+            pageArtistsLookup++;
+            lookupArtist();
+        });
+        nextPage.appendTo(document.body);
+
+        log('Found this data:');
+
+        let ul = $('<ul />');
+        ul.appendTo(document.body);
+
+        let lastGeneratedBtn;
+        dataArtistsLookup.forEach(function (value) {
+            let li = $('<li />');
+            li.appendTo(ul);
+
+            let btnArtistLookup = $('<button />');
+            btnArtistLookup.appendTo(li);
+            btnArtistLookup.text(JSON.stringify(value));
+            lastGeneratedBtn = btnArtistLookup;
+
+            btnArtistLookup.click(function (e) {
+                selectedArtist = value;
+                displayFlowChoices();
+            });
+        });
+
+        if (dataArtistsLookup.length == 1) {
+            log('Found exactly one match. Autoselect.');
+            scrollDown();
+            lastGeneratedBtn.click();
+        }
+
+        scrollDown();
+    }
+
+    function lookupArtist() {
+        log('[*] Fetching artists which match: ' + currentArtistLookup + ' ...');
+
+        $.ajax({
+            method: "get",
+            url: "https://mux.fooo.ooo/api/v0.1/auth/artists/lookup/" + currentArtistLookup.Name + "?ps=" + pageSize + "&p=" + pageArtistsLookup,
+            headers: {
+                "Authorization": "Bearer " + auth.token
+            },
+            error: function (e) {
+                log('error');
+            },
+            done: function (e) {
+                log('[*] Done fetching artists');
+            },
+            success: function (e) {
+                log('[*] Successfully fetched artists');
+                dataArtistsLookup = e;
+                displayArtistsLookup();
+            }
+        });
+    }
+
+    function displayArtists() {
+        log('---------------');
+        log('Artists @ page [' + pageArtists + ']');
+
+        let prevPage = $("<button />");
+        prevPage.text('< previous page');
+        if (pageArtists > 0) {
+            prevPage.click(function (e) {
+                pageArtists--;
+                getArtists();
+            });
+        } else {
+            prevPage.attr("disabled", true);
+        }
+        prevPage.appendTo(document.body);
+
+        let nextPage = $("<button />");
+        nextPage.text('next page >');
+        nextPage.click(function (e) {
+            pageArtists++;
+            getArtists();
+        });
+        nextPage.appendTo(document.body);
+
+        log('Found this data:');
+
+        let ul = $('<ul />');
+        ul.appendTo(document.body);
+
+        dataArtists.forEach(function (value) {
+            let li = $('<li />');
+            li.appendTo(ul);
+
+            let btnArtist = $('<button />');
+            btnArtist.appendTo(li);
+            btnArtist.text(JSON.stringify(value));
+
+            btnArtist.click(function (e) {
+                currentArtistLookup = value;
+                lookupArtist();
+            });
+        });
+
+        scrollDown();
+    }
+
+    function getArtists() {
+        log('[*] Fetching artists...');
+
+        $.ajax({
+            method: "get",
+            url: "https://mux.fooo.ooo/api/v0.1/auth/artists?ps=" + pageSize + "&p=" + pageArtists,
+            headers: {
+                "Authorization": "Bearer " + auth.token
+            },
+            error: function (e) {
+                log('error');
+            },
+            done: function (e) {
+                log('[*] Done fetching artists');
+            },
+            success: function (e) {
+                log('[*] Successfully fetched artists');
+                dataArtists = e;
+                displayArtists();
+            }
+        });
+    }
+
+    function login() {
+        log('[*] Logging in...');
+        $.ajax({
+            method: "post",
+            url: "https://mux.fooo.ooo/api/v0.1/public/login",
+            contentType: "application/json",
+            data: JSON.stringify({
+                "username": $("#txtUsername").val(),
+                "password": $("#txtPassword").val()
+            }),
+            error: function (e) {
+                log('error');
+            },
+            done: function (e) {
+                log('[*] Done logging in');
+            },
+            success: function (e) {
+                log('[*] Successfully logged in');
+                auth = e;
+                getArtists();
+            }
+        });
+    }
+
+    $(document).ready(
+        function () {
+            $("#btnGo").click(function (e) {
+                login();
+            });
+        });
+
+</script>
+
+</body>
+</html>
