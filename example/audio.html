@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MUX API Exmample</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+
+<div>
+    Login credentials:
+
+    User: <input type="text" id="txtUsername" value=""/>
+    Password: <input type="password" id="txtPassword" value=""/>
+
+</div>
+
+<button id="btnGo">Fetch example data</button>
+
+<script>
+    const app = {
+        "url": {
+            "base": "http://localhost:55120"
+        },
+        "toBinaryString": function (data) {
+            let ret = [];
+            let len = data.length;
+            let byte;
+            for (let i = 0; i < len; i++) {
+                byte = ( data.charCodeAt(i) & 0xFF ) >>> 0;
+                ret.push(String.fromCharCode(byte));
+            }
+
+            return ret.join('');
+        },
+        "latestSource": null,
+        "auth": null,
+        "loadTrack": function (id) {
+            let url = `${app.url.base}/auth/files/${id}`;
+
+            // create context
+            let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+            // declare source
+            let source = audioCtx.createBufferSource();
+            source.connect(audioCtx.destination);
+
+            // prepare request
+            let request = new XMLHttpRequest();
+            request.open('GET', url, true);
+            request.responseType = 'arraybuffer';
+
+            request.onload = function () {
+                // on load callback
+
+                // get audio data
+                let audioData = request.response;
+
+                // try to decode audio data
+                audioCtx.decodeAudioData(audioData,
+                    function (buffer) {
+                        // on success callback
+
+                        // set source
+                        source.buffer = buffer;
+                        app.latestSource = source;
+                    },
+                    function (e) {
+                        // on error callback
+                        console.log("Error with decoding audio data" + e.err);
+                    });
+            };
+
+            request.setRequestHeader("Authorization", `Bearer ${app.auth.token}`);
+            request.send();
+        },
+        "start": function () {
+            if (app.source) {
+                app.source.start(0);
+            }
+        },
+        "stop": function () {
+            if (app.source) {
+                app.source.stop();
+            }
+        },
+        "login": function () {
+            $.ajax({
+                method: "post",
+                url: "http://localhost:55120/public/login",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    "username": $("#txtUsername").val(),
+                    "password": $("#txtPassword").val()
+                }),
+                error: function (e) {
+                    console.log(e);
+                },
+                done: function (e) {
+                    console.log(e);
+                },
+                success: function (e) {
+                    console.log('[*] Successfully logged in');
+                    app.auth = e;
+                    app.loadTrack(60009);
+                }
+            });
+        }
+    };
+
+    $(document).ready(
+        function () {
+            $("#btnGo").click(function (e) {
+                app.login();
+            });
+        });
+</script>
+
+</body>
+</html>
