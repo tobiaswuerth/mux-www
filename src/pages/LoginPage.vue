@@ -1,13 +1,21 @@
-<template>
-    $END$
+<template id="login-page">
+  <LoginForm></LoginForm>
 </template>
 
 <script>
-    export default {
-        name: "login-page"
-    }
+
+import LoginForm from './../components/LoginForm'
+
+export default {
+  name: 'LoginPage',
+  components: { LoginForm }
+}
+
 </script>
 
 <style scoped>
-
+#login-page {
+  width: 100vw;
+  height: 100vh;
+}
 </style>
