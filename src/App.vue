@@ -1,23 +1,22 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
+  <div id="app" class="md-app">
     <router-view/>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'App'
-}
+  import Router from './Router';
+
+  export default {
+    name: 'App', components: {
+      Router,
+    },
+  };
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style scoped>
+  #app {
+    min-height: 100vh;
+    min-width: 100vw;
+  }
 </style>
