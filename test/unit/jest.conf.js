@@ -12,19 +12,19 @@ module.exports = {
   },
   transform: {
     '^.+\\.js$': '<rootDir>/node_modules/babel-jest',
-    '.*\\.(vue)$': '<rootDir>/node_modules/vue-jest'
+    '.*\\.(vue)$': '<rootDir>/node_modules/Vue-jest'
   },
   testPathIgnorePatterns: [
     '<rootDir>/test/e2e'
   ],
-  snapshotSerializers: ['<rootDir>/node_modules/jest-serializer-vue'],
+  snapshotSerializers: ['<rootDir>/node_modules/jest-serializer-Vue'],
   setupFiles: ['<rootDir>/test/unit/setup'],
   mapCoverage: true,
   coverageDirectory: '<rootDir>/test/unit/coverage',
   collectCoverageFrom: [
-    'src/**/*.{js,vue}',
+    'src/**/*.{js,Vue}',
     '!src/main.js',
-    '!src/router/index.js',
+    '!src/Router/index.js',
     '!**/node_modules/**'
   ]
 }
