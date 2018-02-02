@@ -1,35 +1,31 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import VueMaterial from 'vue-material'
+// modules
+import Vue from 'vue';
+import VueMaterial from 'vue-material';
 
-import App from './App'
-import LoginPage from './pages/LoginPage'
+// components
+import App from './App';
 
-import 'vue-material/dist/vue-material.min.css'
-import 'vue-material/dist/theme/default.css'
-import 'material-design-icons/iconfont/material-icons.css'
+// css
+import 'vue-material/dist/vue-material.min.css';
+import 'vue-material/dist/theme/default.css';
+import 'material-design-icons/iconfont/material-icons.css';
 
-Vue.use(VueRouter)
-Vue.use(VueMaterial)
+// js
+import Store from './Store';
+import Router from './Router';
 
-Vue.config.productionTip = false
+// usage
+Vue.use(Router);
+Vue.use(Store);
+Vue.use(VueMaterial);
 
-const routes = [
-  {
-    path: '/login', component: LoginPage
-  }
-]
-const router = new VueRouter({
-  routes: routes,
-  mode: 'history'
-})
+// config
+Vue.config.productionTip = false;
 
-// eslint-disable-next-line no-new
 new Vue({
   el: '#app',
-  router,
+  router: Router,
+  store: Store,
   components: {App},
-  template: '<App/>'
-}).$mount('#app')
+  template: '<App/>',
+});

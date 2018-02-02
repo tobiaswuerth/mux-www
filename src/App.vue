@@ -5,9 +5,13 @@
 </template>
 
 <script>
-export default {
-  name: 'App'
-}
+  import Router from './Router';
+
+  export default {
+    name: 'App', components: {
+      Router,
+    },
+  };
 </script>
 
 <style scoped>

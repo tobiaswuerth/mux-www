@@ -47,10 +47,10 @@ exports.cssLoaders = function (options) {
     if (options.extract) {
       return ExtractTextPlugin.extract({
         use: loaders,
-        fallback: 'Vue-style-loader'
+        fallback: 'vue-style-loader'
       })
     } else {
-      return ['Vue-style-loader'].concat(loaders)
+      return ['vue-style-loader'].concat(loaders)
     }
   }
 
@@ -66,7 +66,7 @@ exports.cssLoaders = function (options) {
   }
 }
 
-// Generate loaders for standalone style files (outside of .Vue)
+// Generate loaders for standalone style files (outside of .vue)
 exports.styleLoaders = function (options) {
   const output = []
   const loaders = exports.cssLoaders(options)
@@ -95,7 +95,7 @@ exports.createNotifierCallback = () => {
       title: packageConfig.name,
       message: severity + ': ' + error.name,
       subtitle: filename || '',
-      icon: path.join(__dirname, 'logo-1000-filled-rounded.png')
+      icon: path.join(__dirname, 'logo.png')
     })
   }
 }
