@@ -31,13 +31,10 @@
         <md-button @click.prevent="onBtnLoginClicked"
                    class="md-raised md-primary"
                    :disabled="isExecutingLogin">
-          <span v-if="!isExecutingLogin">
-            Login
-          </span>
-          <span v-else-if="isExecutingLogin">
-            <md-progress-spinner id="spinner" :md-diameter="20" :md-stroke="3"
-                                 md-mode="indeterminate"/>
-          </span>
+          <span v-if="!isExecutingLogin" key="lblLogin">Login</span>
+          <span v-else><md-progress-spinner key="spinner" :md-diameter="20"
+                                            :md-stroke="3"
+                                            md-mode="indeterminate"/></span>
         </md-button>
       </md-card-actions>
     </md-card>
@@ -108,7 +105,6 @@
 </script>
 
 <style scoped>
-  #spinner {
-    margin: 5px;
-  }
+
+
 </style>
