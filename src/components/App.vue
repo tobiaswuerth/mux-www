@@ -1,11 +1,11 @@
 <template>
-  <div id="app" class="md-app">
+  <div id="app" class="page-container">
     <router-view/>
   </div>
 </template>
 
 <script>
-  import Router from './Router';
+  import Router from './../Router';
 
   export default {
     name: 'App', components: {
@@ -14,9 +14,12 @@
   };
 </script>
 
-<style scoped>
-  #app {
-    min-height: 100vh;
-    min-width: 100vw;
+<style>
+  .full-height {
+    height: 100vh;
+  }
+
+  .full-width {
+    width: 100vw;
   }
 </style>

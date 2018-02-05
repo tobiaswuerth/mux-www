@@ -7,7 +7,7 @@ const axios = Axios.create({
 
 // config
 const config = {
-  routePrefix: {
+  prefix: {
     unauthorized: '/public', authorized: '/auth',
   },
 };
@@ -18,13 +18,13 @@ const routes = {
 
   post: {
     login: {
-      performLogin: `${config.routePrefix.unauthorized}/login`,
+      performLogin: `${config.prefix.unauthorized}/login`,
     },
   },
 
   get: {
     login: {
-      refreshToken: `${config.routePrefix.authorized}/login`,
+      refreshToken: `${config.prefix.authorized}/login`,
     },
   },
 };

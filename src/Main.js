@@ -3,7 +3,7 @@ import Vue from 'vue';
 import VueMaterial from 'vue-material';
 
 // components
-import App from './App';
+import App from './components/App';
 
 // css
 import 'vue-material/dist/vue-material.min.css';
@@ -22,7 +22,7 @@ Vue.use(VueMaterial);
 // config
 Vue.config.productionTip = false;
 
-new Vue({
+window.vm = new Vue({
   el: '#app',
   router: Router,
   store: Store,

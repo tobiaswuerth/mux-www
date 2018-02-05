@@ -1,4 +1,4 @@
-<template id="login-form">
+<template>
   <md-content>
     <md-card>
       <md-card-header>
@@ -103,8 +103,3 @@
     },
   };
 </script>
-
-<style scoped>
-
-
-</style>
