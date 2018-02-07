@@ -1,8 +1,5 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-
-Vue.use(Router);
-
 import Store from '../vuex/Store';
 
 import LoginPage from '../../components/LoginPage/LoginPage';
@@ -12,6 +9,8 @@ import TracksContent from '../../components/TracksContent/TracksContent';
 import ArtistsContent from '../../components/Artistcontent/ArtistsContent';
 import RecordsContent from '../../components/RecordsContent/RecordsContent';
 import ReleasesContent from '../../components/ReleasesContent/ReleasesContent';
+
+Vue.use(Router);
 
 export const routes = {
   public: {

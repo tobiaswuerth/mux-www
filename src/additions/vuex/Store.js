@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VuexPersistence from 'vuex-persist';
-
 // modules
 import RepositoryModule from './modules/RepositoryModule';
 import AuthenticationModule from './modules/AuthenticationModule';

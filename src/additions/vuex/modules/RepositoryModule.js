@@ -72,6 +72,7 @@ export default {
         },
       });
     },
+
     artists: ({}, payload) => {
       return axios.get(buildUrl(routes.get.artists.all, payload), {
         headers: authHeader(),

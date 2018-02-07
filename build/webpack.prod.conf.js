@@ -43,10 +43,16 @@ const webpackConfig = merge(baseWebpackConfig, {
     }),
     // extract css into its own file
     new ExtractTextPlugin({
-      filename: utils.assetsPath(
-        'css/[name].[contenthash].css'), // Setting the following option to
-                                         // `false` will not extract CSS from
-                                         // codesplit chunks.
+      filename: utils.assetsPath('css/[name].[contenthash].css'), // Setting
+                                                                  // the
+                                                                  // following
+                                                                  // option to
+                                                                  // `false`
+                                                                  // will not
+                                                                  // extract
+                                                                  // CSS from
+                                                                  // codesplit
+                                                                  // chunks.
       // Their CSS will instead be inserted dynamically with style-loader when
       // the codesplit chunk has been loaded by webpack. It's currently set to
       // `true` because we are seeing that sourcemaps are included in the
@@ -57,12 +63,9 @@ const webpackConfig = merge(baseWebpackConfig, {
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
     new OptimizeCSSPlugin({
-      cssProcessorOptions: config.build.productionSourceMap ?
-        {
-          safe: true,
-          map: {inline: false},
-        } :
-        {safe: true},
+      cssProcessorOptions: config.build.productionSourceMap ? {
+        safe: true, map: {inline: false},
+      } : {safe: true},
     }),
     // generate dist index.html with correct asset hash for caching.
     // you can customize output by editing /index.html
@@ -74,8 +77,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       minify: {
         removeComments: true,
         collapseWhitespace: true,
-        removeAttributeQuotes: true,
-        // more options:
+        removeAttributeQuotes: true, // more options:
         // https://github.com/kangax/html-minifier#options-quick-reference
       }, // necessary to consistently work with multiple chunks via
          // CommonsChunkPlugin
