@@ -6,7 +6,7 @@ import LoginPage from '../../components/LoginPage/LoginPage';
 import AuthenticatedPage from '../../components/AuthenticatedPage/AuthenticatedPage';
 import WelcomeScreen from '../../components/WelcomeScreen/WelcomeScreen';
 import TracksContent from '../../components/TracksContent/TracksContent';
-import ArtistsContent from '../../components/Artistcontent/ArtistsContent';
+import ArtistsContent from '../../components/ArtistsContent/ArtistsContent';
 import RecordsContent from '../../components/RecordsContent/RecordsContent';
 import ReleasesContent from '../../components/ReleasesContent/ReleasesContent';
 
