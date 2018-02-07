@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="page-container">
+  <div class="page-container">
     <router-view/>
   </div>
 </template>
@@ -14,12 +14,6 @@
   };
 </script>
 
-<style>
-  .full-height {
-    height: 100vh;
-  }
-
-  .full-width {
-    width: 100vw;
-  }
+<style lang="scss">
+  //@import '~roboto-fontface/css/roboto/sass/roboto-fontface-regular.scss'; // todo
 </style>

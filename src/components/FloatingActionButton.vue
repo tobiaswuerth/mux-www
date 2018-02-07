@@ -1,28 +1,28 @@
 <template>
   <md-speed-dial class="md-bottom-right hide-on-large" md-direction="top"
                  md-event="click">
-    <md-speed-dial-target class="md-primary">
+    <md-speed-dial-target>
       <md-icon class="md-morph-initial">group_work</md-icon>
       <md-icon class="md-morph-final">album</md-icon>
     </md-speed-dial-target>
 
     <md-speed-dial-content>
-      <md-button class="md-icon-button">
+      <md-button class="md-icon-button md-raised" :to='routes.private.tracks'>
         <md-icon>view_headline</md-icon>
         <md-tooltip md-direction="left">Tracks</md-tooltip>
       </md-button>
 
-      <md-button class="md-icon-button">
+      <md-button class="md-icon-button md-raised" :to='routes.private.records'>
         <md-icon>view_list</md-icon>
         <md-tooltip md-direction="left">Records</md-tooltip>
       </md-button>
 
-      <md-button class="md-icon-button">
+      <md-button class="md-icon-button md-raised" :to='routes.private.releases'>
         <md-icon>view_agenda</md-icon>
         <md-tooltip md-direction="left">Releases</md-tooltip>
       </md-button>
 
-      <md-button class="md-icon-button">
+      <md-button class="md-icon-button md-raised" :to='routes.private.artists'>
         <md-icon>people</md-icon>
         <md-tooltip md-direction="left">Artists</md-tooltip>
       </md-button>
@@ -31,12 +31,16 @@
 </template>
 
 <script>
+  import {routes} from './../Router';
+
   export default {
-    name: 'FloatingActionButton',
+    name: 'FloatingActionButton', data: () => {
+      return {routes};
+    },
   };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   @media (min-width: 960px) {
     .hide-on-large {
       display: none !important;

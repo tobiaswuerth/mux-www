@@ -7,14 +7,24 @@ import Store from './Store';
 
 import LoginPage from './pages/LoginPage';
 import AuthenticatedPage from './pages/AuthenticatedPage';
+import WelcomeScreen from './components/WelcomeScreen';
+import TracksContent from './components/TracksContent';
+import ArtistsContent from './components/ArtistsContent';
+import RecordsContent from './components/RecordsContent';
+import ReleasesContent from './components/ReleasesContent';
 
-const routes = {
+export const routes = {
   public: {
     login: '/login',
   },
 
   private: {
     root: '/',
+    welcome: '/welcome',
+    artists: '/artists',
+    releases: '/releases',
+    records: '/records',
+    tracks: '/tracks',
   },
 };
 
@@ -35,6 +45,32 @@ const router = new Router({
       path: routes.private.root,
       component: AuthenticatedPage,
       beforeEnter: assertAuthenticated,
+      children: [
+        {
+          path: routes.private.root,
+          component: WelcomeScreen,
+          beforeEnter: assertAuthenticated,
+        },
+        {
+          path: routes.private.tracks,
+          component: TracksContent,
+          beforeEnter: assertAuthenticated,
+        },
+        {
+          path: routes.private.artists,
+          component: ArtistsContent,
+          beforeEnter: assertAuthenticated,
+        },
+        {
+          path: routes.private.records,
+          component: RecordsContent,
+          beforeEnter: assertAuthenticated,
+        },
+        {
+          path: routes.private.releases,
+          component: ReleasesContent,
+          beforeEnter: assertAuthenticated,
+        },],
     },
     {
       path: routes.public.login,

@@ -1,6 +1,6 @@
 <template>
   <md-toolbar class="md-primary">
-    <span class="md-title">Mux</span>
+    <h3 class="md-title">Mux</h3>
   </md-toolbar>
 </template>
 
