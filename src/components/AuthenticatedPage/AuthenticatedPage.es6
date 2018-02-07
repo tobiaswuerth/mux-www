@@ -1,5 +1,5 @@
 import Router from '../../additions/vue-router/Router';
-import Drawer from '../LayoutDrawer/Drawer';
+import Drawer from '../Drawer/Drawer';
 import Toolbar from '../Toolbar/Toolbar';
 import Footer from '../Footer/Footer';
 import FloatingActionButton from '../FloatingActionButton/FloatingActionButton';
