@@ -1,0 +1,17 @@
+<template>
+  <md-snackbar md-position="center"
+               :md-duration="isInfinite ? Infinity : duration"
+               :md-active.sync="showSnackbar"
+               class="position">
+    <span>{{message}}</span>
+    <md-button class="md-primary" @click="showSnackbar = false">
+      <md-icon>close</md-icon>
+    </md-button>
+  </md-snackbar>
+</template>
+
+<script src="./Snackbar.es6"></script>
+
+<style scoped>
+  @import './Snackbar.css';
+</style>

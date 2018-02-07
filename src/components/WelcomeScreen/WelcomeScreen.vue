@@ -1,0 +1,9 @@
+<template>
+  <md-empty-state
+    md-icon="queue_music"
+    md-label="Welcome on Mux!"
+    md-description="Let's get started.">
+  </md-empty-state>
+</template>
+
+<script src="./WelcomeScreen.es6"></script>

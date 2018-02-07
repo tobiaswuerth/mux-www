@@ -1,4 +1,4 @@
-import store from './../Store';
+import Store from '../Store';
 
 let i = 0;
 const loginStates = {
@@ -22,18 +22,14 @@ export default {
   },
 
   mutations: {
-    isAuthenticated: (s, payload) => {
-      s.isAuthenticated = payload;
-    }, data: (s, payload) => {
-      s.data = payload;
-    }, loginState: (s, payload) => {
-      s.loginState = payload;
-    },
+    isAuthenticated: (s, payload) => s.isAuthenticated = payload,
+    data: (s, payload) => s.data = payload,
+    loginState: (s, payload) => s.loginState = payload,
   },
 
   actions: {
-    login: ({commit, dispatch, getters}, credentials) => {
-
+    async login({commit, dispatch, getters}, credentials) {
+      // validate
       if (getters.loginState.state !== getters.loginStates.LOGIN_READY) {
         return Promise.reject('aborting. already running');
       }
@@ -52,17 +48,20 @@ export default {
         return Promise.reject('invalid credentials');
       }
 
+      // execute
       commit('loginState', {state: loginStates.LOGIN_EXECUTING});
 
-      store.dispatch('repo/login', credentials).then(v => {
+      await Store.dispatch('repo/login', credentials).then(v => {
+        // successful login
+        commit('isAuthenticated', true);
+        commit('data', v.data);
         commit('loginState', {
           state: loginStates.LOGIN_READY, lastResponse: v,
         });
-
-        if (!!v && !!v.data) {
-          commit('data', v.data);
-        }
       }).catch(v => {
+        // login failed
+        commit('isAuthenticated', false);
+        commit('data', null);
         commit('loginState', {
           state: loginStates.LOGIN_READY, lastResponse: v,
         });
@@ -71,5 +70,4 @@ export default {
       return Promise.resolve();
     },
   },
-
 };
