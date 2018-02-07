@@ -1,5 +1,5 @@
-import Store from './../Store';
-import Router from './../Router';
+import Store from '../Store';
+import Router from '../../vue-router/Router';
 
 export const watcher = {
   initialize: function() {

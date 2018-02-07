@@ -6,14 +6,4 @@
   </md-empty-state>
 </template>
 
-<script>
-
-  export default {
-    name: 'WelcomeScreen',
-  };
-
-</script>
-
-<style scoped>
-
-</style>
+<script src="./WelcomeScreen.es6"></script>

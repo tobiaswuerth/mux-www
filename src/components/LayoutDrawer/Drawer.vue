@@ -1,5 +1,9 @@
 <template>
   <div class="clean">
+    <md-toolbar class="md-transparent" md-elevation="0">
+      Navigation
+    </md-toolbar>
+
     <md-list-item :to='routes.private.tracks'>
       <md-icon>view_headline</md-icon>
       <span class="md-list-item-text">Tracks</span>
@@ -22,20 +26,8 @@
   </div>
 </template>
 
-<script>
-  import {routes} from './../Router';
-
-  export default {
-    name: 'Drawer',
-
-    data: () => ({
-      routes,
-    }),
-  };
-</script>
+<script src="./Drawer.es6"></script>
 
 <style scoped>
-  .clean {
-    list-style: none;
-  }
+  @import './Drawer.css';
 </style>

@@ -3,15 +3,15 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
-import Store from './Store';
+import Store from '../vuex/Store';
 
-import LoginPage from './pages/LoginPage';
-import AuthenticatedPage from './pages/AuthenticatedPage';
-import WelcomeScreen from './components/WelcomeScreen';
-import TracksContent from './components/TracksContent';
-import ArtistsContent from './components/ArtistsContent';
-import RecordsContent from './components/RecordsContent';
-import ReleasesContent from './components/ReleasesContent';
+import LoginPage from '../../components/LoginPage/LoginPage';
+import AuthenticatedPage from '../../components/AuthenticatedPage/AuthenticatedPage';
+import WelcomeScreen from '../../components/WelcomeScreen/WelcomeScreen';
+import TracksContent from '../../components/TracksContent/TracksContent';
+import ArtistsContent from '../../components/Artistcontent/ArtistsContent';
+import RecordsContent from '../../components/RecordsContent/RecordsContent';
+import ReleasesContent from '../../components/ReleasesContent/ReleasesContent';
 
 export const routes = {
   public: {
@@ -20,11 +20,10 @@ export const routes = {
 
   private: {
     root: '/',
-    welcome: '/welcome',
-    artists: '/artists',
-    releases: '/releases',
-    records: '/records',
-    tracks: '/tracks',
+    artists: '/a',
+    releases: '/r',
+    records: '/s',
+    tracks: '/t',
   },
 };
 

@@ -4,15 +4,7 @@
   </div>
 </template>
 
-<script>
-  import Router from './../Router';
-
-  export default {
-    name: 'App', components: {
-      Router,
-    },
-  };
-</script>
+<script src="./App.es6"></script>
 
 <style lang="scss">
   //@import '~roboto-fontface/css/roboto/sass/roboto-fontface-regular.scss'; // todo

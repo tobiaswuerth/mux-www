@@ -2,18 +2,18 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import VuexPersistence from 'vuex-persist';
 
-Vue.use(Vuex);
-
 // modules
-import AuthenticationModule from './modules/AuthenticationModule';
 import RepositoryModule from './modules/RepositoryModule';
+import AuthenticationModule from './modules/AuthenticationModule';
+import ArtistsModule from './modules/ArtistsModule';
 import WatchModule, {watcher} from './modules/WatchModule';
 
+Vue.use(Vuex);
+
 const persistenceModule = new VuexPersistence({
-  storage: window.localStorage,
-  modules: [
+  storage: window.localStorage, modules: [
     'auth' //todo
-  ]
+  ],
 });
 
 const store = new Vuex.Store({
@@ -21,11 +21,11 @@ const store = new Vuex.Store({
     'repo': RepositoryModule,
     'auth': AuthenticationModule,
     'watch': WatchModule,
+    'artists': ArtistsModule,
   },
 
   plugins: [
-    persistenceModule.plugin
-  ],
+    persistenceModule.plugin],
 });
 
 export default store;

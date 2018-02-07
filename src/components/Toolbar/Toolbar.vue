@@ -4,12 +4,4 @@
   </md-toolbar>
 </template>
 
-<script>
-  export default {
-    name: 'Toolbar',
-  };
-</script>
-
-<style scoped>
-
-</style>
+<script src="./Toolbar.es6"></script>

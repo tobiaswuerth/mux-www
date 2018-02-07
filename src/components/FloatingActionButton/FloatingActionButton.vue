@@ -30,20 +30,8 @@
   </md-speed-dial>
 </template>
 
-<script>
-  import {routes} from './../Router';
+<script src="./FloatingActionButton.es6"></script>
 
-  export default {
-    name: 'FloatingActionButton', data: () => {
-      return {routes};
-    },
-  };
-</script>
-
-<style lang="scss" scoped>
-  @media (min-width: 960px) {
-    .hide-on-large {
-      display: none !important;
-    }
-  }
+<style scoped>
+  @import './FloatingActionButton.css';
 </style>
