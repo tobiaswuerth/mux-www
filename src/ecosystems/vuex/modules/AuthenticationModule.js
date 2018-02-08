@@ -12,6 +12,32 @@ export default {
     loginStates: loginStates, loginState: {
       state: loginStates.LOGIN_READY, lastResponse: null,
     }, isAuthenticated: false, data: null,
+
+    authHeader: s => {
+      // validate
+      if (!s.isAuthenticated) {
+        console.error(
+          'Cannot build authorization header in unauthorized state');
+        return;
+      }
+
+      let token = s.data.token;
+      if (!token) {
+        console.error(
+          'Cannot build authorization header without authorization token');
+        return;
+      }
+
+      // build
+      return {
+        Authorization: `Bearer ${token}`,
+      };
+
+    }, authDefaultOptions: s => {
+      return {
+        headers: s.authHeader(s),
+      };
+    },
   },
 
   getters: {
@@ -19,6 +45,8 @@ export default {
     data: s => s.data,
     loginState: s => s.loginState,
     loginStates: s => s.loginStates,
+    authHeader: s => s.authHeader(s),
+    authDefaultOptions: s => s.authDefaultOptions(s),
   },
 
   mutations: {

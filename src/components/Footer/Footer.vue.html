@@ -1,20 +1,24 @@
-<md-content class="md-primary md-layout md-alignment-center-center">
+<md-content class="">
+
+  <md-progress-bar class="bar" md-mode="buffer" :md-value="60"
+                   :md-buffer="80"></md-progress-bar>
+
   <div class="md-layout md-gutter md-alignment-center-center">
 
     <md-button class="md-fab md-mini md-raised md-plain">
       <md-icon>skip_previous</md-icon>
     </md-button>
 
-    <md-button class="md-fab md-mini md-raised">
+    <md-button class="md-fab md-mini md-raised md-plain">
       <md-icon>replay_10</md-icon>
     </md-button>
 
-    <md-button class="md-fab md-raised md-accent">
+    <md-button class="md-fab md-raised md-primary">
       <!-- <md-icon>pause</md-icon>-->
       <md-icon>play_arrow</md-icon>
     </md-button>
 
-    <md-button class="md-fab md-mini md-raised">
+    <md-button class="md-fab md-mini md-raised md-plain">
       <md-icon>forward_10</md-icon>
     </md-button>
 

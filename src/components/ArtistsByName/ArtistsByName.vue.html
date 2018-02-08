@@ -1,0 +1,43 @@
+<div>
+  <span class="md-title">Variants</span>
+  <ul class="clean-list">
+    <li v-for="item in data">
+
+      <md-list-item to="/t,ü" :key="item.UniqueId">
+        <md-avatar class="md-avatar-icon">
+          {{item.Name.substr(0, 2)}}
+        </md-avatar>
+
+        <div class="md-list-item-text">
+          <span class="md-title">{{item.Name}}</span>
+          <span v-if="item.Disambiguation">{{item.Disambiguation}}</span>
+          <p v-if="item.Aliases && item.Aliases.length > 0" class="md-caption">
+            a.k.a. {{item.Aliases.map(x => x.Name).join(', ')}}
+          </p>
+        </div>
+
+        <md-button class="md-icon-button md-list-action">
+          <md-icon class="md-primary">keyboard_arrow_right</md-icon>
+        </md-button>
+
+      </md-list-item>
+
+      <md-divider/>
+    </li>
+
+    <li v-if="hasMore">
+      <md-list-item @click="loadMore" class="md-primary">
+          <span key="__1" v-if="isLoading">
+            <md-progress-spinner :md-diameter="20"
+                                 :md-stroke="3"
+                                 md-mode="indeterminate"/>
+          </span>
+        <span key="__2" v-else>
+            <md-icon>expand_more</md-icon>
+            Click to load more
+          </span>
+      </md-list-item>
+    </li>
+
+  </ul>
+</div>

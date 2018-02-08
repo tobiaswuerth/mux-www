@@ -9,6 +9,7 @@ import TracksContent from '../../components/TracksContent/TracksContent';
 import ArtistsContent from '../../components/ArtistsContent/ArtistsContent.vue';
 import RecordsContent from '../../components/RecordsContent/RecordsContent';
 import ReleasesContent from '../../components/ReleasesContent/ReleasesContent';
+import ArtistsByName from '../../components/ArtistsByName/ArtistsByName';
 
 Vue.use(Router);
 
@@ -18,11 +19,7 @@ export const routes = {
   },
 
   private: {
-    root: '/',
-    artists: '/a',
-    releases: '/r',
-    records: '/s',
-    tracks: '/t',
+    root: '/', artists: '/a', releases: '/r', records: '/s', tracks: '/t',
   },
 };
 
@@ -44,31 +41,24 @@ const router = new Router({
       component: AuthenticatedPage,
       beforeEnter: assertAuthenticated,
       children: [
+        // main
         {
-          path: routes.private.root,
-          component: WelcomeScreen,
-          beforeEnter: assertAuthenticated,
+          path: routes.private.root, component: WelcomeScreen,
+        }, {
+          path: routes.private.tracks, component: TracksContent,
+        }, {
+          path: routes.private.artists, component: ArtistsContent,
+        }, {
+          path: routes.private.records, component: RecordsContent,
+        }, {
+          path: routes.private.releases, component: ReleasesContent,
         },
+
+        // detailed
         {
-          path: routes.private.tracks,
-          component: TracksContent,
-          beforeEnter: assertAuthenticated,
-        },
-        {
-          path: routes.private.artists,
-          component: ArtistsContent,
-          beforeEnter: assertAuthenticated,
-        },
-        {
-          path: routes.private.records,
-          component: RecordsContent,
-          beforeEnter: assertAuthenticated,
-        },
-        {
-          path: routes.private.releases,
-          component: ReleasesContent,
-          beforeEnter: assertAuthenticated,
-        },],
+          path: `${routes.private.artists}/:name`, component: ArtistsByName, props: true
+        }
+      ],
     },
     {
       path: routes.public.login,

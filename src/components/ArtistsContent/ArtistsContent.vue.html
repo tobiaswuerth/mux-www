@@ -1,19 +1,24 @@
 <div>
   <ul class="clean-list">
     <li v-for="item in data">
-      <md-list-item to="/artists/1">
+      <md-list-item :to="getArtistByNameUri(item.Name)">
         <span class="md-list-item-text">{{item.Name}}</span>
+
+        <md-button class="md-icon-button md-list-action">
+          <md-icon class="md-primary">keyboard_arrow_right</md-icon>
+        </md-button>
+
       </md-list-item>
       <md-divider/>
     </li>
 
-    <li>
+    <li v-if="hasMore">
       <md-list-item @click="loadMore" class="md-primary">
-          <span key="__1" v-if="this.isLoading">
-            <md-progress-spinner :md-diameter="20"
-                                 :md-stroke="3"
-                                 md-mode="indeterminate"/>
-          </span>
+        <span key="__1" v-if="isLoading">
+          <md-progress-spinner :md-diameter="20"
+                               :md-stroke="3"
+                               md-mode="indeterminate"/>
+        </span>
         <span key="__2" v-else>
             <md-icon>expand_more</md-icon>
             Click to load more

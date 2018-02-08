@@ -6,7 +6,7 @@ const states = {
 };
 
 export default {
-  name: 'ArtistsContent',
+  name: 'ArtistsByName',
 
   data: () => ({
     pageIndex: 0, states, state: states.ready, data: [], routes, hasMore: true,
@@ -20,17 +20,13 @@ export default {
     isLoading: function() {
       return this.state === this.states.loading;
     },
+
   },
 
   methods: {
-
     loadMore: function() {
       this.pageIndex++;
       this.load();
-    },
-
-    getArtistByNameUri: function(name) {
-      return `${this.routes.private.artists}/${encodeURIComponent(name)}`;
     },
 
     load: function() {
@@ -41,17 +37,22 @@ export default {
 
       // execute
       this.state = this.states.loading;
-      this.$store.dispatch('artists/all', {pageIndex: this.pageIndex}).
-        then(v => {
-          this.data = this.data.concat(v.data);
-          this.hasMore = v.hasMore;
-        }).
-        catch(v => {
-          console.error(v);
-        }).finally(() => {
+      this.$store.dispatch('artists/byName', {
+        name: this.name, pageIndex: this.pageIndex,
+      }).then(v => {
+        this.data = v.data;
+        this.hasMore = v.hasMore;
+      }).catch(v => {
+        console.error(v);
+      }).finally(() => {
         this.state = this.states.ready;
       });
+    },
 
+    getArtistByNameUri: function(name) {
+      return `${routes.private.artists}/${name}`;
     },
   },
+
+  props: ['name'],
 };
