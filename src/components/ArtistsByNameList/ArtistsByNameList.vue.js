@@ -8,6 +8,10 @@ export default {
 
   methods: {
 
+    getUriById: function(id){
+      return `${routes.private.artists.details}/${id}`
+    },
+
     load: function() {
       // validate
       if (this.state === this.states.loading) {
@@ -26,10 +30,6 @@ export default {
       }).finally(() => {
         this.state = this.states.ready;
       });
-    },
-
-    getArtistByNameUri: function(name) {
-      return `${routes.private.artists}/${name}`;
     },
   },
 

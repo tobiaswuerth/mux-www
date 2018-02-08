@@ -8,7 +8,7 @@ export default {
   methods: {
 
     getArtistByNameUri: function(name) {
-      return `${this.routes.private.artists}/${encodeURIComponent(name)}`;
+      return `${this.routes.private.artists.lookup}/${encodeURIComponent(name)}`;
     },
 
     load: function() {

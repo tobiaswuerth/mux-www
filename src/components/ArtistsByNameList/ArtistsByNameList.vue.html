@@ -3,7 +3,7 @@
   <ul class="clean-list">
     <li v-for="item in data">
 
-      <md-list-item to="/t,ü" :key="item.UniqueId">
+      <md-list-item :to="getUriById(item.UniqueId)" :key="item.UniqueId">
         <md-avatar class="md-avatar-icon">
           {{item.Name.substr(0, 2)}}
         </md-avatar>

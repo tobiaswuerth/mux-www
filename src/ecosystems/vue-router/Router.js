@@ -14,6 +14,7 @@ import ReleasesContent from '../../components/ReleasesContent/ReleasesContent';
 
 import ArtistsList from '../../components/ArtistsList/ArtistsList';
 import ArtistsByNameList from '../../components/ArtistsByNameList/ArtistsByNameList';
+import ArtistDetailsPage from '../../components/ArtistDetailsPage/ArtistDetailsPage';
 
 Vue.use(Router);
 
@@ -23,7 +24,13 @@ export const routes = {
   },
 
   private: {
-    root: '/', artists: '/a', releases: '/r', records: '/s', tracks: '/t',
+    root: '/',
+
+    artists: {
+      root: '/a', lookup: '/a/l', details: '/a',
+    },
+
+    releases: '/r', records: '/s', tracks: '/t',
   },
 };
 
@@ -55,10 +62,6 @@ const router = new Router({
           component: TracksContent,
         },
         {
-          path: routes.private.artists,
-          component: ArtistsList,
-        },
-        {
           path: routes.private.records,
           component: RecordsContent,
         },
@@ -67,12 +70,21 @@ const router = new Router({
           component: ReleasesContent,
         },
 
-        // detailed
+        // artist
         {
-          path: `${routes.private.artists}/:name`,
+          path: routes.private.artists.root,
+          component: ArtistsList,
+        },
+        {
+          path: `${routes.private.artists.lookup}/:name`,
           component: ArtistsByNameList,
           props: true,
-        }],
+        },
+        {
+          path: `${routes.private.artists.details}/:id`,
+          component: ArtistDetailsPage,
+          props: true,
+        },],
     },
     {
       path: routes.public.login,
