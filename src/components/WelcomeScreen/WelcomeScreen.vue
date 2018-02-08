@@ -1,9 +1,3 @@
-<template>
-  <md-empty-state
-    md-icon="queue_music"
-    md-label="Welcome on Mux!"
-    md-description="Let's get started.">
-  </md-empty-state>
-</template>
-
-<script src="./WelcomeScreen.es6"></script>
+<script src=".\WelcomeScreen.vue.js" lang="js"></script>
+<style src=".\WelcomeScreen.scoped.vue.css" lang="css" scoped></style>
+<template src=".\WelcomeScreen.vue.html" lang="html"></template>

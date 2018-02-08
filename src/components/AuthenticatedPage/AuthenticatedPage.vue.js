@@ -1,9 +1,9 @@
 import Router from '../../additions/vue-router/Router';
-import Drawer from '../Drawer/Drawer';
-import Toolbar from '../Toolbar/Toolbar';
-import Footer from '../Footer/Footer';
-import FloatingActionButton from '../FloatingActionButton/FloatingActionButton';
-import Snackbar from '../Snackbar/Snackbar';
+import Drawer from '../Drawer/Drawer.vue';
+import Toolbar from '../Toolbar/Toolbar.vue';
+import Footer from '../Footer/Footer.vue';
+import FloatingActionButton from '../FloatingActionButton/FloatingActionButton.vue';
+import Snackbar from '../Snackbar/Snackbar.vue';
 
 export default {
   name: 'AuthenticatedPage', components: {

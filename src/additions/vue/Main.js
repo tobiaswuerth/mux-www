@@ -2,7 +2,7 @@
 import Vue from 'vue';
 import VueMaterial from 'vue-material';
 // components
-import App from '../../components/App/App';
+import App from '../../components/App/App.vue';
 // css
 import 'vue-material/dist/vue-material.min.css';
 import 'vue-material/dist/theme/default.css';

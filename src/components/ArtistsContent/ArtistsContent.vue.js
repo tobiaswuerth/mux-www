@@ -7,7 +7,7 @@ export default {
   name: 'ArtistsContent',
 
   data: () => ({
-    pageIndex: 0, states, state: states.ready,
+    pageIndex: 0, states, state: states.ready, data: [],
   }),
 
   mounted: function() {
@@ -21,6 +21,13 @@ export default {
   },
 
   methods: {
+    refreshData: function() {
+      let dataSet = [];
+      this.$store.getters['artists/cache'].forEach(
+        (v) => dataSet = dataSet.concat(v));
+      this.data = dataSet;
+    },
+
     loadMore: function() {
       this.pageIndex++;
       this.load();
@@ -42,6 +49,7 @@ export default {
           console.error(v);
         }).finally(() => {
         this.state = this.states.ready;
+        this.refreshData();
       });
 
     },

@@ -12,6 +12,7 @@ const portfinder = require('portfinder');
 
 const HOST = process.env.HOST;
 const PORT = process.env.PORT && Number(process.env.PORT);
+const VueBuilder = require('vue-builder-webpack-plugin');
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -64,7 +65,11 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         from: path.resolve(__dirname, '../static'),
         to: config.dev.assetsSubDirectory,
         ignore: ['.*'],
-      }])],
+      }]),
+    new VueBuilder({
+      path: 'src/components/', folder: false,
+    })],
+
 });
 
 module.exports = new Promise((resolve, reject) => {

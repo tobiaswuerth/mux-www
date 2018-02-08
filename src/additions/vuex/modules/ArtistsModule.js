@@ -12,15 +12,34 @@ export default {
   },
 
   mutations: {
-    cache: (s, payload) => s.cache = s.cache.concat(payload),
+    cache: (s, payload) => {
+      let pageIndex = payload.pageIndex;
+      if (null == pageIndex) {
+        console.error('validation failed. payload does not contain page index');
+        return;
+      }
+
+      s.cache[pageIndex] = payload.data;
+    },
   },
 
   actions: {
-    async all({dispatch, commit}, payload) {
+    async all({commit, getters}, payload) {
+      let pageIndex = payload.pageIndex || 0;
+
+      let data = getters.cache[pageIndex];
+      if (data) {
+        return Promise.resolve(data);
+      }
+
       await Store.dispatch('repo/artists', payload).then(v => {
-        commit('cache', v.data);
+        let data = {
+          pageIndex: pageIndex, data: v.data,
+        };
+        commit('cache', data);
+        return Promise.resolve(data);
       }).catch(v => {
-        console.error(v);
+        return Promise.reject(v);
       });
     },
   },
