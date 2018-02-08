@@ -2,11 +2,11 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Store from '../vuex/Store';
 
-import LoginPage from '../../components/LoginPage/LoginPage';
-import AuthenticatedPage from '../../components/AuthenticatedPage/AuthenticatedPage';
-import WelcomeScreen from '../../components/WelcomeScreen/WelcomeScreen';
+import LoginPage from '../../components/LoginPage/LoginPage.vue';
+import AuthenticatedPage from '../../components/AuthenticatedPage/AuthenticatedPage.vue';
+import WelcomeScreen from '../../components/WelcomeScreen/WelcomeScreen.vue';
 import TracksContent from '../../components/TracksContent/TracksContent';
-import ArtistsContent from '../../components/Artistcontent/ArtistsContent';
+import ArtistsContent from '../../components/ArtistsContent/ArtistsContent.vue';
 import RecordsContent from '../../components/RecordsContent/RecordsContent';
 import ReleasesContent from '../../components/ReleasesContent/ReleasesContent';
 

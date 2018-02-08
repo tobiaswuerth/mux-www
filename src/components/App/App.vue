@@ -1,11 +1,3 @@
-<template>
-  <div class="page-container">
-    <router-view/>
-  </div>
-</template>
-
-<script src="./App.es6"></script>
-
-<style lang="scss">
-  //@import '~roboto-fontface/css/roboto/sass/roboto-fontface-regular.scss'; // todo
-</style>
+<script src=".\App.vue.js" lang="js"></script>
+<style src=".\App.scoped.vue.css" lang="css" scoped></style>
+<template src=".\App.vue.html" lang="html"></template>

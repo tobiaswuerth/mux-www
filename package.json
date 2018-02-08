@@ -9,16 +9,6 @@
     "start": "npm run dev",
     "build": "node build/build.js"
   },
-  "dependencies": {
-    "axios": "^0.17.1",
-    "material-design-icons": "^3.0.1",
-    "roboto-fontface": "^0.8.0",
-    "vue": "^2.5.2",
-    "vue-material": "^1.0.0-beta-8",
-    "vue-router": "^3.0.1",
-    "vuex": "^3.0.1",
-    "vuex-persist": "^1.1.1"
-  },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
@@ -51,6 +41,7 @@
     "style-loader": "^0.20.1",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
+    "vue-builder-webpack-plugin": "^0.3.1",
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",
@@ -67,5 +58,14 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "dependencies": {
+    "axios": "^0.17.1",
+    "material-design-icons": "^3.0.1",
+    "vue": "^2.5.13",
+    "vue-material": "^1.0.0-beta-8",
+    "vue-router": "^3.0.1",
+    "vuex": "^3.0.1",
+    "vuex-persist": "^1.1.1"
+  }
 }

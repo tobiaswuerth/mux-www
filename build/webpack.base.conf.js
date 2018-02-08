@@ -10,7 +10,7 @@ function resolve(dir) {
 
 module.exports = {
   context: path.resolve(__dirname, '../'), entry: {
-    app: './src/additions/vue/Main.js',
+    app: './src/ecosystems/vue/Vue.js',
   },
 
   output: {

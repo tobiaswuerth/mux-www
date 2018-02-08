@@ -1,7 +1,3 @@
-<template>
-  <md-toolbar class="md-primary">
-    <h3 class="md-title">Mux</h3>
-  </md-toolbar>
-</template>
-
-<script src="./Toolbar.es6"></script>
+<script src=".\Toolbar.vue.js" lang="js"></script>
+<style src=".\Toolbar.scoped.vue.css" lang="css" scoped></style>
+<template src=".\Toolbar.vue.html" lang="html"></template>

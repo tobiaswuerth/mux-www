@@ -1,31 +1,3 @@
-<template>
-  <div class="md-layout-column">
-
-    <md-app class="page-content" md-mode="fixed" md-waterfall>
-
-      <md-app-toolbar class="clean">
-        <my-toolbar/>
-      </md-app-toolbar>
-
-      <md-app-drawer md-active.sync="true" md-fixed md-permanent="clipped"
-                     class="md-xsmall-hide md-small-hide md-elevation-3 drawer">
-        <my-drawer/>
-      </md-app-drawer>
-
-      <md-app-content class="md-elevation-0">
-        <router-view/>
-        <my-fab/>
-      </md-app-content>
-
-    </md-app>
-
-    <my-snackbar/>
-    <my-footer class="footer md-elevation-13"/>
-
-  </div>
-</template>
-
-<script src="./AuthenticatedPage.es6"></script>
-<style scoped>
-  @import './AuthenticatedPage.css';
-</style>
+<script src=".\AuthenticatedPage.vue.js" lang="js"></script>
+<style src=".\AuthenticatedPage.scoped.vue.css" lang="css" scoped></style>
+<template src=".\AuthenticatedPage.vue.html" lang="html"></template>

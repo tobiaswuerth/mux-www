@@ -1,17 +1,3 @@
-<template>
-  <md-snackbar md-position="center"
-               :md-duration="isInfinite ? Infinity : duration"
-               :md-active.sync="showSnackbar"
-               class="position">
-    <span>{{message}}</span>
-    <md-button class="md-primary" @click="showSnackbar = false">
-      <md-icon>close</md-icon>
-    </md-button>
-  </md-snackbar>
-</template>
-
-<script src="./Snackbar.es6"></script>
-
-<style scoped>
-  @import './Snackbar.css';
-</style>
+<script src=".\Snackbar.vue.js" lang="js"></script>
+<style src=".\Snackbar.scoped.vue.css" lang="css" scoped></style>
+<template src=".\Snackbar.vue.html" lang="html"></template>
