@@ -2,14 +2,18 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Store from '../vuex/Store';
 
-import LoginPage from '../../components/LoginPage/LoginPage.vue';
-import AuthenticatedPage from '../../components/AuthenticatedPage/AuthenticatedPage.vue';
-import WelcomeScreen from '../../components/WelcomeScreen/WelcomeScreen.vue';
+import LoginPage from '../../components/LoginPage/LoginPage';
+import AuthenticatedPage from '../../components/AuthenticatedPage/AuthenticatedPage';
+import WelcomeScreen from '../../components/WelcomeScreen/WelcomeScreen';
+
 import TracksContent from '../../components/TracksContent/TracksContent';
-import ArtistsContent from '../../components/ArtistsContent/ArtistsContent.vue';
+
 import RecordsContent from '../../components/RecordsContent/RecordsContent';
+
 import ReleasesContent from '../../components/ReleasesContent/ReleasesContent';
-import ArtistsByName from '../../components/ArtistsByName/ArtistsByName';
+
+import ArtistsList from '../../components/ArtistsList/ArtistsList';
+import ArtistsByNameList from '../../components/ArtistsByNameList/ArtistsByNameList';
 
 Vue.use(Router);
 
@@ -43,32 +47,36 @@ const router = new Router({
       children: [
         // main
         {
-          path: routes.private.root, component: WelcomeScreen,
-        }, {
-          path: routes.private.tracks, component: TracksContent,
-        }, {
-          path: routes.private.artists, component: ArtistsContent,
-        }, {
-          path: routes.private.records, component: RecordsContent,
-        }, {
-          path: routes.private.releases, component: ReleasesContent,
+          path: routes.private.root,
+          component: WelcomeScreen,
+        },
+        {
+          path: routes.private.tracks,
+          component: TracksContent,
+        },
+        {
+          path: routes.private.artists,
+          component: ArtistsList,
+        },
+        {
+          path: routes.private.records,
+          component: RecordsContent,
+        },
+        {
+          path: routes.private.releases,
+          component: ReleasesContent,
         },
 
         // detailed
         {
-          path: `${routes.private.artists}/:name`, component: ArtistsByName, props: true
-        }
-      ],
+          path: `${routes.private.artists}/:name`,
+          component: ArtistsByNameList,
+          props: true,
+        }],
     },
     {
       path: routes.public.login,
       component: LoginPage,
     }],
 });
-
-router.beforeEach((to, from, next) => {
-  `registered routing request from '${from.fullPath}' to '${to.fullPath}'`;
-  next();
-});
-
 export default router;
