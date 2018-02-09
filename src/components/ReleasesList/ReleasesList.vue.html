@@ -1,0 +1,39 @@
+<div>
+
+  <md-card md-with-hover v-for="item in processedData" :key="item.Title">
+    <md-ripple>
+      <md-card-header>
+        <div class="md-title">{{item.Title}}</div>
+        <div class="md-subhead">released in <b>{{item.countries.length}}</b>
+          different countries
+        </div>
+      </md-card-header>
+
+      <md-card-content>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque
+        ea, nostrum odio. Dolores, sed accusantium quasi non.
+      </md-card-content>
+
+      <md-card-actions>
+        <md-button>
+          <md-icon>keyboard_arrow_right</md-icon>
+        </md-button>
+      </md-card-actions>
+    </md-ripple>
+  </md-card>
+
+  <div v-if="hasMore">
+    <md-list-item @click="loadMore" class="md-primary">
+        <span v-if="isLoading">
+          <md-progress-spinner :md-diameter="20"
+                               :md-stroke="3"
+                               md-mode="indeterminate"/>
+        </span>
+      <md-button v-else>
+        <md-icon>expand_more</md-icon>
+        Click to load more
+      </md-button>
+    </md-list-item>
+  </div>
+
+</div>

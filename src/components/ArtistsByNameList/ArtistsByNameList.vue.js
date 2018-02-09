@@ -1,15 +1,17 @@
+import Vue from 'vue';
 import {routes} from './../../ecosystems/vue-router/Router';
+
 import ListBase from './../../mixins/ListBase';
 
-export default {
+export default Vue.extend({
   name: 'ArtistsByNameList',
 
   mixins: [ListBase],
 
   methods: {
 
-    getUriById: function(id){
-      return `${routes.private.artists.details}/${id}`
+    getUriById: function(id) {
+      return routes.private.artists.details.replace(':id', id);
     },
 
     load: function() {
@@ -33,5 +35,7 @@ export default {
     },
   },
 
-  props: ['name'],
-};
+  props: {
+    name: {},
+  },
+});

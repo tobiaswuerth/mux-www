@@ -34,6 +34,9 @@ const routes = {
       all: `${config.prefix.authorized}/artists`,
       byName: (name) => `${config.prefix.authorized}/artists/lookup/
         ${encodeURIComponent(name)}`,
+      byId: (id) => `${config.prefix.authorized}/artists/${id}`,
+      releasesById: (id) => `${config.prefix.authorized}/artists/${id}/releases`,
+      recordsById: (id) => `${config.prefix.authorized}/artists/${id}/records`,
     },
   },
 };
@@ -73,10 +76,39 @@ export default {
     },
 
     async artistsByName({}, payload) {
-      let artistName = payload.name || '';
-      let route = routes.get.artists.byName(artistName);
+      let name = payload.name;
+      if (!name) {
+        return Promise.reject('undefined name');
+      }
+      let route = routes.get.artists.byName(name);
       return await performDefaultDataRequest(route, payload);
     },
 
+    async artistById({}, payload) {
+      let id = payload.id;
+      if (!id) {
+        return Promise.reject('undefined id');
+      }
+      let route = routes.get.artists.byId(id);
+      return await performDefaultDataRequest(route, payload);
+    },
+
+    async artistReleasesById({}, payload) {
+      let id = payload.id;
+      if (!id) {
+        return Promise.reject('undefined id');
+      }
+      let route = routes.get.artists.releasesById(id);
+      return await performDefaultDataRequest(route, payload);
+    },
+
+    async artistRecordsById({}, payload) {
+      let id = payload.id;
+      if (!id) {
+        return Promise.reject('undefined id');
+      }
+      let route = routes.get.artists.recordsById(id);
+      return await performDefaultDataRequest(route, payload);
+    },
   },
 };

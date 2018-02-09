@@ -1,3 +1,19 @@
 <div>
-  details of {{id}}
+
+  <div>
+    <span key="__1" v-if="isLoading">
+    <md-progress-spinner :md-diameter="20"
+                         :md-stroke="3"
+                         md-mode="indeterminate"/>
+    </span>
+    <span key="__2" v-else class="md-title">artist ...</span>
+
+  </div>
+
+  <md-tabs class="md-transparent" md-alignment="fixed">
+    <md-tab id="tab-home" md-label="Releases" :to="getReleasesById"></md-tab>
+    <md-tab id="tab-pages" md-label="Records" :to="getRecordsById"></md-tab>
+  </md-tabs>
+
+  <router-view :artistId="id"/>
 </div>

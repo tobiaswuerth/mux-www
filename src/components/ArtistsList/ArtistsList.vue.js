@@ -1,6 +1,8 @@
+import Vue from 'vue';
+
 import ListBase from './../../mixins/ListBase';
 
-export default {
+export default Vue.extend({
   name: 'ArtistsList',
 
   mixins: [ListBase],
@@ -8,7 +10,8 @@ export default {
   methods: {
 
     getArtistByNameUri: function(name) {
-      return `${this.routes.private.artists.lookup}/${encodeURIComponent(name)}`;
+      return this.routes.private.artists.lookup.replace(':name',
+        encodeURIComponent(name));
     },
 
     load: function() {
@@ -32,4 +35,4 @@ export default {
 
     },
   },
-};
+});
