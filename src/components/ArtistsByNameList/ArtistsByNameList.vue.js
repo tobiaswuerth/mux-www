@@ -1,41 +1,41 @@
-import Vue from 'vue';
-import {routes} from './../../ecosystems/vue-router/Router';
+import Vue from 'vue'
+import { routes } from './../../ecosystems/vue-router/Router'
 
-import AsyncDataLoader from '../../mixins/AsyncDataLoader';
+import AsyncDataLoader from '../../mixins/AsyncDataLoader'
 
 export default Vue.extend({
   name: 'ArtistsByNameList',
-
+  
   mixins: [AsyncDataLoader],
-
+  
   methods: {
-
-    getUriById: function(id) {
-      return routes.private.artists.details.replace(':id', id);
+    
+    getUriById: function (id) {
+      return routes.private.artists.details.replace(':id', id)
     },
-
-    load: function() {
+    
+    load: function () {
       // validate
       if (this.state === this.states.loading) {
-        return;
+        return
       }
-
+      
       // execute
-      this.state = this.states.loading;
+      this.state = this.states.loading
       this.$store.dispatch('artists/byName', {
         name: this.name, pageIndex: this.pageIndex,
       }).then(v => {
-        this.data = v.data;
-        this.hasMore = v.hasMore;
+        this.data = v.data
+        this.hasMore = v.hasMore
       }).catch(v => {
-        console.error(v);
+        console.error(v)
       }).finally(() => {
-        this.state = this.states.ready;
-      });
+        this.state = this.states.ready
+      })
     },
   },
-
+  
   props: {
     name: {},
   },
-});
+})

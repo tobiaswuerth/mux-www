@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px"
 	 viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
 <path style="fill:#D80027;" d="M233.739,278.261c0,0-158.609-203.316-158.759-203.28C121.306,28.654,185.307,0,256,0
 	c141.384,0,256,114.616,256,256L233.739,278.261z"/>
@@ -17,7 +17,7 @@
 	H50.087z"/>
 <path style="fill:#338AF3;" d="M100.198,293.92c-9.292-3.344-27.851-11.89-27.851-26.79v-50.087H128v50.087
 	C128,282.079,109.443,290.604,100.198,293.92z"/>
-<polygon style="fill:#F3F3F3;" points="111.304,244.87 111.304,233.739 100.174,228.174 89.043,233.739 89.043,244.87 
+<polygon style="fill:#F3F3F3;" points="111.304,244.87 111.304,233.739 100.174,228.174 89.043,233.739 89.043,244.87
 	83.478,250.435 83.478,272.696 116.87,272.696 116.87,250.435 "/>
 <g>
 </g>

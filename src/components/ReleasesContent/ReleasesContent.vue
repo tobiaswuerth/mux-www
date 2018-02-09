@@ -7,7 +7,7 @@
 <script>
   export default {
     name: 'ReleasesContent',
-  };
+  }
 </script>
 
 <style scoped>

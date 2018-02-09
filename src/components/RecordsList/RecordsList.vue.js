@@ -1,19 +1,19 @@
-import Vue from 'vue';
+import Vue from 'vue'
 
-import AsyncDataLoader from '../../mixins/AsyncDataLoader';
+import AsyncDataLoader from '../../mixins/AsyncDataLoader'
 
 export default Vue.extend({
   name: 'RecordsList',
-
+  
   mixins: [AsyncDataLoader],
-
+  
   props: {
     artistId: {},
   },
-
+  
   methods: {
-    load: function() {
-
+    load: function () {
+      
     },
   },
-});
+})

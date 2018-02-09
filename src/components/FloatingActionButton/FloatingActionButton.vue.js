@@ -1,7 +1,7 @@
-import {routes} from '../../ecosystems/vue-router/Router';
+import { routes } from '../../ecosystems/vue-router/Router'
 
 export default {
   name: 'FloatingActionButton', data: () => {
-    return {routes};
+    return {routes}
   },
-};
+}
