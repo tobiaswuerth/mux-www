@@ -1,17 +1,25 @@
-<div>
-
-  <md-card md-with-hover v-for="item in processedData" :key="item.Title">
+<div class="clean-list md-layout md-gutter md-alignment-top-left">
+  <md-card md-with-hover v-for="item in processedData" :key="item.title"
+           class="entry md-layout-item">
     <md-ripple>
       <md-card-header>
-        <div class="md-title">{{item.Title}}</div>
-        <div class="md-subhead">released in <b>{{item.countries.length}}</b>
-          different countries
+        <div class="md-title">{{item.title}}</div>
+        <div class="md-subhead">released
+          <span v-if="item.countries.length > 0">
+            in <b>{{item.countries.length}}</b>
+          countr{{item.countries.length === 1 ? 'y' : 'ies'}}
+          </span>
+          in <b>{{item.variations}}</b>
+          variation{{item.variations.length > 1 ? 's' : ''}}
         </div>
       </md-card-header>
 
       <md-card-content>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque
-        ea, nostrum odio. Dolores, sed accusantium quasi non.
+        <span v-for="c in item.countries" :key="c">
+          <img class="md-layout-item country-flag"
+               :src="`/static/countries/${c}.svg`" :alt="c"/>
+          <md-tooltip md-direction="bottom">{{c}}</md-tooltip>
+        </span>
       </md-card-content>
 
       <md-card-actions>
@@ -22,18 +30,17 @@
     </md-ripple>
   </md-card>
 
-  <div v-if="hasMore">
-    <md-list-item @click="loadMore" class="md-primary">
-        <span v-if="isLoading">
-          <md-progress-spinner :md-diameter="20"
-                               :md-stroke="3"
-                               md-mode="indeterminate"/>
-        </span>
-      <md-button v-else>
-        <md-icon>expand_more</md-icon>
-        Click to load more
-      </md-button>
-    </md-list-item>
+  <div v-if="hasMore" class="entry">
+
+    <span v-if="isLoading">
+      <md-progress-spinner :md-diameter="20"
+                           :md-stroke="3"
+                           md-mode="indeterminate"/>
+    </span>
+    <md-button v-else @click="loadMore" class="md-primary">
+      <md-icon>expand_more</md-icon>
+      Click to load more
+    </md-button>
   </div>
 
 </div>

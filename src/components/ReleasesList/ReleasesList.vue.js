@@ -14,19 +14,26 @@ export default Vue.extend({
   computed: {
     processedData: function() {
       let d = {};
+
       this.data.forEach(x => {
         let title = x.Title;
         let country = x.Country;
 
-        if (!d[title]) {
-          d[title] = {
-            countries: [
-              country],
-          };
-        } else if (d[title].countries.indexOf(country) === 0) {
-          d[title].countries = d[title].countries.concat(country);
+        let entry = d[title];
+        if (entry) {
+          entry.variations++;
+
+          if (country && entry.countries.indexOf(country) < 0) {
+            entry.countries.push(country);
+          }
+          return;
         }
+
+        d[title] = {
+          variations: 1, countries: country ? [country] : [], title,
+        };
       });
+
       return d;
     },
   },

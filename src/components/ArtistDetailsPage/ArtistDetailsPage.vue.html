@@ -6,14 +6,22 @@
                          :md-stroke="3"
                          md-mode="indeterminate"/>
     </span>
-    <span key="__2" v-else class="md-title">artist ...</span>
-
+    <span key="__2" v-else>
+       <span class="md-title">{{data.Name}}</span>
+       <span v-if="data.Disambiguation">{{data.Disambiguation}}</span>
+       <p v-if="data.Aliases && data.Aliases.length > 0" class="md-caption">
+         a.k.a. {{data.Aliases.map(x => x.Name).join(', ')}}
+       </p>
+    </span>
   </div>
 
-  <md-tabs class="md-transparent" md-alignment="fixed">
-    <md-tab id="tab-home" md-label="Releases" :to="getReleasesById"></md-tab>
-    <md-tab id="tab-pages" md-label="Records" :to="getRecordsById"></md-tab>
-  </md-tabs>
+  <div class="sub-content">
+    <md-tabs class="margin-bottom" md-alignment="fixed">
+      <md-tab id="tab-home" md-label="Releases" :to="getReleasesById"></md-tab>
+      <md-tab id="tab-pages" md-label="Records" :to="getRecordsById"></md-tab>
+    </md-tabs>
 
-  <router-view :artistId="id"/>
+    <router-view :artistId="id"/>
+  </div>
+
 </div>
