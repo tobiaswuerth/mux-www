@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router, {routes} from './../../ecosystems/vue-router/Router';
 
-import ListBase from './../../mixins/ListBase';
+import AsyncDataLoader from '../../mixins/AsyncDataLoader';
 
 export default Vue.extend({
   name: 'ArtistDetailsPage',
@@ -10,7 +10,7 @@ export default Vue.extend({
     Router,
   },
 
-  mixins: [ListBase],
+  mixins: [AsyncDataLoader],
 
   props: {
     id: {},

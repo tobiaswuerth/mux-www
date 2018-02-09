@@ -1,12 +1,12 @@
 import Vue from 'vue';
 import {routes} from './../../ecosystems/vue-router/Router';
 
-import ListBase from './../../mixins/ListBase';
+import AsyncDataLoader from '../../mixins/AsyncDataLoader';
 
 export default Vue.extend({
   name: 'ArtistsByNameList',
 
-  mixins: [ListBase],
+  mixins: [AsyncDataLoader],
 
   methods: {
 
