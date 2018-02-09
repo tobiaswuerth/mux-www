@@ -1,0 +1,14 @@
+<span>
+  <span v-if="hasMore && doPreload">
+    <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+  </span>
+
+  <slot :data="data"></slot>
+
+  <span v-if="hasMore && !doPreload">
+    <span v-if="isLoading">
+      <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+    </span>
+    <slot name="more" :loadMore="loadMore" v-else></slot>
+  </span>
+</span>

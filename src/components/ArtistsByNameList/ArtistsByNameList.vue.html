@@ -1,43 +1,21 @@
-<div>
-  <span class="md-title">Variants</span>
-  <ul class="clean-list">
-    <li v-for="item in data">
+<List :route="route" :valueKey="valueKey" :destination="destination" :payload="payload">
 
-      <md-list-item :to="getUriById(item.UniqueId)" :key="item.UniqueId">
-        <md-avatar class="md-avatar-icon">
-          {{item.Name.substr(0, 2)}}
-        </md-avatar>
+  <template slot-scope="props">
 
-        <div class="md-list-item-text">
-          <span class="md-title">{{item.Name}}</span>
-          <span v-if="item.Disambiguation">{{item.Disambiguation}}</span>
-          <p v-if="item.Aliases && item.Aliases.length > 0" class="md-caption">
-            a.k.a. {{item.Aliases.map(x => x.Name).join(', ')}}
-          </p>
-        </div>
+    <md-avatar class="md-avatar-icon">
+      {{props.item.Name.substr(0, 2)}}
+    </md-avatar>
 
-        <md-button class="md-icon-button md-list-action">
-          <md-icon class="md-primary">keyboard_arrow_right</md-icon>
-        </md-button>
+    <div class="md-list-item-text">
+      <span class="md-title">{{props.item.Name}}</span>
+      <span v-if="props.item.Disambiguation">{{props.item.Disambiguation}}</span>
+      <p v-if="props.item.Aliases && props.item.Aliases.length > 0" class="md-caption">
+        a.k.a. {{props.item.Aliases.map(x => x.Name).join(', ')}} </p>
+    </div>
 
-      </md-list-item>
+    <md-button class="md-icon-button md-list-action">
+      <md-icon class="md-primary">keyboard_arrow_right</md-icon>
+    </md-button>
+  </template>
+</List>
 
-      <md-divider/>
-    </li>
-
-    <li v-if="hasMore">
-      <md-list-item @click="loadMore" class="md-primary">
-          <span key="__1" v-if="isLoading">
-            <md-progress-spinner :md-diameter="20"
-                                 :md-stroke="3"
-                                 md-mode="indeterminate"/>
-          </span>
-        <span key="__2" v-else>
-            <md-icon>expand_more</md-icon>
-            Click to load more
-          </span>
-      </md-list-item>
-    </li>
-
-  </ul>
-</div>

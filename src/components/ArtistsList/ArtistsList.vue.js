@@ -1,38 +1,23 @@
-import Vue from 'vue'
+import List from '../List/List';
+import {routes} from './../../ecosystems/vue-router/Router';
 
-import AsyncDataLoader from '../../mixins/AsyncDataLoader'
-
-export default Vue.extend({
+export default {
   name: 'ArtistsList',
   
-  mixins: [AsyncDataLoader],
+  components: {
+    List,
+  },
+  
+  data: () => {
+    return {
+      routes, route: 'artists/all', valueKey: 'Name',
+    };
+  },
   
   methods: {
-    
-    getArtistByNameUri: function (name) {
+    destination: function(value) {
       return this.routes.private.artists.lookup.replace(':name',
-        encodeURIComponent(name))
-    },
-    
-    load: function () {
-      // validate
-      if (this.state === this.states.loading) {
-        return
-      }
-      
-      // execute
-      this.state = this.states.loading
-      this.$store.dispatch('artists/all', {pageIndex: this.pageIndex}).
-        then(v => {
-          this.data = this.data.concat(v.data)
-          this.hasMore = v.hasMore
-        }).
-        catch(v => {
-          console.error(v)
-        }).finally(() => {
-        this.state = this.states.ready
-      })
-      
+        encodeURIComponent(value));
     },
   },
-})
+};

@@ -1,24 +1,22 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Store from '../vuex/Store'
+import Vue from 'vue';
+import Router from 'vue-router';
+import Store from '../vuex/Store';
 
-import LoginPage from '../../components/LoginPage/LoginPage'
-import AuthenticatedPage from '../../components/AuthenticatedPage/AuthenticatedPage'
-import WelcomeScreen from '../../components/WelcomeScreen/WelcomeScreen'
+import LoginPage from '../../components/LoginPage/LoginPage';
+import AuthenticatedPage from '../../components/AuthenticatedPage/AuthenticatedPage';
+import WelcomeScreen from '../../components/WelcomeScreen/WelcomeScreen';
 
-import TracksContent from '../../components/TracksContent/TracksContent'
+import ReleasesList from './../../components/ReleasesList/ReleasesList';
+import ReleasesByNameList from './../../components/ReleasesByNameList/ReleasesByNameList';
 
-import RecordsContent from '../../components/RecordsContent/RecordsContent'
-import RecordsList from '../../components/RecordsList/RecordsList'
 
-import ReleasesContent from '../../components/ReleasesContent/ReleasesContent'
-import ReleasesList from './../../components/ReleasesList/ReleasesList'
+import ArtistsList from '../../components/ArtistsList/ArtistsList';
+import ArtistsByNameList from '../../components/ArtistsByNameList/ArtistsByNameList';
+import ArtistDetailsPage from '../../components/ArtistDetailsPage/ArtistDetailsPage';
+import ArtistReleasesList from '../../components/ArtistReleasesList/ArtistReleasesList';
+import ArtistReleaseDetailsPage from '../../components/ArtistReleaseDetailsPage/ArtistReleaseDetailsPage';
 
-import ArtistsList from '../../components/ArtistsList/ArtistsList'
-import ArtistsByNameList from '../../components/ArtistsByNameList/ArtistsByNameList'
-import ArtistDetailsPage from '../../components/ArtistDetailsPage/ArtistDetailsPage'
-
-Vue.use(Router)
+Vue.use(Router);
 
 export const routes = {
   public: {
@@ -33,21 +31,27 @@ export const routes = {
       lookup: '/a/l/:name',
       details: '/a/:id',
       releases: '/a/:id/r',
+      releasesLookup: '/a/:id/r/:name',
       records: '/a/:id/s',
+      recordsLookup: '/a/:id/s/:name',
     },
     
-    releases: '/r', records: '/s', tracks: '/t',
+    releases: {
+      root: '/r', lookup: '/r/l/:name', details: '/r/:id',
+    },
+    
+    records: '/s', tracks: '/t',
   },
-}
+};
 
 const assertAuthenticated = (to, from, next) => {
   if (!Store.getters['auth/isAuthenticated']) {
-    console.log('-> reroute unauthenticated request to public login')
-    next(routes.public.login)
+    console.log('-> reroute unauthenticated request to public login');
+    next(routes.public.login);
   } else {
-    next()
+    next();
   }
-}
+};
 
 const router = new Router({
   mode: 'history',
@@ -58,25 +62,23 @@ const router = new Router({
       component: AuthenticatedPage,
       beforeEnter: assertAuthenticated,
       children: [
-        // main
         {
           path: routes.private.root,
           component: WelcomeScreen,
         },
+        
+        // releases
         {
-          path: routes.private.tracks,
-          component: TracksContent,
+          path: routes.private.releases.root,
+          component: ReleasesList,
         },
         {
-          path: routes.private.records,
-          component: RecordsContent,
-        },
-        {
-          path: routes.private.releases,
-          component: ReleasesContent,
+          path: routes.private.releases.lookup,
+          component: ReleasesByNameList,
+          props: true,
         },
         
-        // artist
+        // artists
         {
           path: routes.private.artists.root,
           component: ArtistsList,
@@ -93,15 +95,20 @@ const router = new Router({
           props: true,
           children: [
             {
-              path: routes.private.artists.releases, component: ReleasesList,
-            }, {
-              path: routes.private.artists.records, component: RecordsList,
+              path: routes.private.artists.releases,
+              component: ArtistReleasesList,
+              props: true,
             },],
-        },],
+        },
+        {
+          path: routes.private.artists.releasesLookup,
+          component: ArtistReleaseDetailsPage,
+          props: true,
+        }],
     },
     {
       path: routes.public.login,
       component: LoginPage,
     }],
-})
-export default router
+});
+export default router;

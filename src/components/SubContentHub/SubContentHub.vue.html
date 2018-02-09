@@ -1,0 +1,15 @@
+<div>
+  <slot></slot>
+
+  <div class="sub-content">
+    <md-tabs class="margin-bottom" md-alignment="fixed">
+      <slot name="tabs"></slot>
+    </md-tabs>
+
+    <slot name="view">
+      <router-view/>
+    </slot>
+
+  </div>
+
+</div>

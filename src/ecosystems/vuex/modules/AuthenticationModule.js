@@ -1,9 +1,9 @@
-import Store from '../Store'
+import Store from '../Store';
 
-let i = 0
+let i = 0;
 const loginStates = {
   LOGIN_READY: 1 << i++, LOGIN_EXECUTING: 1 << i++,
-}
+};
 
 export default {
   namespaced: true,
@@ -17,26 +17,26 @@ export default {
       // validate
       if (!s.isAuthenticated) {
         console.error(
-          'Cannot build authorization header in unauthorized state')
-        return
+          'Cannot build authorization header in unauthorized state');
+        return;
       }
       
-      let token = s.data.token
+      let token = s.data.token;
       if (!token) {
         console.error(
-          'Cannot build authorization header without authorization token')
-        return
+          'Cannot build authorization header without authorization token');
+        return;
       }
       
       // build
       return {
         Authorization: `Bearer ${token}`,
-      }
+      };
       
     }, authDefaultOptions: s => {
       return {
         headers: s.authHeader(s),
-      }
+      };
     },
   },
   
@@ -56,46 +56,46 @@ export default {
   },
   
   actions: {
-    async login ({commit, dispatch, getters}, credentials) {
+    async login({commit, dispatch, getters}, credentials) {
       // validate
       if (getters.loginState.state !== getters.loginStates.LOGIN_READY) {
-        return Promise.reject('aborting. already running')
+        return Promise.reject('aborting. already running');
       }
       
       if (getters.isAuthenticated) {
         // nothing to do here
-        commit('loginState', {state: loginStates.LOGIN_READY})
-        return Promise.resolve()
+        commit('loginState', {state: loginStates.LOGIN_READY});
+        return Promise.resolve();
       }
       
       if (!credentials) {
-        return Promise.reject('credentials null')
+        return Promise.reject('credentials null');
       }
       
       if (!credentials.username || !credentials.password) {
-        return Promise.reject('invalid credentials')
+        return Promise.reject('invalid credentials');
       }
       
       // execute
-      commit('loginState', {state: loginStates.LOGIN_EXECUTING})
+      commit('loginState', {state: loginStates.LOGIN_EXECUTING});
       
       await Store.dispatch('repo/login', credentials).then(v => {
         // successful login
-        commit('isAuthenticated', true)
-        commit('data', v.data)
+        commit('isAuthenticated', true);
+        commit('data', v.data);
         commit('loginState', {
           state: loginStates.LOGIN_READY, lastResponse: v,
-        })
+        });
       }).catch(v => {
         // login failed
-        commit('isAuthenticated', false)
-        commit('data', null)
+        commit('isAuthenticated', false);
+        commit('data', null);
         commit('loginState', {
           state: loginStates.LOGIN_READY, lastResponse: v,
-        })
-      })
+        });
+      });
       
-      return Promise.resolve()
+      return Promise.resolve();
     },
   },
-}
+};

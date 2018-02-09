@@ -6,11 +6,11 @@ export default {
   }),
   
   methods: {
-    show: function (message, duration = 3000, isInfinite = false) {
-      this.message = message
-      this.duration = duration
-      this.isInfinite = isInfinite
-      this.showSnackbar = true
+    show: function(message, duration = 3000, isInfinite = false) {
+      this.message = message;
+      this.duration = duration;
+      this.isInfinite = isInfinite;
+      this.showSnackbar = true;
     },
   },
-}
+};

@@ -1,0 +1,24 @@
+<Repeater :route="route" :destination="destination" :doPreload="doPreload" :valueKey="valueKey" :payload="payload">
+  <template slot-scope="props">
+    <md-list>
+      <template v-for="item in props.data">
+        <md-list-item class="clean-list-item" :to="destination(item[valueKey])" :key="item[valueKey]">
+          <slot :scope="props" :item="item">
+            <span class="md-list-item-text">{{item[valueKey]}}</span>
+            <md-button class="md-icon-button md-list-action">
+              <md-icon class="md-primary">keyboard_arrow_right</md-icon>
+            </md-button>
+          </slot>
+        </md-list-item>
+        <md-divider></md-divider>
+      </template>
+    </md-list>
+  </template>
+
+  <template slot="more" slot-scope="props">
+    <md-list-item @click="props.loadMore" class="clean-list-item">
+      <md-icon>keyboard_arrow_down</md-icon>
+      <span class="md-list-item-text">Click to load more</span>
+    </md-list-item>
+  </template>
+</Repeater>

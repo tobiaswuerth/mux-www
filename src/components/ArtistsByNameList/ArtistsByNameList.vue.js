@@ -1,41 +1,36 @@
-import Vue from 'vue'
-import { routes } from './../../ecosystems/vue-router/Router'
+import List from '../List/List';
+import {routes} from './../../ecosystems/vue-router/Router';
 
-import AsyncDataLoader from '../../mixins/AsyncDataLoader'
-
-export default Vue.extend({
-  name: 'ArtistsByNameList',
+export default {
+  name: 'ArtistsList',
   
-  mixins: [AsyncDataLoader],
-  
-  methods: {
-    
-    getUriById: function (id) {
-      return routes.private.artists.details.replace(':id', id)
-    },
-    
-    load: function () {
-      // validate
-      if (this.state === this.states.loading) {
-        return
-      }
-      
-      // execute
-      this.state = this.states.loading
-      this.$store.dispatch('artists/byName', {
-        name: this.name, pageIndex: this.pageIndex,
-      }).then(v => {
-        this.data = v.data
-        this.hasMore = v.hasMore
-      }).catch(v => {
-        console.error(v)
-      }).finally(() => {
-        this.state = this.states.ready
-      })
-    },
+  components: {
+    List,
   },
   
   props: {
     name: {},
   },
-})
+  
+  data: () => {
+    return {
+      routes, route: 'artists/byName', doPreload: true, valueKey: 'UniqueId',
+    };
+  },
+  
+  computed: {
+    payload: function() {
+      return {
+        name: this.name,
+      };
+    },
+  },
+  
+  methods: {
+    destination: function(value) {
+      return this.routes.private.artists.details.replace(':id',
+        encodeURIComponent(value));
+    },
+  },
+};
+

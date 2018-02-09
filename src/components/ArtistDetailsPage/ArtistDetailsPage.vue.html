@@ -1,27 +1,19 @@
-<div>
-
-  <div>
-    <span key="__1" v-if="isLoading">
-    <md-progress-spinner :md-diameter="20"
-                         :md-stroke="3"
-                         md-mode="indeterminate"/>
-    </span>
-    <span key="__2" v-else>
+<SubContentHub>
+  <template>
+    <span :key="`__1`" v-if="isLoading">
+    <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+    </span> <span :key="`__2`" v-else>
        <span class="md-title">{{data.Name}}</span>
        <span v-if="data.Disambiguation">{{data.Disambiguation}}</span>
        <p v-if="data.Aliases && data.Aliases.length > 0" class="md-caption">
          a.k.a. {{data.Aliases.map(x => x.Name).join(', ')}}
        </p>
     </span>
-  </div>
+  </template>
 
-  <div class="sub-content">
-    <md-tabs class="margin-bottom" md-alignment="fixed">
-      <md-tab id="tab-home" md-label="Releases" :to="getReleasesById"></md-tab>
-      <md-tab id="tab-pages" md-label="Records" :to="getRecordsById"></md-tab>
-    </md-tabs>
+  <span slot="tabs">
+    <md-tab id="tab-home" md-label="Releases" :to="getReleasesById"></md-tab>
+    <md-tab id="tab-pages" md-label="Records" :to="getRecordsById"></md-tab>
+  </span>
 
-    <router-view :artistId="id"/>
-  </div>
-
-</div>
+</SubContentHub>

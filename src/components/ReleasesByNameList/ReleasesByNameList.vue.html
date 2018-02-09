@@ -1,0 +1,45 @@
+<div>
+  <span class="md-title">Variants</span>
+  <Repeater :route="route" :destination="destination" :payload="payload" :valueKey="valueKey">
+    <template slot-scope="props">
+      <ul class="clean-list">
+        <template v-for="item in props.data">
+          <li>
+
+            <md-list-item :to="destination(item[valueKey])" :key="item[valueKey]">
+              <div class="md-list-item-text">
+                <span class="md-title">{{item.Title}}</span> <span class="md-subheading" v-if="item.Disambiguation">{{item.Disambiguation}}</span>
+                <span class="md-caption" v-if="item.Date">Released: {{item.Date.substr(0, 10)}}</span> <span class="md-caption"
+                                                                                                             v-if="item.Quality">Quality: {{item.Quality}}</span>
+                <span class="md-caption" v-if="item.Status">Status: {{item.Status}}</span> <span v-if="item.Country">
+            Country: <img class="md-layout-item country-flag" :src="`/static/countries/${item.Country}.svg`"> {{item.Country}}
+          </span>
+              
+              </div>
+              <md-button class="md-icon-button md-list-action">
+                <md-icon class="md-primary">keyboard_arrow_right</md-icon>
+              </md-button>
+
+            </md-list-item>
+
+            <md-divider/>
+          </li>
+        </template>
+
+        <template slot="more" slot-scope="props">
+          <li>
+            <md-list-item @click="props.loadMore" class="md-primary">
+          <span key="__1" v-if="isLoading">
+            <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+          </span> <span key="__2" v-else>
+            <md-icon>expand_more</md-icon>
+            Click to load more
+          </span>
+            </md-list-item>
+          </li>
+        </template>
+
+      </ul>
+    </template>
+  </Repeater>
+</div>
