@@ -4,7 +4,12 @@ export default {
   name: 'List',
   
   props: {
-    route: {}, valueKey: {}, destination: {}, doPreload: {}, payload: {},
+    route: {},
+    valueKey: {},
+    destination: {},
+    doPreload: {},
+    payload: {},
+    postProcessor: {},
   },
   
   components: {

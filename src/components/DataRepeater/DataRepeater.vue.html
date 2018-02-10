@@ -3,6 +3,10 @@
     <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
   </span>
 
+  <span v-if="Object.keys(this.data).length === 0">
+    <md-empty-state md-label="Nothing here"
+                    md-description="You see this because there is nothing else to display here."></md-empty-state>
+  </span>
   <slot :data="data"></slot>
 
   <span v-if="hasMore && !doPreload">

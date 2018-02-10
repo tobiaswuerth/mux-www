@@ -1,0 +1,11 @@
+<List :route="route" :destination="destination" :valueKey="valueKey" :postProcessor="onPostProcess" :payload="payload">
+  <template slot-scope="props">
+    <span class="md-list-item-text">
+      <span>{{props.item.Title}}</span>
+      <span class="md-caption"><b>{{props.item.variations}}</b> variation{{props.item.variations > 1 ? 's' : ''}}</span>
+    </span>
+    <md-button class="md-icon-button md-list-action">
+      <md-icon class="md-primary">keyboard_arrow_right</md-icon>
+    </md-button>
+  </template>
+</List>

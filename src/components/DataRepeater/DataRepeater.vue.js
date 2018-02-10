@@ -42,19 +42,19 @@ export default Vue.extend({
           } else {
             this.data = this.data.concat(v.data);
           }
-          this.hasMore = v.hasMore;
           
+          this.hasMore = v.hasMore;
           if (this.onSuccess) {
             this.onSuccess(this);
           }
+          if (this.hasMore && this.doPreload) {
+            this.state = this.states.ready;
+            this.loadMore();
+          }
         }).catch(v => {
         console.error(v);
-        this.doPreload = false; // force stop loading data
       }).finally(() => {
         this.state = this.states.ready;
-        if (this.hasMore && this.doPreload) {
-          this.loadMore();
-        }
       });
     },
   },
