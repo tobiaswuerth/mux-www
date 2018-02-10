@@ -2,11 +2,11 @@ import LoginForm from '../LoginForm/LoginForm.vue';
 
 export default {
   name: 'LoginPage',
-
+  
   components: {
     LoginForm,
   },
-
+  
   methods: {
     onLogin: function(credentials) {
       this.$store.dispatch('auth/login', credentials).then(v => {

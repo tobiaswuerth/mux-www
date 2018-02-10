@@ -1,0 +1,28 @@
+<SubContentHub>
+  <template>
+    <div>
+      <span class="md-title">{{name}}</span>
+      <div class="md-caption">released<span v-if="countries.length > 0">
+            in <b>{{countries.length}}</b>
+          countr{{countries.length === 1 ? 'y' : 'ies'}}
+          </span> in <b>{{variations}}</b> variation{{variations > 1 ? 's' : ''}}
+      </div>
+      <span v-for="c in countries" :key="c">
+        <img class="md-layout-item country-flag" :src="`/static/countries/${c}.svg`" :alt="c"/>
+        <md-tooltip md-direction="bottom">{{c}}</md-tooltip>
+      </span>
+
+      <div v-if="hasMore">
+        <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+      </div>
+    </div>
+  </template>
+
+  <template slot="tabs">
+    <md-tab key="tab-records" :to="getRecordsByIdName" md-label="Records"></md-tab>
+    <md-tab key="tab-artists" :to="getArtistsByIdName" md-label="Artists"></md-tab>
+    <md-tab key="tab-variations" :to="getVariationsByIdName" md-label="Variations">
+      <ReleasesByNameList :dataSource="dataReleases"/>
+    </md-tab>
+  </template>
+</SubContentHub>

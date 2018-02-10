@@ -7,7 +7,7 @@ import App from '../../components/App/App.vue';
 import 'vue-material/dist/vue-material.min.css';
 import 'vue-material/dist/theme/default.css';
 import 'material-design-icons/iconfont/material-icons.css';
-
+import '../../globals/Global.css';
 // js
 import Store from './../vuex/Store';
 import Router from '../vue-router/Router';

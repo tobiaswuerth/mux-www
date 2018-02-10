@@ -9,7 +9,7 @@ export const watcher = {
       Store.dispatch('watch/isAuthenticated', newVal).then(v => {
         // ignore
       }).catch(v => {
-        // ignore
+        console.error(v);
       });
     });
   },
@@ -17,7 +17,7 @@ export const watcher = {
 
 export default {
   namespaced: true,
-
+  
   actions: {
     isAuthenticated: function({}) {
       Router.push('/');

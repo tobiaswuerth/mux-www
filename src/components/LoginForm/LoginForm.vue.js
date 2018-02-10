@@ -1,6 +1,6 @@
 export default {
   name: 'LoginForm',
-
+  
   data: () => ({
     credentials: {
       username: '', password: '',
@@ -8,7 +8,7 @@ export default {
       isUsernameValid: true, isPasswordValid: true,
     },
   }),
-
+  
   methods: {
     onEnter: function() {
       if (!this.isExecutingLogin) {
@@ -18,14 +18,14 @@ export default {
       // refresh
       this.updateValidationUsername();
       this.updateValidationPassword();
-
+      
       // check
       if (!this.validation.isUsernameValid ||
         !this.validation.isPasswordValid) {
         console.log('one or more inputs are invalid. aborting.');
         return;
       }
-
+      
       // emit
       this.$emit('login', {
         username: this.credentials.username,
@@ -37,7 +37,7 @@ export default {
       this.validation.isPasswordValid = this.isPasswordValid;
     },
   },
-
+  
   watch: {
     'credentials.username': function() {
       this.updateValidationUsername();
@@ -45,7 +45,7 @@ export default {
       this.updateValidationPassword();
     },
   },
-
+  
   computed: {
     isUsernameValid: function() {
       return !!this.credentials.username;

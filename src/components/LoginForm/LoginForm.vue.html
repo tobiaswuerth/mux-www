@@ -20,23 +20,16 @@
       <md-field :class="{'md-invalid': !this.validation.isPasswordValid}">
         <md-icon>lock</md-icon>
         <label>Password</label>
-        <md-input v-model="credentials.password" type="password"
-                  @keyup.enter="onEnter"/>
+        <md-input v-model="credentials.password" type="password" @keyup.enter="onEnter"/>
         <span class="md-error">This field is required</span>
       </md-field>
     </md-card-content>
 
     <md-card-actions>
-      <md-button @click.prevent="onBtnLoginClicked"
-                 class="md-raised md-primary"
-                 :disabled="isExecutingLogin">
+      <md-button @click.prevent="onBtnLoginClicked" class="md-raised md-primary" :disabled="isExecutingLogin">
           <span key="__1" v-if="isExecutingLogin">
-            <md-progress-spinner
-              :md-diameter="20"
-              :md-stroke="3"
-              md-mode="indeterminate"/>
-          </span>
-        <span key="__2" v-else>
+            <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"/>
+          </span> <span key="__2" v-else>
             Login
           </span>
       </md-button>
