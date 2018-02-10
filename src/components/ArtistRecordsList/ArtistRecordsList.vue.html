@@ -1,4 +1,9 @@
-<List :route="route" :destination="destination" :valueKey="valueKey" :postProcessor="onPostProcess" :payload="payload">
+<List :route="route"
+      :destination="destination"
+      :doPreload="doPreload"
+      :valueKey="valueKey"
+      :postProcessor="onPostProcess"
+      :payload="payload">
   <template slot-scope="props">
     <span class="md-list-item-text">
       <span>{{props.item.Title}}</span>
