@@ -18,13 +18,6 @@
                   a.k.a. {{props.data.map(x => x.Name).join(', ')}}
                 </span>
               </template>
-
-              <template slot="more" slot-scope="props">
-                <md-chip class="small-badge" md-clickable @click="props.loadMore">
-                  more
-                  <md-icon>expand_more</md-icon>
-                </md-chip>
-              </template>
             </Repeater>
           </md-card-header>
 
