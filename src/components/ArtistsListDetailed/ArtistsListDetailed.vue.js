@@ -2,14 +2,14 @@ import List from '../List/List';
 import {routes} from './../../ecosystems/vue-router/Router';
 
 export default {
-  name: 'ArtistsList',
+  name: 'ArtistsListDetailed',
   
   components: {
     List,
   },
   
   props: {
-    name: {},
+    name: {}, dataSource: {}
   },
   
   data: () => {

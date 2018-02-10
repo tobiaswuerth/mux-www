@@ -14,7 +14,7 @@ import ReleasesList from './../../components/ReleasesList/ReleasesList';
 import ReleasesListDetailed from '../../components/ReleasesListDetailed/ReleasesListDetailed';
 
 import ArtistsList from '../../components/ArtistsList/ArtistsList';
-import ArtistsByNameList from '../../components/ArtistsByNameList/ArtistsByNameList';
+import ArtistsListDetailed from '../../components/ArtistsListDetailed/ArtistsListDetailed';
 import ArtistDetailsPage from '../../components/ArtistDetailsPage/ArtistDetailsPage';
 import ArtistReleasesList from '../../components/ArtistReleasesList/ArtistReleasesList';
 import ArtistRecordsList from '../../components/ArtistRecordsList/ArtistRecordsList';
@@ -115,7 +115,7 @@ const router = new Router({
         },
         {
           path: routes.private.artists.lookup,
-          component: ArtistsByNameList,
+          component: ArtistsListDetailed,
           props: true,
         },
         {
