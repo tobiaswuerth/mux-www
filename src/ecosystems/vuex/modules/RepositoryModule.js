@@ -45,6 +45,7 @@ const routes = {
         name)}`,
       byId: (id) => `${config.prefix.authorized}/releases/${id}`,
       artistsById: (id) => `${config.prefix.authorized}/releases/${id}/artists`,
+      recordsById: (id) => `${config.prefix.authorized}/releases/${id}/records`,
     },
     
     records: {
@@ -60,6 +61,31 @@ const routes = {
     },
   },
 };
+
+async function performParamDefaultDataRequest(payload, props) {
+  // get key
+  let keys = Object.keys(props);
+  if (keys.length !== 1) {
+    return Promise.reject(`invalid amount of required keys '${keys.length}'`);
+  }
+  
+  // get value
+  let key = keys[0];
+  let val = payload[key];
+  if (!val) {
+    return Promise.reject(`value for key '${key}' undefined`);
+  }
+  
+  // build route
+  let route = props[key](val);
+  if (!route) {
+    return Promise.reject(
+      `building route failed for key '${key}' and value '${val}'`);
+  }
+  
+  // perform request
+  return performDefaultDataRequest(route, payload);
+}
 
 async function performDefaultDataRequest(route, payload) {
   // prepare
@@ -82,6 +108,7 @@ export default {
   namespaced: true,
   
   actions: {
+    // login
     async login({}, payload) {
       let response = await axios.post(routes.post.login.performLogin, payload, {
         headers: {
@@ -91,110 +118,57 @@ export default {
       return Promise.resolve({data: response.data});
     },
     
+    // artists
     async artists({}, payload) {
       return await performDefaultDataRequest(routes.get.artists.all, payload);
+    }, async artistsByName({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {name: routes.get.artists.byName});
+    }, async artistById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.artists.byId});
+    }, async artistReleasesById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.artists.releasesById});
+    }, async artistRecordsById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.artists.recordsById});
     },
     
-    async artistsByName({}, payload) {
-      let name = payload.name;
-      if (!name) {
-        return Promise.reject('undefined name');
-      }
-      let route = routes.get.artists.byName(name);
-      return await performDefaultDataRequest(route, payload);
-    },
-    
-    async artistById({}, payload) {
-      let id = payload.id;
-      if (!id) {
-        return Promise.reject('undefined id');
-      }
-      let route = routes.get.artists.byId(id);
-      return await performDefaultDataRequest(route, payload);
-    },
-    
-    async artistReleasesById({}, payload) {
-      let id = payload.id;
-      if (!id) {
-        return Promise.reject('undefined id');
-      }
-      let route = routes.get.artists.releasesById(id);
-      return await performDefaultDataRequest(route, payload);
-    },
-    
-    async artistRecordsById({}, payload) {
-      let id = payload.id;
-      if (!id) {
-        return Promise.reject('undefined id');
-      }
-      let route = routes.get.artists.recordsById(id);
-      return await performDefaultDataRequest(route, payload);
-    },
-    
+    // releases
     async releases({}, payload) {
       return await performDefaultDataRequest(routes.get.releases.all, payload);
+    }, async releasesByName({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {name: routes.get.releases.byName});
+    }, async releaseById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.releases.byId});
+    }, async releaseArtistsById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.releases.artistsById});
+    }, async releaseRecordsById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.releases.recordsById});
     },
     
-    async releasesByName({}, payload) {
-      let name = payload.name;
-      if (!name) {
-        return Promise.reject('undefined name');
-      }
-      let route = routes.get.releases.byName(name);
-      return await performDefaultDataRequest(route, payload);
-    },
-    
-    async releaseById({}, payload) {
-      let id = payload.id;
-      if (!id) {
-        return Promise.reject('undefined id');
-      }
-      let route = routes.get.releases.byId(id);
-      return await performDefaultDataRequest(route, payload);
-    },
-    
-    async releaseArtistsById({}, payload) {
-      let id = payload.id;
-      if (!id) {
-        return Promise.reject('undefined id');
-      }
-      let route = routes.get.releases.artistsById(id);
-      return await performDefaultDataRequest(route, payload);
-    },
-    
+    // records
     async records({}, payload) {
       return await performDefaultDataRequest(routes.get.records.all, payload);
+    }, async recordsByName({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {name: routes.get.records.byName});
+    }, async recordById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.records.byId});
     },
     
-    async recordsByName({}, payload) {
-      let name = payload.name;
-      if (!name) {
-        return Promise.reject('undefined name');
-      }
-      let route = routes.get.records.byName(name);
-      return await performDefaultDataRequest(route, payload);
-    },
-    
-    async recordById({}, payload) {
-      let id = payload.id;
-      if (!id) {
-        return Promise.reject('undefined id');
-      }
-      let route = routes.get.records.byId(id);
-      return await performDefaultDataRequest(route, payload);
-    },
-    
+    // tracks
     async tracks({}, payload) {
       return await performDefaultDataRequest(routes.get.tracks.all, payload);
-    },
-    
-    async trackById({}, payload) {
-      let id = payload.id;
-      if (!id) {
-        return Promise.reject('undefined id');
-      }
-      let route = routes.get.tracks.byId(id);
-      return await performDefaultDataRequest(route, payload);
+    }, async trackById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.tracks.byId});
     },
   },
 };

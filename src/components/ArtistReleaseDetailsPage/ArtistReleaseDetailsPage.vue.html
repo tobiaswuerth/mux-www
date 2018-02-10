@@ -1,36 +1,26 @@
-<div class="clean-list md-layout md-gutter md-alignment-top-left">
-  <md-card md-with-hover
-           v-for="item in data"
-           :key="item.UniqueId"
-           class="entry md-layout-item"
-           @click="route(item.title)"
-           md-theme="primary">
-    <md-card-header>
-      <div class="md-title">{{item.Title}}</div>
-      <div class="md-subhead"> {{item.UniqueId}}
+<SubContentHub>
+  <template>
+    <div>
+      <span class="md-title">{{name}}</span>
+      <div class="md-caption">released<span v-if="countries.length > 0">
+            in <b>{{countries.length}}</b>
+          countr{{countries.length === 1 ? 'y' : 'ies'}}
+          </span> in <b>{{variations}}</b> variation{{variations > 1 ? 's' : ''}}
       </div>
-    </md-card-header>
+      <span v-for="c in countries" :key="c">
+        <img class="md-layout-item country-flag" :src="`/static/countries/${c}.svg`" :alt="c"/>
+        <md-tooltip md-direction="bottom">{{c}}</md-tooltip>
+      </span>
 
-    <md-card-content>
+      <div v-if="hasMore">
+        <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+      </div>
+    </div>
+  </template>
 
-    </md-card-content>
-
-    <md-card-actions>
-      <md-button @click="route(item.title)">
-        <md-icon>keyboard_arrow_right</md-icon>
-      </md-button>
-    </md-card-actions>
-  </md-card>
-
-  <div v-if="hasMore" class="entry">
-
-    <span v-if="isLoading">
-      <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"/>
-    </span>
-    <md-button v-else @click="loadMore" class="md-primary">
-      <md-icon>expand_more</md-icon>
-      Click to load more
-    </md-button>
-  </div>
-
-</div>
+  <template slot="tabs">
+    <md-tab id="tab-records" md-label="Records" to="/"></md-tab>
+    <md-tab id="tab-artists" md-label="Artists" to="/"></md-tab>
+    <md-tab id="tab-variations" md-label="Variations" to="/"></md-tab>
+  </template>
+</SubContentHub>

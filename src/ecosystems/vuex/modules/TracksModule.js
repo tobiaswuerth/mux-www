@@ -4,11 +4,11 @@ export default {
   namespaced: true,
   
   actions: {
-    async all({commit, getters}, payload) {
+    async all({}, payload) {
       return await Store.dispatch('repo/tracks', payload);
     },
     
-    async byId({commit, getters}, payload) {
+    async byId({}, payload) {
       return await Store.dispatch('repo/trackById', payload);
     },
   },

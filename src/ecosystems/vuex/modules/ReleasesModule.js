@@ -4,20 +4,24 @@ export default {
   namespaced: true,
   
   actions: {
-    async all({commit, getters}, payload) {
+    async all({}, payload) {
       return await Store.dispatch('repo/releases', payload);
     },
     
-    async byName({commit, getters}, payload) {
+    async byName({}, payload) {
       return await Store.dispatch('repo/releasesByName', payload);
     },
     
-    async byId({commit, getters}, payload) {
+    async byId({}, payload) {
       return await Store.dispatch('repo/releaseById', payload);
     },
     
-    async artistsById({commit, getters}, payload) {
+    async artistsById({}, payload) {
       return await Store.dispatch('repo/releaseArtistsById', payload);
+    },
+  
+    async recordsById({}, payload) {
+      return await Store.dispatch('repo/releaseRecordsById', payload);
     },
   },
 };
