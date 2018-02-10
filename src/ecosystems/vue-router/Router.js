@@ -6,9 +6,10 @@ import LoginPage from '../../components/LoginPage/LoginPage';
 import AuthenticatedPage from '../../components/AuthenticatedPage/AuthenticatedPage';
 import WelcomeScreen from '../../components/WelcomeScreen/WelcomeScreen';
 
+import RecordsList from './../../components/RecordsList/RecordsList';
+
 import ReleasesList from './../../components/ReleasesList/ReleasesList';
 import ReleasesByNameList from './../../components/ReleasesByNameList/ReleasesByNameList';
-
 
 import ArtistsList from '../../components/ArtistsList/ArtistsList';
 import ArtistsByNameList from '../../components/ArtistsByNameList/ArtistsByNameList';
@@ -40,7 +41,15 @@ export const routes = {
       root: '/r', lookup: '/r/l/:name', details: '/r/:id',
     },
     
-    records: '/s', tracks: '/t',
+    records: {
+      root: '/s',
+      lookup: '/s/l/:name',
+      details: '/s/:id',
+      artists: '/s/:id/a',
+      releases: '/s/:id/r',
+    },
+    
+    tracks: '/t',
   },
 };
 
@@ -65,6 +74,12 @@ const router = new Router({
         {
           path: routes.private.root,
           component: WelcomeScreen,
+        },
+        
+        // records
+        {
+          path: routes.private.records.root,
+          component: RecordsList
         },
         
         // releases

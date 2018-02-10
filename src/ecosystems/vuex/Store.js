@@ -6,6 +6,7 @@ import RepositoryModule from './modules/RepositoryModule';
 import AuthenticationModule from './modules/AuthenticationModule';
 import ArtistsModule from './modules/ArtistsModule';
 import ReleasesModule from './modules/ReleasesModule';
+import RecordsModule from './modules/RecordsModule';
 import WatchModule, {watcher} from './modules/WatchModule';
 
 Vue.use(Vuex);
@@ -23,6 +24,7 @@ const store = new Vuex.Store({
     watch: WatchModule,
     artists: ArtistsModule,
     releases: ReleasesModule,
+    records: RecordsModule,
   },
   
   plugins: [
