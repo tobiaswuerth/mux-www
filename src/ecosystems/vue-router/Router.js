@@ -6,6 +6,8 @@ import LoginPage from '../../components/LoginPage/LoginPage';
 import AuthenticatedPage from '../../components/AuthenticatedPage/AuthenticatedPage';
 import WelcomeScreen from '../../components/WelcomeScreen/WelcomeScreen';
 
+import TracksList from './../../components/TracksList/TracksList';
+
 import RecordsList from './../../components/RecordsList/RecordsList';
 
 import ReleasesList from './../../components/ReleasesList/ReleasesList';
@@ -49,7 +51,9 @@ export const routes = {
       releases: '/s/:id/r',
     },
     
-    tracks: '/t',
+    tracks: {
+      root: '/t', details: '/t/:id',
+    },
   },
 };
 
@@ -76,10 +80,16 @@ const router = new Router({
           component: WelcomeScreen,
         },
         
+        // tracks
+        {
+          path: routes.private.tracks.root,
+          component: TracksList,
+        },
+        
         // records
         {
           path: routes.private.records.root,
-          component: RecordsList
+          component: RecordsList,
         },
         
         // releases

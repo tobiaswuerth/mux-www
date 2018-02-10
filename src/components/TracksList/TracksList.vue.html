@@ -1,0 +1,11 @@
+<List :route="route" :destination="destination" :valueKey="valueKey">
+  <template slot-scope="props">
+      <span class="md-list-item-text">
+        <span>{{props.item.Path}}</span>
+        <span class="md-caption">Duration: {{toReadable(props.item.Duration)}}</span>
+      </span>
+    <md-button class="md-icon-button md-list-action">
+      <md-icon class="md-primary">keyboard_arrow_right</md-icon>
+    </md-button>
+  </template>
+</List>

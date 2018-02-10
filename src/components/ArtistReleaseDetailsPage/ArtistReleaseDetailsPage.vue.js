@@ -41,12 +41,10 @@ export default Vue.extend({
         then(v => {
           this.data = v.data.filter(x => x.Title === this.name);
           
-          
         }).finally(() => {
         this.state = this.states.ready;
       });
     },
-    
     
   },
 });

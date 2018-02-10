@@ -53,6 +53,11 @@ const routes = {
         name)}`,
       byId: (id) => `${config.prefix.authorized}/records/${id}`,
     },
+    
+    tracks: {
+      all: `${config.prefix.authorized}/tracks`,
+      byId: (id) => `${config.prefix.authorized}/tracks/${id}`,
+    },
   },
 };
 
@@ -176,6 +181,19 @@ export default {
         return Promise.reject('undefined id');
       }
       let route = routes.get.records.byId(id);
+      return await performDefaultDataRequest(route, payload);
+    },
+    
+    async tracks({}, payload) {
+      return await performDefaultDataRequest(routes.get.tracks.all, payload);
+    },
+    
+    async trackById({}, payload) {
+      let id = payload.id;
+      if (!id) {
+        return Promise.reject('undefined id');
+      }
+      let route = routes.get.tracks.byId(id);
       return await performDefaultDataRequest(route, payload);
     },
   },
