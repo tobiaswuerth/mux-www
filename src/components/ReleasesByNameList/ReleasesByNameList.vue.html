@@ -8,6 +8,24 @@
           <md-card-header>
             <div class="md-title">{{item.Title}}</div>
             <span class="md-subheading" v-if="item.Disambiguation">{{item.Disambiguation}}</span>
+            <Repeater :route="repeater.aliases.route"
+                      :payload="getLimittedIdPayload(item.UniqueId)"
+                      :valueKey="repeater.aliases.valueKey"
+                      :hideEmptyState="repeater.aliases.hideEmptyState"
+                      :doPreload="repeater.aliases.doPreload">
+              <template slot-scope="props">
+                <span v-if="props.data.length > 0">
+                  a.k.a. {{props.data.map(x => x.Name).join(', ')}}
+                </span>
+              </template>
+
+              <template slot="more" slot-scope="props">
+                <md-chip class="small-badge" md-clickable @click="props.loadMore">
+                  more
+                  <md-icon>expand_more</md-icon>
+                </md-chip>
+              </template>
+            </Repeater>
           </md-card-header>
 
           <md-card-content>
@@ -22,9 +40,9 @@
             </span>
 
             <div>
-              <p class="md-body-2">Credits:</p>
+              <p class="md-body-2">Artist{{props.data.length > 1 ? 's' : ''}}:</p>
               <Repeater :route="repeater.artists.route"
-                        :payload="getArtistPayload(item.UniqueId)"
+                        :payload="getLimittedIdPayload(item.UniqueId)"
                         :valueKey="repeater.artists.valueKey">
                 <template slot-scope="props">
                   <template v-for="ac in props.data">

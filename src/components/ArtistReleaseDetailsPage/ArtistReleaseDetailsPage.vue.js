@@ -16,7 +16,7 @@ export default Vue.extend({
   
   data: () => {
     return {
-      dataReleases: {}, routes,
+      dataVariations: {}, routes,
     };
   },
   
@@ -56,7 +56,7 @@ export default Vue.extend({
     loadReleases: function() {
       this.data.forEach(x => {
         this.$store.dispatch('releases/byId', {id: x.UniqueId}).then(v => {
-          this.dataReleases = {
+          this.dataVariations = {
             data: [v.data], hasMore: v.hasMore,
           };
         }).catch(x => {

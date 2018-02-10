@@ -22,7 +22,7 @@
     <md-tab key="tab-records" :to="getRecordsByIdName" md-label="Records"></md-tab>
     <md-tab key="tab-artists" :to="getArtistsByIdName" md-label="Artists"></md-tab>
     <md-tab key="tab-variations" :to="getVariationsByIdName" md-label="Variations">
-      <ReleasesByNameList :dataSource="dataReleases"/>
+      <ReleasesByNameList :dataSource="dataVariations"></ReleasesByNameList>
     </md-tab>
   </template>
 </SubContentHub>

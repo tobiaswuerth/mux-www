@@ -4,7 +4,8 @@
           :valueKey="valueKey"
           :payload="payload"
           :postProcessor="postProcessor"
-          :dataSource="dataSource">
+          :dataSource="dataSource"
+          :hideEmptyState="hideEmptyState">
   <template slot-scope="props">
     <md-list>
       <template v-for="item in props.data">

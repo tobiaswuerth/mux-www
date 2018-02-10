@@ -46,6 +46,7 @@ const routes = {
       byId: (id) => `${config.prefix.authorized}/releases/${id}`,
       artistsById: (id) => `${config.prefix.authorized}/releases/${id}/artists`,
       recordsById: (id) => `${config.prefix.authorized}/releases/${id}/records`,
+      aliasesById: (id) => `${config.prefix.authorized}/releases/${id}/aliases`,
     },
     
     records: {
@@ -150,6 +151,9 @@ export default {
     }, async releaseRecordsById({}, payload) {
       return await performParamDefaultDataRequest(payload,
         {id: routes.get.releases.recordsById});
+    }, async releasesAliasesById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.releases.aliasesById});
     },
     
     // records

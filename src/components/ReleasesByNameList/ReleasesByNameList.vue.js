@@ -15,6 +15,11 @@ export default {
           route: 'releases/byName', valueKey: 'UniqueId', doPreload: true,
         }, artists: {
           route: 'releases/artistsById', valueKey: 'UniqueId',
+        }, aliases: {
+          route: 'releases/aliasesById',
+          valueKey: 'UniqueId',
+          doPreload: true,
+          hideEmptyState: true,
         },
       }, data: [],
     };
@@ -35,7 +40,7 @@ export default {
     }, doRouteArtist: function(id) {
       let uri = this.routes.private.artists.details.replace(':id', id);
       Router.push(uri);
-    }, getArtistPayload: function(releaseId) {
+    }, getLimittedIdPayload: function(releaseId) {
       return {
         id: releaseId, pageSize: 5,
       };

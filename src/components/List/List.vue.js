@@ -11,6 +11,7 @@ export default {
     payload: {},
     postProcessor: {},
     dataSource: {},
+    hideEmptyState: {}
   },
   
   components: {
