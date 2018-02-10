@@ -16,7 +16,7 @@ export default Vue.extend({
     postProcessor: {},
     onSuccess: {},
     dataSource: {},
-    hideEmptyState: {}
+    hideEmptyState: {},
   },
   
   data: () => {

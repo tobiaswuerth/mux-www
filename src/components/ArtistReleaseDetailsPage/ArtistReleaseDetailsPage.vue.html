@@ -20,7 +20,9 @@
 
   <template slot="tabs">
     <md-tab key="tab-records" :to="getRecordsByIdName" md-label="Records"></md-tab>
-    <md-tab key="tab-artists" :to="getArtistsByIdName" md-label="Artists"></md-tab>
+    <md-tab key="tab-artists" :to="getArtistsByIdName" md-label="Artists">
+      <ArtistsListDetailed :dataSource="dataArtists"></ArtistsListDetailed>
+    </md-tab>
     <md-tab key="tab-variations" :to="getVariationsByIdName" md-label="Variations">
       <ReleasesListDetailed :dataSource="dataVariations"></ReleasesListDetailed>
     </md-tab>

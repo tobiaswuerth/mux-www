@@ -9,7 +9,7 @@ export default {
   },
   
   props: {
-    name: {}, dataSource: {}
+    name: {}, dataSource: {}, postProcessor: {},
   },
   
   data: () => {

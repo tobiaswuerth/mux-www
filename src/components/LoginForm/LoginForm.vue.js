@@ -22,7 +22,7 @@ export default {
       // check
       if (!this.validation.isUsernameValid ||
         !this.validation.isPasswordValid) {
-        console.log('one or more inputs are invalid. aborting.');
+        console.error('one or more inputs are invalid. aborting.');
         return;
       }
       

@@ -10,14 +10,18 @@ export default Vue.extend({
   name: 'ArtistReleaseDetailsPage',
   
   components: {
-    SubContentHub, ReleasesListDetailed,
+    SubContentHub, ReleasesListDetailed, ArtistsListDetailed,
   },
   
   mixins: [AsyncDataLoader],
   
   data: () => {
     return {
-      dataVariations: {}, routes,
+      dataVariations: {},
+      routes,
+      dataArtists: {},
+      rawDataArtists: [],
+      dataArtistsRunning: 0,
     };
   },
   
@@ -66,6 +70,71 @@ export default Vue.extend({
       });
     },
     
+    processLoadedArtists: function() {
+      let e = [];
+      
+      this.rawDataArtists.forEach(x => {
+        // validate
+        let artist = x.Artist;
+        if (!artist) {
+          console.error('unexpected format');
+          return;
+        }
+        
+        // unique
+        if (e[artist.Name]) {
+          // already artist with same name
+          if (e[artist.Name].find(y => y.UniqueId === artist.UniqueId)) {
+            // already artist with same id -> skip
+            return;
+          }
+          
+          // same name, different id -> add
+          e[artist.Name].push(artist);
+        } else {
+          // doesn't exist yet
+          e[artist.Name] = [artist];
+        }
+      });
+      
+      // post process
+      let d = [];
+      Object.keys(e).forEach(x => {
+        d = d.concat(e[x]);
+      });
+      
+      this.dataArtists = {
+        data: d, hasMore: false,
+      };
+    },
+    
+    loadArtist: function(id, pageIndex = 0) {
+      this.dataArtistsRunning++;
+      this.$store.dispatch('releases/artistsById',
+        {id: id, pageIndex: pageIndex}).
+        then(v => {
+          this.rawDataArtists = this.rawDataArtists.concat(v.data);
+          if (v.hasMore) {
+            this.loadArtist(id, pageIndex + 1);
+          }
+        }).
+        catch(x => {
+          console.error(x);
+        }).finally(() => {
+        this.dataArtistsRunning--;
+        
+        if (this.dataArtistsRunning === 0) {
+          this.processLoadedArtists();
+        }
+      });
+    },
+    
+    loadArtists: function() {
+      this.data.forEach(x => {
+        this.loadArtist(x.UniqueId);
+      });
+    },
+    
     load: function() {
       if (this.state === this.states.loading) {
         return;
@@ -85,6 +154,7 @@ export default Vue.extend({
             this.loadMore();
           } else {
             this.loadReleases();
+            this.loadArtists();
           }
         }).catch(x => {
         console.error(x);
