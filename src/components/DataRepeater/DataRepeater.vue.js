@@ -14,6 +14,7 @@ export default Vue.extend({
     doPreload: {},
     payload: {},
     postProcessor: {},
+    onSuccess: {},
   },
   
   data: () => {
@@ -42,6 +43,10 @@ export default Vue.extend({
             this.data = this.data.concat(v.data);
           }
           this.hasMore = v.hasMore;
+          
+          if (this.onSuccess) {
+            this.onSuccess(this);
+          }
         }).catch(v => {
         console.error(v);
         this.doPreload = false; // force stop loading data

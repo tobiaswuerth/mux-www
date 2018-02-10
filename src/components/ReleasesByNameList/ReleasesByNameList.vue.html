@@ -1,45 +1,57 @@
-<div>
-  <span class="md-title">Variants</span>
-  <Repeater :route="route" :destination="destination" :payload="payload" :valueKey="valueKey">
-    <template slot-scope="props">
-      <ul class="clean-list">
-        <template v-for="item in props.data">
-          <li>
+<Repeater :route="repeater.global.route" :doPreload="repeater.global.doPreload" :payload="payload">
 
-            <md-list-item :to="destination(item[valueKey])" :key="item[valueKey]">
-              <div class="md-list-item-text">
-                <span class="md-title">{{item.Title}}</span> <span class="md-subheading" v-if="item.Disambiguation">{{item.Disambiguation}}</span>
-                <span class="md-caption" v-if="item.Date">Released: {{item.Date.substr(0, 10)}}</span> <span class="md-caption"
-                                                                                                             v-if="item.Quality">Quality: {{item.Quality}}</span>
-                <span class="md-caption" v-if="item.Status">Status: {{item.Status}}</span> <span v-if="item.Country">
-            Country: <img class="md-layout-item country-flag" :src="`/static/countries/${item.Country}.svg`"> {{item.Country}}
-          </span>
-              
-              </div>
-              <md-button class="md-icon-button md-list-action">
-                <md-icon class="md-primary">keyboard_arrow_right</md-icon>
-              </md-button>
+  <template slot-scope="props">
+    <div class="clean-list md-layout md-gutter md-alignment-top-left">
+      <template v-for="item in props.data">
+        <md-card md-with-hover :key="item.UniqueId" class="entry md-layout-item">
 
-            </md-list-item>
+          <md-card-header>
+            <div class="md-title">{{item.Title}}</div>
+            <span class="md-subheading" v-if="item.Disambiguation">{{item.Disambiguation}}</span>
+          </md-card-header>
 
-            <md-divider/>
-          </li>
-        </template>
+          <md-card-content>
+            <span class="md-caption">
+              <span v-if="item.Date">Date: {{item.Date.substr(0, 10)}}<br/></span>
+              <span v-if="item.Country">
+                Country: <img class="md-layout-item country-flag"
+                              :src="`/static/countries/${item.Country}.svg`"
+                              :alt="item.Country"/> {{item.Country}}<br/></span>
+              <span v-if="item.Status">Status: {{item.Status}} <br/></span>
+              <span v-if="item.Quality">Quality: {{item.Quality}} <br/></span>
+            </span>
 
-        <template slot="more" slot-scope="props">
-          <li>
-            <md-list-item @click="props.loadMore" class="md-primary">
-          <span key="__1" v-if="isLoading">
-            <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
-          </span> <span key="__2" v-else>
-            <md-icon>expand_more</md-icon>
-            Click to load more
-          </span>
-            </md-list-item>
-          </li>
-        </template>
+            <div>
+              <p class="md-body-2">Credits:</p>
+              <Repeater :route="repeater.artists.route"
+                        :payload="getArtistPayload(item.UniqueId)"
+                        :valueKey="repeater.artists.valueKey">
+                <template slot-scope="props">
+                  <template v-for="ac in props.data">
+                    <md-chip class="md-accent small-badge" md-clickable @click="doRouteArtist(ac.Artist.UniqueId)">
+                      <small>{{ac.Artist.Name}}</small>
+                    </md-chip>
+                  </template>
+                </template>
 
-      </ul>
-    </template>
-  </Repeater>
-</div>
+                <template slot="more" slot-scope="props">
+                  <md-chip class="small-badge" md-clickable @click="props.loadMore">
+                    more
+                    <md-icon>expand_more</md-icon>
+                  </md-chip>
+                </template>
+              </Repeater>
+            </div>
+          </md-card-content>
+
+          <md-card-actions>
+            <md-button @click="doRoute(item.UniqueId)">
+              <md-icon>keyboard_arrow_right</md-icon>
+            </md-button>
+          </md-card-actions>
+
+        </md-card>
+      </template>
+    </div>
+  </template>
+</Repeater>

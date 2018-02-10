@@ -3,7 +3,7 @@
   <template slot-scope="props">
     <div class="clean-list md-layout md-gutter md-alignment-top-left">
       <template v-for="item in props.data">
-        <md-card md-with-hover :key="item.title" class="entry md-layout-item" @click="doRoute(item.title)" md-theme="primary">
+        <md-card md-with-hover :key="item.title" class="entry md-layout-item">
 
           <md-card-header>
             <div class="md-title">{{item.title}}</div>

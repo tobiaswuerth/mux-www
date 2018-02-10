@@ -9,3 +9,14 @@
   margin-left: 2px;
   margin-right: 2px;
 }
+
+.entry {
+  min-width: 250px;
+  max-width: 500px;
+  margin-bottom: 20px;
+}
+
+.small-badge {
+  margin: 1px;
+  padding: 0;
+}

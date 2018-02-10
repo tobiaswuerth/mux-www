@@ -34,30 +34,19 @@ export default Vue.extend({
   
   methods: {
     
-    postInitialLoad: function() {
-      this.data.forEach(x => {
-        this.loadReleaseArtist(x.UniqueId);
-      });
-    },
-    
-    loadReleaseArtist: function(id) {
-    
-    },
-    
-    loadReleaseAlias: function(id) {
-    
-    },
-    
     load: function() {
       this.state = this.states.loading;
       
       this.$store.dispatch('artists/releasesById', {id: this.id}).
         then(v => {
           this.data = v.data.filter(x => x.Title === this.name);
-          this.postInitialLoad();
+          
+          
         }).finally(() => {
         this.state = this.states.ready;
       });
     },
+    
+    
   },
 });

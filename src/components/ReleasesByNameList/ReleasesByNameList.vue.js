@@ -1,4 +1,4 @@
-import {routes} from './../../ecosystems/vue-router/Router';
+import Router, {routes} from './../../ecosystems/vue-router/Router';
 import Repeater from './../DataRepeater/DataRepeater';
 
 export default {
@@ -10,7 +10,13 @@ export default {
   
   data: () => {
     return {
-      routes, route: 'releases/byName', valueKey: 'UniqueId',
+      routes, repeater: {
+        global: {
+          route: 'releases/byName', valueKey: 'UniqueId', doPreload: true,
+        }, artists: {
+          route: 'releases/artistsById', valueKey: 'UniqueId',
+        },
+      }, data: [],
     };
   },
   
@@ -23,8 +29,16 @@ export default {
   },
   
   methods: {
-    destination: function(id) {
-      return routes.private.releases.details.replace(':id', id);
+    doRoute: function(id) {
+      let uri = this.routes.private.releases.details.replace(':id', id);
+      Router.push(uri);
+    }, doRouteArtist: function(id) {
+      let uri = this.routes.private.artists.details.replace(':id', id);
+      Router.push(uri);
+    }, getArtistPayload: function(releaseId) {
+      return {
+        id: releaseId, pageSize: 5,
+      };
     },
   },
   
