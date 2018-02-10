@@ -9,7 +9,7 @@
             <div class="md-title">{{item.Title}}</div>
             <span class="md-subheading" v-if="item.Disambiguation">{{item.Disambiguation}}</span>
             <Repeater :route="repeater.aliases.route"
-                      :payload="getLimittedIdPayload(item.UniqueId)"
+                      :payload="getIdPayload(item.UniqueId)"
                       :valueKey="repeater.aliases.valueKey"
                       :hideEmptyState="repeater.aliases.hideEmptyState"
                       :doPreload="repeater.aliases.doPreload">

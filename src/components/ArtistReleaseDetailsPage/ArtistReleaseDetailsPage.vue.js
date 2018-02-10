@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import SubContentHub from './../SubContentHub/SubContentHub';
-import ReleasesByNameList from './../ReleasesByNameList/ReleasesByNameList';
+import ReleasesListDetailed from '../ReleasesListDetailed/ReleasesListDetailed';
 import {routes} from './../../ecosystems/vue-router/Router';
 
 import AsyncDataLoader from '../../mixins/AsyncDataLoader';
@@ -9,7 +9,7 @@ export default Vue.extend({
   name: 'ArtistReleaseDetailsPage',
   
   components: {
-    SubContentHub, ReleasesByNameList,
+    SubContentHub, ReleasesListDetailed,
   },
   
   mixins: [AsyncDataLoader],

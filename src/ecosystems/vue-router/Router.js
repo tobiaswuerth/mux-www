@@ -11,7 +11,7 @@ import TracksList from './../../components/TracksList/TracksList';
 import RecordsList from './../../components/RecordsList/RecordsList';
 
 import ReleasesList from './../../components/ReleasesList/ReleasesList';
-import ReleasesByNameList from './../../components/ReleasesByNameList/ReleasesByNameList';
+import ReleasesListDetailed from '../../components/ReleasesListDetailed/ReleasesListDetailed';
 
 import ArtistsList from '../../components/ArtistsList/ArtistsList';
 import ArtistsByNameList from '../../components/ArtistsByNameList/ArtistsByNameList';
@@ -104,7 +104,7 @@ const router = new Router({
         },
         {
           path: routes.private.releases.lookup,
-          component: ReleasesByNameList,
+          component: ReleasesListDetailed,
           props: true,
         },
         

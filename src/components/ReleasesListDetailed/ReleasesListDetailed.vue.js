@@ -2,7 +2,7 @@ import Router, {routes} from './../../ecosystems/vue-router/Router';
 import Repeater from './../DataRepeater/DataRepeater';
 
 export default {
-  name: 'ReleasesByNameList',
+  name: 'ReleasesListDetailed',
   
   components: {
     Repeater,
@@ -40,9 +40,13 @@ export default {
     }, doRouteArtist: function(id) {
       let uri = this.routes.private.artists.details.replace(':id', id);
       Router.push(uri);
-    }, getLimittedIdPayload: function(releaseId) {
+    }, getLimittedIdPayload: function(id, pageSize) {
+      let payload = this.getIdPayload(id);
+      payload.pageSize = pageSize || 5;
+      return payload;
+    }, getIdPayload: function(id) {
       return {
-        id: releaseId, pageSize: 5,
+        id: id,
       };
     },
   },
