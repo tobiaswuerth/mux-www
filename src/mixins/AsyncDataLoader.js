@@ -8,7 +8,7 @@ const states = {
 export default {
   
   data: () => ({
-    pageIndex: 0, states, state: states.ready, data: [], routes, hasMore: true,
+    pageIndex: 0, states, state: states.ready, routes, hasMore: true, data: [],
   }),
   
   mounted: function() {

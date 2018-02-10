@@ -43,6 +43,6 @@ export default {
   },
   
   props: {
-    name: {},
+    name: {}, dataSource: {},
   },
 };

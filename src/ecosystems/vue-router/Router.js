@@ -35,7 +35,11 @@ export const routes = {
       lookup: '/a/l/:name',
       details: '/a/:id',
       releases: '/a/:id/r',
-      releasesLookup: '/a/:id/r/:name',
+      releasesLookup: {
+        root: '/a/:id/r/:name',
+        variants: '/a/:id/r/:name/v',
+        artists: '/a/:id/r/:name/a',
+      },
       records: '/a/:id/s',
       recordsLookup: '/a/:id/s/:name',
     },
@@ -132,10 +136,22 @@ const router = new Router({
             }],
         },
         {
-          path: routes.private.artists.releasesLookup,
+          path: routes.private.artists.releasesLookup.root,
           component: ArtistReleaseDetailsPage,
           props: true,
-        }],
+        },
+        {
+          path: routes.private.artists.releasesLookup.variants,
+          component: ArtistReleaseDetailsPage,
+          props: true,
+        },
+        {
+          path: routes.private.artists.releasesLookup.artists,
+          component: ArtistReleaseDetailsPage,
+          props: true,
+        },
+      
+      ],
     },
     {
       path: routes.public.login,

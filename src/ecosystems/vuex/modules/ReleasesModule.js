@@ -19,7 +19,7 @@ export default {
     async artistsById({}, payload) {
       return await Store.dispatch('repo/releaseArtistsById', payload);
     },
-  
+    
     async recordsById({}, payload) {
       return await Store.dispatch('repo/releaseRecordsById', payload);
     },

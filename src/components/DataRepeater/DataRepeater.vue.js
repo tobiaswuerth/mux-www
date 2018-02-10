@@ -15,6 +15,7 @@ export default Vue.extend({
     payload: {},
     postProcessor: {},
     onSuccess: {},
+    dataSource: {},
   },
   
   data: () => {
@@ -23,10 +24,31 @@ export default Vue.extend({
     };
   },
   
+  watch: {
+    dataSource: function(v) {
+      this.handleResponse(v);
+    },
+  },
+  
   methods: {
+    handleResponse: function(v) {
+      if (this.postProcessor) {
+        this.rawData = this.rawData.concat(v.data);
+        this.data = this.postProcessor(this.rawData);
+      } else {
+        this.data = this.data.concat(v.data);
+      }
+      
+      this.hasMore = v.hasMore;
+      if (this.onSuccess) {
+        this.onSuccess(this);
+      }
+    },
+    
     load: function() {
       // validate
-      if (this.state === this.states.loading || !this.hasMore) {
+      if (this.dataSource || this.state === this.states.loading ||
+        !this.hasMore) {
         return;
       }
       
@@ -36,17 +58,7 @@ export default Vue.extend({
       payload.pageIndex = this.pageIndex;
       this.$store.dispatch(this.route.toString(), payload).
         then(v => {
-          if (this.postProcessor) {
-            this.rawData = this.rawData.concat(v.data);
-            this.data = this.postProcessor(this.rawData);
-          } else {
-            this.data = this.data.concat(v.data);
-          }
-          
-          this.hasMore = v.hasMore;
-          if (this.onSuccess) {
-            this.onSuccess(this);
-          }
+          this.handleResponse(v);
           if (this.hasMore && this.doPreload) {
             this.state = this.states.ready;
             this.loadMore();

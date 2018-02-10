@@ -27,7 +27,7 @@ export default {
   methods: {
     doRoute: function(name) {
       let encodedName = encodeURIComponent(name);
-      let uri = this.routes.private.artists.releasesLookup.replace(':name',
+      let uri = this.routes.private.artists.releasesLookup.root.replace(':name',
         encodedName).replace(':id', this.id);
       Router.push(uri);
     },

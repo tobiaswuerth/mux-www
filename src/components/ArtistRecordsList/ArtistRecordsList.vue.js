@@ -20,7 +20,7 @@ export default {
   
   data: () => {
     return {
-      routes, route: 'artists/recordsById', valueKey: 'Title', doPreload: true
+      routes, route: 'artists/recordsById', valueKey: 'Title', doPreload: true,
     };
   },
   

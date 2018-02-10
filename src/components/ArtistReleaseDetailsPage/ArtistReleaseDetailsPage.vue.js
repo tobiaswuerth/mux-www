@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import SubContentHub from './../SubContentHub/SubContentHub';
+import ReleasesByNameList from './../ReleasesByNameList/ReleasesByNameList';
+import {routes} from './../../ecosystems/vue-router/Router';
 
 import AsyncDataLoader from '../../mixins/AsyncDataLoader';
 
@@ -7,16 +9,33 @@ export default Vue.extend({
   name: 'ArtistReleaseDetailsPage',
   
   components: {
-    SubContentHub,
+    SubContentHub, ReleasesByNameList,
   },
   
   mixins: [AsyncDataLoader],
+  
+  data: () => {
+    return {
+      dataReleases: {}, routes,
+    };
+  },
   
   props: {
     id: {}, name: {},
   },
   
   computed: {
+    getVariationsByIdName: function() {
+      return this.routes.private.artists.releasesLookup.variants.replace(':id',
+        this.id).replace(':name', this.name);
+    }, getArtistsByIdName: function() {
+      return this.routes.private.artists.releasesLookup.artists.replace(':id',
+        this.id).replace(':name', this.name);
+    }, getRecordsByIdName: function() {
+      return this.routes.private.artists.releasesLookup.root.replace(':id',
+        this.id).replace(':name', this.name);
+    },
+    
     variations: function() {
       return this.data.length;
     },
@@ -28,12 +47,23 @@ export default Vue.extend({
           c.push(x);
         }
       });
-      console.log(c);
       return c;
     },
   },
   
   methods: {
+    
+    loadReleases: function() {
+      this.data.forEach(x => {
+        this.$store.dispatch('releases/byId', {id: x.UniqueId}).then(v => {
+          this.dataReleases = {
+            data: [v.data], hasMore: v.hasMore,
+          };
+        }).catch(x => {
+          console.error(x);
+        });
+      });
+    },
     
     load: function() {
       if (this.state === this.states.loading) {
@@ -52,6 +82,8 @@ export default Vue.extend({
           if (this.hasMore) {
             this.state = this.states.ready;
             this.loadMore();
+          } else {
+            this.loadReleases();
           }
         }).catch(x => {
         console.error(x);

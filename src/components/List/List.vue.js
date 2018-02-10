@@ -10,6 +10,7 @@ export default {
     doPreload: {},
     payload: {},
     postProcessor: {},
+    dataSource: {},
   },
   
   components: {
