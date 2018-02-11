@@ -19,6 +19,7 @@ import ArtistDetailsPage from '../../components/ArtistDetailsPage/ArtistDetailsP
 import ArtistReleasesList from '../../components/ArtistReleasesList/ArtistReleasesList';
 import ArtistRecordsList from '../../components/ArtistRecordsList/ArtistRecordsList';
 import ArtistReleaseDetailsPage from '../../components/ArtistReleaseDetailsPage/ArtistReleaseDetailsPage';
+import ArtistReleaseArtistsList from '../../components/ArtistReleaseArtistsList/ArtistReleaseArtistsList';
 
 Vue.use(Router);
 
@@ -39,6 +40,7 @@ export const routes = {
         root: '/a/:id/r/:name',
         variants: '/a/:id/r/:name/v',
         artists: '/a/:id/r/:name/a',
+        records: '/a/:id/r/:name/s',
       },
       records: '/a/:id/s',
       recordsLookup: '/a/:id/s/:name',
@@ -138,19 +140,25 @@ const router = new Router({
         {
           path: routes.private.artists.releasesLookup.root,
           component: ArtistReleaseDetailsPage,
+          redirect: routes.private.artists.releasesLookup.records,
           props: true,
+          children: [
+            {
+              path: routes.private.artists.releasesLookup.records,
+              component: ArtistReleaseDetailsPage, // todo
+              props: true,
+            },
+            {
+              path: routes.private.artists.releasesLookup.variants,
+              component: ArtistReleaseDetailsPage, // todo
+              props: true,
+            },
+            {
+              path: routes.private.artists.releasesLookup.artists,
+              component: ArtistReleaseArtistsList,
+              props: true,
+            },],
         },
-        {
-          path: routes.private.artists.releasesLookup.variants,
-          component: ArtistReleaseDetailsPage,
-          props: true,
-        },
-        {
-          path: routes.private.artists.releasesLookup.artists,
-          component: ArtistReleaseDetailsPage,
-          props: true,
-        },
-      
       ],
     },
     {
