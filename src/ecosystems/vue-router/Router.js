@@ -21,6 +21,7 @@ import ArtistRecordsList from '../../components/ArtistRecordsList/ArtistRecordsL
 import ArtistReleaseDetailsPage from '../../components/ArtistReleaseDetailsPage/ArtistReleaseDetailsPage';
 import ArtistReleaseArtistsList from '../../components/ArtistReleaseArtistsList/ArtistReleaseArtistsList';
 import ArtistReleaseVariationsList from '../../components/ArtistReleaseVariationsList/ArtistReleaseVariationsList';
+import ArtistReleaseRecordsList from '../../components/ArtistReleaseRecordsList/ArtistReleaseRecordsList';
 
 Vue.use(Router);
 
@@ -44,7 +45,12 @@ export const routes = {
         records: '/a/:id/r/:name/s',
       },
       records: '/a/:id/s',
-      recordsLookup: '/a/:id/s/:name',
+      recordsLookup: {
+        root: '/a/:id/s/:name',
+        variants: '/a/:id/s/:name/v',
+        artists: '/a/:id/s/:name/a',
+        tracks: '/a/:id/s/:name/t',
+      },
     },
     
     releases: {
@@ -146,7 +152,7 @@ const router = new Router({
           children: [
             {
               path: routes.private.artists.releasesLookup.records,
-              component: ArtistReleaseDetailsPage, // todo
+              component: ArtistReleaseRecordsList,
               props: true,
             },
             {

@@ -1,9 +1,10 @@
-import ReleasesListDetailed from '../ReleasesListDetailed/ReleasesListDetailed';
+import List from '../List/List';
 import Vue from 'vue';
 import AsyncDataLoader from '../../mixins/AsyncDataLoader';
+import {routes} from './../../ecosystems/vue-router/Router';
 
 export default Vue.extend({
-  name: 'ArtistReleaseVariationsList',
+  name: 'ArtistReleaseRecordsList',
   
   mixins: [AsyncDataLoader],
   
@@ -12,35 +13,62 @@ export default Vue.extend({
   },
   
   components: {
-    ReleasesListDetailed,
+    List,
   },
   
   data: () => {
     return {
-      releasesIds: [], requestsRunning: 0,
+      routes,
+      rawData: [],
+      releasesIds: [],
+      requestsRunning: 0,
+      valueKey: 'Title',
     };
   },
   
   methods: {
     
+    destination: function(name) {
+      return this.routes.private.artists.recordsLookup.root.replace(':id',
+        this.id).
+        replace(':name', encodeURIComponent(name));
+    },
+    
+    processLoadedRecords: function() {
+      // get unique list
+      let names = this.rawData.map(x => x.Title);
+      let uNames = [];
+      
+      names.forEach(n => {
+        let lower = n.toLowerCase();
+        if (!uNames[lower]) {
+          uNames[lower] = n;
+        }
+      });
+      
+      let oNames = Object.values(uNames).sort().map(x => {
+        return {
+          Title: x,
+        };
+      });
+      
+      this.data = {
+        data: oNames, hasMore: false,
+      };
+    },
+    
     loadRecords: function() {
       this.releasesIds.forEach(x => {
         this.requestsRunning++;
         
-        this.$store.dispatch('releases/byId', {id: x}).then(v => {
-          this.data = {
-            data: [v.data], hasMore: true, // has more -> show loading state
-          };
+        this.$store.dispatch('releases/recordsById', {id: x}).then(v => {
+          this.rawData = this.rawData.concat(v.data);
         }).catch(x => {
           console.error(x);
         }).finally(() => {
           this.requestsRunning--;
-          
           if (this.requestsRunning === 0) {
-            // done with all
-            this.data = {
-              data: [], hasMore: false,
-            };
+            this.processLoadedRecords();
           }
         });
       });
