@@ -17,7 +17,7 @@ export default Vue.extend({
   
   data: () => {
     return {
-      rawDataArtists: [], releasesIds: [], dataArtistsRunning: 0,
+      rawDataArtists: [], releasesIds: [], requestsRunning: 0,
     };
   },
   
@@ -58,7 +58,7 @@ export default Vue.extend({
     },
     
     loadArtist: function(releaseId, pageIndex = 0) {
-      this.dataArtistsRunning++;
+      this.requestsRunning++;
       
       // get artists of release
       this.$store.dispatch('releases/artistsById',
@@ -72,9 +72,9 @@ export default Vue.extend({
         catch(x => {
           console.error(x);
         }).finally(() => {
-        this.dataArtistsRunning--;
+        this.requestsRunning--;
         
-        if (this.dataArtistsRunning === 0) {
+        if (this.requestsRunning === 0) {
           // all fetching requests are done -> process
           this.processLoadedArtists();
         }

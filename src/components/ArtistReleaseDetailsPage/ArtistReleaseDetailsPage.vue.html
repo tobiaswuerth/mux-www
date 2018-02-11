@@ -19,10 +19,8 @@
   </template>
 
   <template slot="tabs">
-    <md-tab :to="getRecordsByIdName" md-label="Records"></md-tab>
-    <md-tab :to="getArtistsByIdName" md-label="Artists"></md-tab>
-    <md-tab :to="getVariationsByIdName" md-label="Variations">
-      <ReleasesListDetailed :dataSource="dataVariations"></ReleasesListDetailed>
-    </md-tab>
+    <md-tab :to="uriRecords" md-label="Records"></md-tab>
+    <md-tab :to="uriArtists" md-label="Artists"></md-tab>
+    <md-tab :to="uriVariations" md-label="Variations"></md-tab>
   </template>
 </SubContentHub>

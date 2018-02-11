@@ -27,6 +27,7 @@ export default Vue.extend({
   
   watch: {
     dataSource: function(v) {
+      // beware: every change will later be concatted to data list
       this.handleResponse(v);
     },
   },

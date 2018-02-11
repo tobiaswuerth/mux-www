@@ -20,7 +20,7 @@ export default Vue.extend({
       routes,
       dataArtists: {},
       rawDataArtists: [],
-      dataArtistsRunning: 0,
+      requestsRunning: 0,
     };
   },
   
@@ -29,15 +29,13 @@ export default Vue.extend({
   },
   
   computed: {
-    getVariationsByIdName: function() {
-      return this.routes.private.artists.releasesLookup.variants.replace(':id',
-        this.id).replace(':name', this.name);
-    }, getArtistsByIdName: function() {
-      return this.routes.private.artists.releasesLookup.artists.replace(':id',
-        this.id).replace(':name', this.name);
-    }, getRecordsByIdName: function() {
-      return this.routes.private.artists.releasesLookup.root.replace(':id',
-        this.id).replace(':name', this.name);
+    uriVariations: function() {
+      return this.prepRoute(
+        this.routes.private.artists.releasesLookup.variants);
+    }, uriArtists: function() {
+      return this.prepRoute(this.routes.private.artists.releasesLookup.artists);
+    }, uriRecords: function() {
+      return this.prepRoute(this.routes.private.artists.releasesLookup.records);
     },
     
     variations: function() {
@@ -57,81 +55,8 @@ export default Vue.extend({
   
   methods: {
     
-    loadReleases: function() {
-      this.data.forEach(x => {
-        this.$store.dispatch('releases/byId', {id: x.UniqueId}).then(v => {
-          this.dataVariations = {
-            data: [v.data], hasMore: v.hasMore,
-          };
-        }).catch(x => {
-          console.error(x);
-        });
-      });
-    },
-    
-    processLoadedArtists: function() {
-      let e = [];
-      
-      this.rawDataArtists.forEach(x => {
-        // validate
-        let artist = x.Artist;
-        if (!artist) {
-          console.error('unexpected format');
-          return;
-        }
-        
-        // unique
-        if (e[artist.Name]) {
-          // already artist with same name
-          if (e[artist.Name].find(y => y.UniqueId === artist.UniqueId)) {
-            // already artist with same id -> skip
-            return;
-          }
-          
-          // same name, different id -> add
-          e[artist.Name].push(artist);
-        } else {
-          // doesn't exist yet
-          e[artist.Name] = [artist];
-        }
-      });
-      
-      // post process
-      let d = [];
-      Object.keys(e).forEach(x => {
-        d = d.concat(e[x]);
-      });
-      
-      this.dataArtists = {
-        data: d, hasMore: false,
-      };
-    },
-    
-    loadArtist: function(id, pageIndex = 0) {
-      this.dataArtistsRunning++;
-      this.$store.dispatch('releases/artistsById',
-        {id: id, pageIndex: pageIndex}).
-        then(v => {
-          this.rawDataArtists = this.rawDataArtists.concat(v.data);
-          if (v.hasMore) {
-            this.loadArtist(id, pageIndex + 1);
-          }
-        }).
-        catch(x => {
-          console.error(x);
-        }).finally(() => {
-        this.dataArtistsRunning--;
-        
-        if (this.dataArtistsRunning === 0) {
-          this.processLoadedArtists();
-        }
-      });
-    },
-    
-    loadArtists: function() {
-      this.data.forEach(x => {
-        this.loadArtist(x.UniqueId);
-      });
+    prepRoute: function(route) {
+      return route.replace(':id', this.id).replace(':name', this.name);
     },
     
     load: function() {
@@ -151,9 +76,6 @@ export default Vue.extend({
           if (this.hasMore) {
             this.state = this.states.ready;
             this.loadMore();
-          } else {
-            this.loadReleases();
-            this.loadArtists();
           }
         }).catch(x => {
         console.error(x);

@@ -20,6 +20,7 @@ import ArtistReleasesList from '../../components/ArtistReleasesList/ArtistReleas
 import ArtistRecordsList from '../../components/ArtistRecordsList/ArtistRecordsList';
 import ArtistReleaseDetailsPage from '../../components/ArtistReleaseDetailsPage/ArtistReleaseDetailsPage';
 import ArtistReleaseArtistsList from '../../components/ArtistReleaseArtistsList/ArtistReleaseArtistsList';
+import ArtistReleaseVariationsList from '../../components/ArtistReleaseVariationsList/ArtistReleaseVariationsList';
 
 Vue.use(Router);
 
@@ -150,7 +151,7 @@ const router = new Router({
             },
             {
               path: routes.private.artists.releasesLookup.variants,
-              component: ArtistReleaseDetailsPage, // todo
+              component: ArtistReleaseVariationsList,
               props: true,
             },
             {
@@ -158,8 +159,7 @@ const router = new Router({
               component: ArtistReleaseArtistsList,
               props: true,
             },],
-        },
-      ],
+        },],
     },
     {
       path: routes.public.login,
