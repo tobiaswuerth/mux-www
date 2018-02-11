@@ -12,32 +12,6 @@ export default {
     loginStates: loginStates, loginState: {
       state: loginStates.LOGIN_READY, lastResponse: null,
     }, isAuthenticated: false, data: null,
-    
-    authHeader: s => {
-      // validate
-      if (!s.isAuthenticated) {
-        console.error(
-          'Cannot build authorization header in unauthorized state');
-        return;
-      }
-      
-      let token = s.data.token;
-      if (!token) {
-        console.error(
-          'Cannot build authorization header without authorization token');
-        return;
-      }
-      
-      // build
-      return {
-        Authorization: `Bearer ${token}`,
-      };
-      
-    }, authDefaultOptions: s => {
-      return {
-        headers: s.authHeader(s),
-      };
-    },
   },
   
   getters: {
@@ -45,8 +19,29 @@ export default {
     data: s => s.data,
     loginState: s => s.loginState,
     loginStates: s => s.loginStates,
-    authHeader: s => s.authHeader(s),
-    authDefaultOptions: s => s.authDefaultOptions(s),
+    
+    authHeader: s => {
+      // validate
+      if (!s.isAuthenticated) {
+        return {};
+      }
+      
+      let token = s.data.token;
+      if (!token) {
+        return {};
+      }
+      
+      // build
+      return {
+        Authorization: `Bearer ${token}`,
+      };
+    },
+    
+    authDefaultOptions: (s, g) => {
+      return {
+        headers: g.authHeader,
+      };
+    },
   },
   
   mutations: {
@@ -81,21 +76,21 @@ export default {
       
       await Store.dispatch('repo/login', credentials).then(v => {
         // successful login
-        commit('isAuthenticated', true);
         commit('data', v.data);
         commit('loginState', {
           state: loginStates.LOGIN_READY, lastResponse: v,
         });
+        commit('isAuthenticated', true);
+        return Promise.resolve();
       }).catch(v => {
         // login failed
-        commit('isAuthenticated', false);
         commit('data', null);
         commit('loginState', {
           state: loginStates.LOGIN_READY, lastResponse: v,
         });
+        commit('isAuthenticated', false);
+        return Promise.reject(v);
       });
-      
-      return Promise.resolve();
     },
   },
 };

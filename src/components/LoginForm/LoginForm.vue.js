@@ -14,7 +14,9 @@ export default {
       if (!this.isExecutingLogin) {
         this.onBtnLoginClicked();
       }
-    }, onBtnLoginClicked: function() {
+    },
+    
+    onBtnLoginClicked: function() {
       // refresh
       this.updateValidationUsername();
       this.updateValidationPassword();
@@ -31,7 +33,9 @@ export default {
         username: this.credentials.username,
         password: this.credentials.password,
       });
-    }, updateValidationUsername: function() {
+    },
+    
+    updateValidationUsername: function() {
       this.validation.isUsernameValid = this.isUsernameValid;
     }, updateValidationPassword: function() {
       this.validation.isPasswordValid = this.isPasswordValid;

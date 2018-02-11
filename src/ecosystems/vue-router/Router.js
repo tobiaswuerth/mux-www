@@ -92,6 +92,15 @@ const assertAuthenticated = (to, from, next) => {
   }
 };
 
+const assertNotAuthenticated = (to, from, next) => {
+  if (Store.getters['auth/isAuthenticated']) {
+    console.log('-> reroute authenticated request to private main');
+    next(routes.private.root);
+  } else {
+    next();
+  }
+};
+
 const router = new Router({
   mode: 'history',
   
@@ -182,6 +191,7 @@ const router = new Router({
     {
       path: routes.public.login,
       component: LoginPage,
+      beforeEnter: assertNotAuthenticated,
     }],
 });
 export default router;
