@@ -35,25 +35,17 @@ export default Vue.extend({
     },
     
     processLoadedRecords: function() {
-      // get unique list
-      let names = this.rawData.map(x => x.Title);
-      let uNames = [];
-      
-      names.forEach(n => {
-        let lower = n.toLowerCase();
-        if (!uNames[lower]) {
-          uNames[lower] = n;
-        }
-      });
-      
-      let oNames = Object.values(uNames).sort().map(x => {
+      let names = this.rawData.map(x => [x.Title.toLowerCase(), x.Title]);
+      names = new Map(names); // unique
+      names = [...names.values()].sort();
+      names = names.map(x => {
         return {
           Title: x,
         };
       });
       
       this.data = {
-        data: oNames, hasMore: false,
+        data: names, hasMore: false,
       };
     },
     
