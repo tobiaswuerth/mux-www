@@ -42,7 +42,7 @@ export default {
     },
     
     destination: function(name) {
-      return routes.private.artists.recordsLookup.replace(':id', this.id).
+      return routes.private.artists.recordsLookup.root.replace(':id', this.id).
         replace(':name', encodeURIComponent(name));
     },
   },

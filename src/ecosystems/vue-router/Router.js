@@ -2,26 +2,38 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Store from '../vuex/Store';
 
-import LoginPage from '../../components/LoginPage/LoginPage';
-import AuthenticatedPage from '../../components/AuthenticatedPage/AuthenticatedPage';
-import WelcomeScreen from '../../components/WelcomeScreen/WelcomeScreen';
+const LoginPage = () => import('../../components/LoginPage/LoginPage');
+const AuthenticatedPage = () => import(
+  '../../components/AuthenticatedPage/AuthenticatedPage');
+const WelcomeScreen = () => import(
+  '../../components/WelcomeScreen/WelcomeScreen');
 
-import TracksList from './../../components/TracksList/TracksList';
+const TracksList = () => import('./../../components/TracksList/TracksList');
 
-import RecordsList from './../../components/RecordsList/RecordsList';
+const RecordsList = () => import('./../../components/RecordsList/RecordsList');
 
-import ReleasesList from './../../components/ReleasesList/ReleasesList';
-import ReleasesListDetailed from '../../components/ReleasesListDetailed/ReleasesListDetailed';
+const ReleasesList = () => import(
+  './../../components/ReleasesList/ReleasesList');
+const ReleasesListDetailed = () => import(
+  '../../components/ReleasesListDetailed/ReleasesListDetailed');
 
-import ArtistsList from '../../components/ArtistsList/ArtistsList';
-import ArtistsListDetailed from '../../components/ArtistsListDetailed/ArtistsListDetailed';
-import ArtistDetailsPage from '../../components/ArtistDetailsPage/ArtistDetailsPage';
-import ArtistReleasesList from '../../components/ArtistReleasesList/ArtistReleasesList';
-import ArtistRecordsList from '../../components/ArtistRecordsList/ArtistRecordsList';
-import ArtistReleaseDetailsPage from '../../components/ArtistReleaseDetailsPage/ArtistReleaseDetailsPage';
-import ArtistReleaseArtistsList from '../../components/ArtistReleaseArtistsList/ArtistReleaseArtistsList';
-import ArtistReleaseVariationsList from '../../components/ArtistReleaseVariationsList/ArtistReleaseVariationsList';
-import ArtistReleaseRecordsList from '../../components/ArtistReleaseRecordsList/ArtistReleaseRecordsList';
+const ArtistsList = () => import('../../components/ArtistsList/ArtistsList');
+const ArtistsListDetailed = () => import(
+  '../../components/ArtistsListDetailed/ArtistsListDetailed');
+const ArtistDetailsPage = () => import(
+  '../../components/ArtistDetailsPage/ArtistDetailsPage');
+const ArtistReleasesList = () => import(
+  '../../components/ArtistReleasesList/ArtistReleasesList');
+const ArtistRecordsList = () => import(
+  '../../components/ArtistRecordsList/ArtistRecordsList');
+const ArtistReleaseDetailsPage = () => import(
+  '../../components/ArtistReleaseDetailsPage/ArtistReleaseDetailsPage');
+const ArtistReleaseArtistsList = () => import(
+  '../../components/ArtistReleaseArtistsList/ArtistReleaseArtistsList');
+const ArtistReleaseVariationsList = () => import(
+  '../../components/ArtistReleaseVariationsList/ArtistReleaseVariationsList');
+const ArtistReleaseRecordsList = () => import(
+  '../../components/ArtistReleaseRecordsList/ArtistReleaseRecordsList');
 
 Vue.use(Router);
 
