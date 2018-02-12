@@ -91,12 +91,32 @@ async function performParamDefaultDataRequest(payload, props) {
   return performDefaultDataRequest(route, payload);
 }
 
+const cache = {};
+const cacheInvalidationInterval = 1000 * 60 * 5; // 5min;
+
+setInterval(() => {
+  let now = new Date();
+  let keysToDelete = [];
+  Object.keys(cache).forEach(x => {
+    if ((now - cache[x].date) > cacheInvalidationInterval) {
+      keysToDelete.push(x);
+    }
+  });
+  keysToDelete.forEach(x => delete cache[x]);
+}, cacheInvalidationInterval); // 5min
+
 async function performDefaultDataRequest(route, payload) {
   // prepare
   let pageIndex = payload.pageIndex || 0;
   let pageSize = payload.pageSize || DEFAULT_PAGE_SIZE;
   let url = `${route}?p=${pageIndex}&ps=${pageSize}`;
   let options = Store.getters['auth/authDefaultOptions'];
+  
+  // check cache
+  let entry = cache[url];
+  if (entry) {
+    return Promise.resolve(entry);
+  }
   
   // perform request
   let response = await axios.get(url, options);
@@ -105,7 +125,12 @@ async function performDefaultDataRequest(route, payload) {
   let data = response.data;
   let count = data.length;
   let hasMore = count === pageSize;
-  return Promise.resolve({data, count, hasMore, pageIndex, pageSize});
+  let resolvedData = {
+    data, count, hasMore, pageIndex, pageSize, date: new Date(),
+  };
+  cache[url] = resolvedData;
+  
+  return Promise.resolve(resolvedData);
 }
 
 export default {
