@@ -3,6 +3,7 @@ import Router from '../../vue-router/Router';
 
 export const watcher = {
   initialize: function() {
+    // isAuthenticated
     Store.watch(function() {
       return Store.getters['auth/isAuthenticated'];
     }, function(newVal) {
@@ -22,6 +23,10 @@ export default {
     isAuthenticated: function({}) {
       Router.push('/');
       return Promise.resolve();
+    },
+    
+    snackbarHint: function({}) {
+    
     },
   },
 };
