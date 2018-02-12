@@ -54,6 +54,9 @@ const routes = {
       byName: (name) => `${config.prefix.authorized}/records/lookup/${encodeURIComponent(
         name)}`,
       byId: (id) => `${config.prefix.authorized}/records/${id}`,
+      tracksById: (id) => `${config.prefix.authorized}/records/${id}/tracks`,
+      releasesById: (id) => `${config.prefix.authorized}/records/${id}/releases`,
+      artistsById: (id) => `${config.prefix.authorized}/records/${id}/artists`,
     },
     
     tracks: {
@@ -165,6 +168,15 @@ export default {
     }, async recordById({}, payload) {
       return await performParamDefaultDataRequest(payload,
         {id: routes.get.records.byId});
+    }, async recordTracksById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.records.tracksById});
+    }, async recordReleasesById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.records.releasesById});
+    }, async recordArtistsById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.records.artistsById});
     },
     
     // tracks

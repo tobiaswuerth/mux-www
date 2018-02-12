@@ -3,7 +3,7 @@ import Vue from 'vue';
 import AsyncDataLoader from '../../mixins/AsyncDataLoader';
 
 export default Vue.extend({
-  name: 'ArtistReleaseArtistsList',
+  name: 'ArtistRecordArtistList',
   
   mixins: [AsyncDataLoader],
   
@@ -24,49 +24,31 @@ export default Vue.extend({
   methods: {
     
     processLoadedReleases: function() {
-      let e = [];
+      let d = {};
       
       this.rawData.forEach(x => {
-        // validate
-        let artist = x.Artist;
-        if (!artist) {
-          console.error('unexpected format');
-          return;
-        }
-        
-        if (e[artist.Name]) {
-          // artist with same name already exists
-          if (!e[artist.Name].find(y => y.UniqueId === artist.UniqueId)) {
-            // .. but has different id -> add
-            e[artist.Name].push(artist);
-          }
-        } else {
-          // doesn't exist yet
-          e[artist.Name] = [artist];
+        if (!d[x.Artist.UniqueId]) {
+          d[x.Artist.UniqueId] = x.Artist;
         }
       });
       
-      // post process
-      let d = [];
-      Object.keys(e).forEach(x => {
-        d = d.concat(e[x]);
-      });
+      d = Object.values(d);
       
       this.data = {
         data: d, hasMore: false,
       };
     },
     
-    loadRecordReleases: function(releaseId, pageIndex = 0) {
+    loadRecordReleases: function(recordId, pageIndex = 0) {
       this.requestsRunning++;
       
       // get artists of release
-      this.$store.dispatch('releases/artistsById',
-        {id: releaseId, pageIndex: pageIndex}).
+      this.$store.dispatch('records/artistsById',
+        {id: recordId, pageIndex: pageIndex}).
         then(v => {
           this.rawData = this.rawData.concat(v.data);
           if (v.hasMore) {
-            this.loadRecordReleases(releaseId, pageIndex + 1);
+            this.loadRecordReleases(recordId, pageIndex + 1);
           }
         }).
         catch(x => {
@@ -95,8 +77,8 @@ export default Vue.extend({
       
       this.state = this.states.loading;
       
-      // get releases ids
-      this.$store.dispatch('artists/releasesById',
+      // get records ids
+      this.$store.dispatch('artists/recordsById',
         {id: this.id, pageIndex: this.pageIndex}).
         then(v => {
           let ids = v.data.filter(x => x.Title === this.name).

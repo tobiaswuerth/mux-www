@@ -15,5 +15,17 @@ export default {
     async byId({}, payload) {
       return await Store.dispatch('repo/recordById', payload);
     },
+    
+    async tracksById({}, payload) {
+      return await Store.dispatch('repo/recordTracksById', payload);
+    },
+    
+    async releasesById({}, payload) {
+      return await Store.dispatch('repo/recordReleasesById', payload);
+    },
+    
+    async artistsById({}, payload) {
+      return await Store.dispatch('repo/recordArtistsById', payload);
+    },
   },
 };

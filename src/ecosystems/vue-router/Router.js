@@ -3,37 +3,28 @@ import Router from 'vue-router';
 import Store from '../vuex/Store';
 
 const LoginPage = () => import('../../components/LoginPage/LoginPage');
-const AuthenticatedPage = () => import(
-  '../../components/AuthenticatedPage/AuthenticatedPage');
-const WelcomeScreen = () => import(
-  '../../components/WelcomeScreen/WelcomeScreen');
+const AuthenticatedPage = () => import('../../components/AuthenticatedPage/AuthenticatedPage');
+const WelcomeScreen = () => import('../../components/WelcomeScreen/WelcomeScreen');
 
 const TracksList = () => import('./../../components/TracksList/TracksList');
 
 const RecordsList = () => import('./../../components/RecordsList/RecordsList');
 
-const ReleasesList = () => import(
-  './../../components/ReleasesList/ReleasesList');
-const ReleasesListDetailed = () => import(
-  '../../components/ReleasesListDetailed/ReleasesListDetailed');
+const ReleasesList = () => import('./../../components/ReleasesList/ReleasesList');
+const ReleasesListDetailed = () => import('../../components/ReleasesListDetailed/ReleasesListDetailed');
 
 const ArtistsList = () => import('../../components/ArtistsList/ArtistsList');
-const ArtistsListDetailed = () => import(
-  '../../components/ArtistsListDetailed/ArtistsListDetailed');
-const ArtistDetailsPage = () => import(
-  '../../components/ArtistDetailsPage/ArtistDetailsPage');
-const ArtistReleasesList = () => import(
-  '../../components/ArtistReleasesList/ArtistReleasesList');
-const ArtistRecordsList = () => import(
-  '../../components/ArtistRecordsList/ArtistRecordsList');
-const ArtistReleaseDetailsPage = () => import(
-  '../../components/ArtistReleaseDetailsPage/ArtistReleaseDetailsPage');
-const ArtistReleaseArtistsList = () => import(
-  '../../components/ArtistReleaseArtistsList/ArtistReleaseArtistsList');
-const ArtistReleaseVariationsList = () => import(
-  '../../components/ArtistReleaseVariationsList/ArtistReleaseVariationsList');
-const ArtistReleaseRecordsList = () => import(
-  '../../components/ArtistReleaseRecordsList/ArtistReleaseRecordsList');
+const ArtistsListDetailed = () => import('../../components/ArtistsListDetailed/ArtistsListDetailed');
+const ArtistDetailsPage = () => import('../../components/ArtistDetailsPage/ArtistDetailsPage');
+const ArtistReleasesList = () => import('../../components/ArtistReleasesList/ArtistReleasesList');
+const ArtistRecordsList = () => import('../../components/ArtistRecordsList/ArtistRecordsList');
+const ArtistReleaseDetailsPage = () => import('../../components/ArtistReleaseDetailsPage/ArtistReleaseDetailsPage');
+const ArtistReleaseArtistsList = () => import('../../components/ArtistReleaseArtistsList/ArtistReleaseArtistsList');
+const ArtistReleaseVariationsList = () => import('../../components/ArtistReleaseVariationsList/ArtistReleaseVariationsList');
+const ArtistReleaseRecordsList = () => import('../../components/ArtistReleaseRecordsList/ArtistReleaseRecordsList');
+const ArtistRecordDetailsPage = () => import('../../components/ArtistRecordDetailsPage/ArtistRecordDetailsPage');
+const ArtistRecordArtistsList = () => import('../../components/ArtistRecordArtistsList/ArtistRecordArtistsList');
+const ArtistRecordReleasesList = () => import('../../components/ArtistRecordReleasesList/ArtistRecordReleasesList');
 
 Vue.use(Router);
 
@@ -59,9 +50,8 @@ export const routes = {
       records: '/a/:id/s',
       recordsLookup: {
         root: '/a/:id/s/:name',
-        variants: '/a/:id/s/:name/v',
         artists: '/a/:id/s/:name/a',
-        tracks: '/a/:id/s/:name/t',
+        releases: '/a/:id/s/:name/r',
       },
     },
     
@@ -78,7 +68,7 @@ export const routes = {
     },
     
     tracks: {
-      root: '/t', details: '/t/:id',
+      root: '/t',
     },
   },
 };
@@ -186,7 +176,24 @@ const router = new Router({
               component: ArtistReleaseArtistsList,
               props: true,
             },],
-        },],
+        },
+        {
+          path: routes.private.artists.recordsLookup.root,
+          component: ArtistRecordDetailsPage,
+          redirect: routes.private.artists.recordsLookup.artists,
+          props: true,
+          children: [
+            {
+              path: routes.private.artists.recordsLookup.artists,
+              component: ArtistRecordArtistsList,
+              props: true,
+            },
+            {
+              path: routes.private.artists.recordsLookup.releases,
+              component: ArtistRecordReleasesList,
+              props: true,
+            },],
+        }],
     },
     {
       path: routes.public.login,

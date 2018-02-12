@@ -14,7 +14,11 @@ export default {
   
   data: () => {
     return {
-      routes, route: 'artists/byName', doPreload: true, valueKey: 'UniqueId',
+      routes,
+      route: 'artists/byName',
+      doPreload: true,
+      valueKey: 'UniqueId',
+      doInsetDivider: true,
     };
   },
   

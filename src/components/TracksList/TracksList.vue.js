@@ -8,7 +8,7 @@ export default {
   
   data: () => {
     return {
-      routes, route: 'tracks/all', valueKey: 'UniqueId',
+      routes, route: 'tracks/all', valueKey: 'UniqueId', doInsetDivider: true,
     };
   },
   
@@ -19,9 +19,10 @@ export default {
       return `${minutes}:${seconds < 10 ? '0' : ''}${seconds.toFixed(0)}`;
     },
     
-    destination: function(name) {
-      return routes.private.tracks.details.replace(':id',
-        encodeURIComponent(name));
+    play: (id) => {
+      // todo play
     },
+    
+    destination: () => {/*not used*/},
   },
 };

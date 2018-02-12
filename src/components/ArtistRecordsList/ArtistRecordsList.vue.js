@@ -26,19 +26,13 @@ export default {
   
   methods: {
     onPostProcess: function(data) {
-      let d = {};
-      
-      data.forEach(x => {
-        if (!d[x.Title]) {
-          d[x.Title] = {
-            Title: x.Title, variations: 1,
-          };
-        } else {
-          d[x.Title].variations++;
-        }
+      let titles = data.map(x => x.Title).sort();
+      let uTitles = [...new Set(titles)];
+      return uTitles.map(x => {
+        return {
+          Title: x,
+        };
       });
-      
-      return d;
     },
     
     destination: function(name) {

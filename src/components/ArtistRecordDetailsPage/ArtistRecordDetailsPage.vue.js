@@ -5,7 +5,7 @@ import {routes} from './../../ecosystems/vue-router/Router';
 import AsyncDataLoader from '../../mixins/AsyncDataLoader';
 
 export default Vue.extend({
-  name: 'ArtistReleaseDetailsPage',
+  name: 'ArtistRecordDetailsPage',
   
   components: {
     SubContentHub,
@@ -15,11 +15,7 @@ export default Vue.extend({
   
   data: () => {
     return {
-      dataVariations: {},
-      routes,
-      dataArtists: {},
-      rawData: [],
-      requestsRunning: 0,
+      routes, requestsRunning: 0,
     };
   },
   
@@ -28,27 +24,14 @@ export default Vue.extend({
   },
   
   computed: {
-    uriVariations: function() {
-      return this.prepRoute(
-        this.routes.private.artists.releasesLookup.variants);
+    uriReleases: function() {
+      return this.prepRoute(this.routes.private.artists.recordsLookup.releases);
     }, uriArtists: function() {
-      return this.prepRoute(this.routes.private.artists.releasesLookup.artists);
-    }, uriRecords: function() {
-      return this.prepRoute(this.routes.private.artists.releasesLookup.records);
+      return this.prepRoute(this.routes.private.artists.recordsLookup.artists);
     },
     
     variations: function() {
       return this.data.length;
-    },
-    
-    countries: function() {
-      let c = [];
-      this.data.filter(x => x.Country).map(x => x.Country).forEach(x => {
-        if (c.indexOf(x) < 0) {
-          c.push(x);
-        }
-      });
-      return c;
     },
   },
   
@@ -66,7 +49,7 @@ export default Vue.extend({
       
       this.state = this.states.loading;
       
-      this.$store.dispatch('artists/releasesById',
+      this.$store.dispatch('artists/recordsById',
         {id: this.id, pageIndex: this.pageIndex}).
         then(v => {
           let relevant = v.data.filter(x => x.Title === this.name);
@@ -84,5 +67,8 @@ export default Vue.extend({
       });
     },
     
+    play: function() {
+      alert('todo play');
+    },
   },
 });

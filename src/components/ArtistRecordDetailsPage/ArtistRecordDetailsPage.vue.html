@@ -1,0 +1,21 @@
+<SubContentHub>
+  <template>
+    <div>
+      <div class="md-title">{{name}}</div>
+
+      <md-button class="play-button md-primary md-raised md-icon-button" @click="play">
+        <md-icon>play_arrow</md-icon>
+      </md-button>
+      <span class="md-caption">A music record</span>
+
+      <div v-if="hasMore">
+        <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+      </div>
+    </div>
+  </template>
+
+  <template slot="tabs">
+    <md-tab :to="uriArtists" md-label="Artists"></md-tab>
+    <md-tab :to="uriReleases" md-label="Releases"></md-tab>
+  </template>
+</SubContentHub>

@@ -3,7 +3,7 @@ import Vue from 'vue';
 import AsyncDataLoader from '../../mixins/AsyncDataLoader';
 
 export default Vue.extend({
-  name: 'ArtistReleaseVariationsList',
+  name: 'ArtistRecordArtistList',
   
   mixins: [AsyncDataLoader],
   
@@ -17,32 +17,55 @@ export default Vue.extend({
   
   data: () => {
     return {
-      recordIds: [], requestsRunning: 0,
+      rawData: [], recordIds: [], requestsRunning: 0,
     };
   },
   
   methods: {
     
-    loadRecordReleases: function() {
-      this.recordIds.forEach(x => {
-        this.requestsRunning++;
-        
-        this.$store.dispatch('releases/byId', {id: x}).then(v => {
-          this.data = {
-            data: [v.data], hasMore: true, // has more -> show loading state
-          };
-        }).catch(x => {
+    processLoadedReleases: function() {
+      let d = {};
+      
+      this.rawData.forEach(x => {
+        if (!d[x.UniqueId]) {
+          d[x.UniqueId] = x;
+        }
+      });
+      
+      d = Object.values(d);
+      
+      this.data = {
+        data: d, hasMore: false,
+      };
+    },
+    
+    loadRecordReleases: function(recordId, pageIndex = 0) {
+      this.requestsRunning++;
+      
+      // get artists of release
+      this.$store.dispatch('records/releasesById',
+        {id: recordId, pageIndex: pageIndex}).
+        then(v => {
+          this.rawData = this.rawData.concat(v.data);
+          if (v.hasMore) {
+            this.loadRecordReleases(recordId, pageIndex + 1);
+          }
+        }).
+        catch(x => {
           console.error(x);
         }).finally(() => {
-          this.requestsRunning--;
-          
-          if (this.requestsRunning === 0) {
-            // done with all
-            this.data = {
-              data: [], hasMore: false,
-            };
-          }
-        });
+        this.requestsRunning--;
+        
+        if (this.requestsRunning === 0) {
+          // all fetching requests are done -> process
+          this.processLoadedReleases();
+        }
+      });
+    },
+    
+    loadReleases: function() {
+      this.recordIds.forEach(x => {
+        this.loadRecordReleases(x);
       });
     },
     
@@ -54,8 +77,8 @@ export default Vue.extend({
       
       this.state = this.states.loading;
       
-      // get releases ids
-      this.$store.dispatch('artists/releasesById',
+      // get records ids
+      this.$store.dispatch('artists/recordsById',
         {id: this.id, pageIndex: this.pageIndex}).
         then(v => {
           let ids = v.data.filter(x => x.Title === this.name).
@@ -68,7 +91,7 @@ export default Vue.extend({
             this.loadMore();
           } else {
             // all repeases fetched -> now go fetch artists
-            this.loadRecordReleases();
+            this.loadReleases();
           }
         }).catch(x => {
         console.error(x);

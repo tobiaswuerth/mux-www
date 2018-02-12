@@ -18,11 +18,7 @@ export default Vue.extend({
   
   data: () => {
     return {
-      routes,
-      rawData: [],
-      releasesIds: [],
-      requestsRunning: 0,
-      valueKey: 'Title',
+      routes, rawData: [], recordIds: [], requestsRunning: 0, valueKey: 'Title',
     };
   },
   
@@ -49,8 +45,8 @@ export default Vue.extend({
       };
     },
     
-    loadRecords: function() {
-      this.releasesIds.forEach(x => {
+    loadRecordReleases: function() {
+      this.recordIds.forEach(x => {
         this.requestsRunning++;
         
         this.$store.dispatch('releases/recordsById', {id: x}).then(v => {
@@ -80,7 +76,7 @@ export default Vue.extend({
         then(v => {
           let ids = v.data.filter(x => x.Title === this.name).
             map(x => x.UniqueId);
-          this.releasesIds = this.releasesIds.concat(ids);
+          this.recordIds = this.recordIds.concat(ids);
           this.hasMore = v.hasMore;
           
           if (this.hasMore) {
@@ -88,7 +84,7 @@ export default Vue.extend({
             this.loadMore();
           } else {
             // all repeases fetched -> now go fetch artists
-            this.loadRecords();
+            this.loadRecordReleases();
           }
         }).catch(x => {
         console.error(x);
