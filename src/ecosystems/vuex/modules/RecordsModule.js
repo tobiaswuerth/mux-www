@@ -27,5 +27,9 @@ export default {
     async artistsById({}, payload) {
       return await Store.dispatch('repo/recordArtistsById', payload);
     },
+    
+    async aliasesById({}, payload) {
+      return await Store.dispatch('repo/recordAliasesById', payload);
+    },
   },
 };

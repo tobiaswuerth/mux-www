@@ -23,7 +23,7 @@ export default Vue.extend({
   
   methods: {
     
-    loadRecordReleases: function() {
+    loadRecordAliases: function() {
       this.recordIds.forEach(x => {
         this.requestsRunning++;
         
@@ -68,7 +68,7 @@ export default Vue.extend({
             this.loadMore();
           } else {
             // all repeases fetched -> now go fetch artists
-            this.loadRecordReleases();
+            this.loadRecordAliases();
           }
         }).catch(x => {
         console.error(x);

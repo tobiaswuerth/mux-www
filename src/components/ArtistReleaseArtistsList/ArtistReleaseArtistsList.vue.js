@@ -23,7 +23,7 @@ export default Vue.extend({
   
   methods: {
     
-    processLoadedReleases: function() {
+    processLoadedAliases: function() {
       let e = [];
       
       this.rawData.forEach(x => {
@@ -57,7 +57,7 @@ export default Vue.extend({
       };
     },
     
-    loadRecordReleases: function(releaseId, pageIndex = 0) {
+    loadRecordAliases: function(releaseId, pageIndex = 0) {
       this.requestsRunning++;
       
       // get artists of release
@@ -66,7 +66,7 @@ export default Vue.extend({
         then(v => {
           this.rawData = this.rawData.concat(v.data);
           if (v.hasMore) {
-            this.loadRecordReleases(releaseId, pageIndex + 1);
+            this.loadRecordAliases(releaseId, pageIndex + 1);
           }
         }).
         catch(x => {
@@ -76,14 +76,14 @@ export default Vue.extend({
         
         if (this.requestsRunning === 0) {
           // all fetching requests are done -> process
-          this.processLoadedReleases();
+          this.processLoadedAliases();
         }
       });
     },
     
-    loadReleases: function() {
+    loadAliases: function() {
       this.recordIds.forEach(x => {
-        this.loadRecordReleases(x);
+        this.loadRecordAliases(x);
       });
     },
     
@@ -109,7 +109,7 @@ export default Vue.extend({
             this.loadMore();
           } else {
             // all repeases fetched -> now go fetch artists
-            this.loadReleases();
+            this.loadAliases();
           }
         }).catch(x => {
         console.error(x);

@@ -3,10 +3,15 @@
     <div>
       <div class="md-title">{{name}}</div>
 
-      <md-button class="play-button md-primary md-raised md-icon-button" @click="play">
-        <md-icon>play_arrow</md-icon>
-      </md-button>
-      <span class="md-caption">A music record</span>
+      <span class="md-caption" v-if="data.length > 0">
+        a.k.a. {{data.map(x => x.Name).join(', ')}}
+      </span>
+
+      <div>
+        <md-button class="play-button md-primary md-raised md-icon-button" @click="play">
+          <md-icon>play_arrow</md-icon>
+        </md-button>
+      </div>
 
       <div v-if="hasMore">
         <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
