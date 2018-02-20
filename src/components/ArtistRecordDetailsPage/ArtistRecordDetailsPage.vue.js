@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import AsyncDataLoader from '../../mixins/AsyncDataLoader';
+import AsyncDataLoader from '../../scripts/DataLoader';
 import SubContentHub from './../SubContentHub/SubContentHub';
 
 export default Vue.extend({

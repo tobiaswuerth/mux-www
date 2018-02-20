@@ -15,7 +15,7 @@ const config = {
   },
 };
 
-// routes
+// Routes
 const routes = {
   config,
   
@@ -104,7 +104,7 @@ setInterval(() => {
     }
   });
   keysToDelete.forEach(x => delete cache[x]);
-}, cacheInvalidationInterval); // 5min
+}, cacheInvalidationInterval);
 
 async function performDefaultDataRequest(route, payload) {
   // prepare

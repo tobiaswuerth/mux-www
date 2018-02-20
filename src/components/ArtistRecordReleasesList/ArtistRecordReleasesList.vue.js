@@ -1,6 +1,6 @@
 import ReleasesListDetailed from '../ReleasesListDetailed/ReleasesListDetailed';
 import Vue from 'vue';
-import AsyncDataLoader from '../../mixins/AsyncDataLoader';
+import AsyncDataLoader from '../../scripts/DataLoader';
 
 export default Vue.extend({
   name: 'ArtistRecordArtistList',

@@ -1,5 +1,6 @@
-import Router, {routes} from './../../ecosystems/vue-router/Router';
-import Repeater from './../DataRepeater/DataRepeater';
+import Router from './../../ecosystems/vue-router/Router';
+import Routes from './../../ecosystems/vue-router/Routes';
+import Repeater from '../Repeater/Repeater';
 
 export default {
   name: 'ReleasesListDetailed',
@@ -10,18 +11,31 @@ export default {
   
   data: () => {
     return {
-      routes, repeater: {
+      routes: Routes,
+      
+      repeater: {
+        
         global: {
-          route: 'releases/byName', valueKey: 'UniqueId', doPreload: true,
-        }, artists: {
+          payload: {},
+          hideEmptyState: {},
+          route: 'releases/byName',
+          valueKey: 'UniqueId',
+          doPreload: true,
+        },
+        
+        artists: {
           route: 'releases/artistsById', valueKey: 'UniqueId',
-        }, aliases: {
+        },
+        
+        aliases: {
           route: 'releases/aliasesById',
           valueKey: 'UniqueId',
           doPreload: true,
           hideEmptyState: true,
         },
-      }, data: [],
+      },
+      
+      data: [],
     };
   },
   

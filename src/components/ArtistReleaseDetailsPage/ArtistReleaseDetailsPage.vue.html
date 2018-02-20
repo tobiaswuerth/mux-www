@@ -12,7 +12,7 @@
         <md-tooltip md-direction="bottom">{{c}}</md-tooltip>
       </span>
 
-      <div v-if="hasMore">
+      <div v-if="dataLoader.hasMore">
         <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
       </div>
     </div>

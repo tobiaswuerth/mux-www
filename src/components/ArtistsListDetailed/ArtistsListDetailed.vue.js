@@ -1,5 +1,11 @@
 import List from '../List/List';
-import {routes} from './../../ecosystems/vue-router/Router';
+import Routes from './../../ecosystems/vue-router/Routes';
+import Router from './../../ecosystems/vue-router/Router';
+
+const routerPushId = function(id) {
+  Router.push(
+    Routes.private.artists.details.replace(':id', encodeURIComponent(id)));
+};
 
 export default {
   name: 'ArtistsListDetailed',
@@ -14,11 +20,11 @@ export default {
   
   data: () => {
     return {
-      routes,
       route: 'artists/byName',
       doPreload: true,
       valueKey: 'UniqueId',
       doInsetDivider: true,
+      hideEmptyState: false,
     };
   },
   
@@ -31,9 +37,16 @@ export default {
   },
   
   methods: {
-    destination: function(value) {
-      return this.routes.private.artists.details.replace(':id',
-        encodeURIComponent(value));
+    onClick: function(value) {
+      routerPushId(value[this.valueKey]);
+    },
+    
+    onAfter: function(dataLoader) {
+      if (dataLoader.dataSource.data.length === 1) {
+        // auto select record
+        let vk = dataLoader.dataSource.data[0][this.valueKey];
+        routerPushId(vk);
+      }
     },
   },
 };

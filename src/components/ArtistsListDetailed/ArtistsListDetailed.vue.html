@@ -1,13 +1,11 @@
-<List :dataSource="dataSource"
-      :route="route"
-      :valueKey="valueKey"
-      :destination="destination"
+<List :route="route"
       :payload="payload"
-      :postProcessor="postProcessor"
-      :doInsetDivider="doInsetDivider">
-
+      :doPreload="doPreload"
+      :onClick="onClick"
+      :hideEmptyState="hideEmptyState"
+      :doInsetDivider="doInsetDivider"
+      :onAfter="onAfter">
   <template slot-scope="props">
-
     <md-avatar class="md-avatar-icon">
       {{props.item.Name.substr(0, 2)}}
     </md-avatar>

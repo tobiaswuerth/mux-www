@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import SubContentHub from './../SubContentHub/SubContentHub';
-import {routes} from './../../ecosystems/vue-router/Router';
+import Routes from './../../ecosystems/vue-router/Routes';
 
-import AsyncDataLoader from '../../mixins/AsyncDataLoader';
+import DataLoader from '../../scripts/DataLoader';
 
 export default Vue.extend({
   name: 'ArtistReleaseDetailsPage',
@@ -11,15 +11,9 @@ export default Vue.extend({
     SubContentHub,
   },
   
-  mixins: [AsyncDataLoader],
-  
   data: () => {
     return {
-      dataVariations: {},
-      routes,
-      dataArtists: {},
-      rawData: [],
-      requestsRunning: 0,
+      dataLoader: new DataLoader('artists/releasesById'),
     };
   },
   
@@ -29,21 +23,20 @@ export default Vue.extend({
   
   computed: {
     uriVariations: function() {
-      return this.prepRoute(
-        this.routes.private.artists.releasesLookup.variants);
+      return this.prepRoute(Routes.private.artists.releasesLookup.variants);
     }, uriArtists: function() {
-      return this.prepRoute(this.routes.private.artists.releasesLookup.artists);
+      return this.prepRoute(Routes.private.artists.releasesLookup.artists);
     }, uriRecords: function() {
-      return this.prepRoute(this.routes.private.artists.releasesLookup.records);
+      return this.prepRoute(Routes.private.artists.releasesLookup.records);
     },
     
     variations: function() {
-      return this.data.length;
+      return this.dataLoader.dataSource.data.length;
     },
     
     countries: function() {
       let c = [];
-      this.data.filter(x => x.Country).map(x => x.Country).forEach(x => {
+      this.dataLoader.dataSource.data.filter(x => x.Country).map(x => x.Country).forEach(x => {
         if (c.indexOf(x) < 0) {
           c.push(x);
         }
@@ -54,34 +47,17 @@ export default Vue.extend({
   
   methods: {
     
+    mounted: function() {
+      this.dataLoader.load({id: this.id}, true).then(() => {
+        // ignore
+      }).catch((r) => {
+        console.error(r);
+      });
+    },
+    
     prepRoute: function(route) {
       return route.replace(':id', this.id).
         replace(':name', encodeURIComponent(this.name));
-    },
-    
-    load: function() {
-      if (this.state === this.states.loading) {
-        return;
-      }
-      
-      this.state = this.states.loading;
-      
-      this.$store.dispatch('artists/releasesById',
-        {id: this.id, pageIndex: this.pageIndex}).
-        then(v => {
-          let relevant = v.data.filter(x => x.Title === this.name);
-          this.data = this.data.concat(relevant);
-          this.hasMore = v.hasMore;
-          
-          if (this.hasMore) {
-            this.state = this.states.ready;
-            this.loadMore();
-          }
-        }).catch(x => {
-        console.error(x);
-      }).finally(() => {
-        this.state = this.states.ready;
-      });
     },
     
   },

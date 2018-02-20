@@ -1,4 +1,4 @@
-<Repeater :route="repeater.global.route" :dataSource="dataSource" :doPreload="repeater.global.doPreload" :payload="payload">
+<Repeater :dataLoader="dataLoader" :hideEmptyState="hideEmptyState">
 
   <template slot-scope="props">
     <div class="clean-list md-layout md-gutter md-alignment-top-left">
@@ -8,11 +8,7 @@
           <md-card-header>
             <div class="md-title">{{item.Title}}</div>
             <span class="md-subheading" v-if="item.Disambiguation">{{item.Disambiguation}}</span>
-            <Repeater :route="repeater.aliases.route"
-                      :payload="getIdPayload(item.UniqueId)"
-                      :valueKey="repeater.aliases.valueKey"
-                      :hideEmptyState="repeater.aliases.hideEmptyState"
-                      :doPreload="repeater.aliases.doPreload">
+            <Repeater :dataLoader="dataLoaderAliases" :hideEmptyState="hideEmptyStateAliases">
               <template slot-scope="props">
                 <span v-if="props.data.length > 0">
                   a.k.a. {{props.data.map(x => x.Name).join(', ')}}

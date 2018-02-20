@@ -1,5 +1,14 @@
-<List :route="route" :valueKey="valueKey" :destination="destination" :doInsetDivider="doInsetDivider">
-  <template slot-scope="props">
+<List :route="route"
+      :payload="payload"
+      :doPreload="doPreload"
+      :onClick="onClick"
+      :hideEmptyState="hideEmptyState"
+      :doInsetDivider="doInsetDivider"
+      :valueKey="valueKey"
+      :textKey="textKey"
+      :onBefore="onBefore"
+      :onAfter="onAfter">
+<template slot-scope="props">
     <md-button class="play-button md-primary md-raised md-icon-button" @click="play(props.item.UniqueId)">
       <md-icon>play_arrow</md-icon> <!-- todo pause button -->
     </md-button>

@@ -1,31 +1,28 @@
-<Repeater :route="route"
-          :destination="destination"
-          :doPreload="doPreload"
-          :valueKey="valueKey"
-          :payload="payload"
-          :postProcessor="postProcessor"
-          :dataSource="dataSource"
-          :hideEmptyState="hideEmptyState">
-  <template slot-scope="props">
+<Repeater :dataLoader="cDataLoader" :hideEmptyState="hideEmptyState" :key="Math.random()">
+  <template>
     <md-list>
-      <template v-for="item in props.data">
-        <md-list-item class="clean-list-item" :to="destination(item[valueKey])" :key="item[valueKey]">
-          <slot :scope="props" :item="item">
-            <span class="md-list-item-text">{{item[valueKey]}}</span>
-            <md-button class="md-icon-button md-list-action">
-              <md-icon class="md-primary">keyboard_arrow_right</md-icon>
-            </md-button>
-          </slot>
-        </md-list-item>
-        <md-divider :class="doInsetDivider ? 'md-inset' : ''"></md-divider>
+      <template v-if="cDataLoader">
+        <template v-for="item in cDataLoader.dataSource.data">
+          <md-list-item class="clean-list-item" :key="item[valueKey]" @click="onClick(item, $route.params)">
+            <slot :item="item">
+              <span class="md-list-item-text">{{item[textKey]}}</span>
+              <md-button class="md-icon-button md-list-action">
+                <md-icon class="md-primary">keyboard_arrow_right</md-icon>
+              </md-button>
+            </slot>
+          </md-list-item>
+          <md-divider :class="doInsetDivider ? 'md-inset' : ''"></md-divider>
+        </template>
       </template>
     </md-list>
   </template>
 
-  <template slot="more" slot-scope="props">
-    <md-list-item @click="props.loadMore" class="clean-list-item">
-      <md-icon>keyboard_arrow_down</md-icon>
-      <span class="md-list-item-text">Click to load more</span>
-    </md-list-item>
+  <template slot="more">
+    <template v-if="cDataLoader">
+      <md-list-item @click="cDataLoader.loadMore()" class="clean-list-item">
+        <md-icon>keyboard_arrow_down</md-icon>
+        <span class="md-list-item-text">Click to load more</span>
+      </md-list-item>
+    </template>
   </template>
 </Repeater>

@@ -1,5 +1,5 @@
 import List from './../List/List';
-import {routes} from './../../ecosystems/vue-router/Router';
+import Routes from './../../ecosystems/vue-router/Routes';
 
 export default {
   name: 'TracksList',
@@ -8,7 +8,10 @@ export default {
   
   data: () => {
     return {
-      routes, route: 'tracks/all', valueKey: 'UniqueId', doInsetDivider: true,
+      routes: Routes,
+      route: 'tracks/all',
+      valueKey: 'UniqueId',
+      doInsetDivider: true,
     };
   },
   
