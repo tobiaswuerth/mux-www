@@ -1,5 +1,5 @@
 import List from './../List/List';
-import Routes from './../../ecosystems/vue-router/Routes';
+import Store from './../../ecosystems/vuex/Store';
 
 export default {
   name: 'TracksList',
@@ -8,10 +8,7 @@ export default {
   
   data: () => {
     return {
-      routes: Routes,
       route: 'tracks/all',
-      valueKey: 'UniqueId',
-      doInsetDivider: true,
     };
   },
   
@@ -22,10 +19,12 @@ export default {
       return `${minutes}:${seconds < 10 ? '0' : ''}${seconds.toFixed(0)}`;
     },
     
-    play: (id) => {
-      // todo play
+    onClick: (item) => {
+      Store.dispatch('audio/play', {track: item}).then(() => {
+        // ignore
+      }).catch((r) => {
+        console.error(r);
+      });
     },
-    
-    destination: () => {/*not used*/},
   },
 };

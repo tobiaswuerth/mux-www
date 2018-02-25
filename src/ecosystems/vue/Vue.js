@@ -11,6 +11,9 @@ import '../../styles/Global.css';
 // js
 import Store from './../vuex/Store';
 import Router from '../vue-router/Router';
+import Extensions from './../../scripts/Extensions';
+
+Extensions.initialize();
 
 // usage
 Vue.use(VueMaterial);

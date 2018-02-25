@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import SubContentHub from './../SubContentHub/SubContentHub';
-import Routes from './../../ecosystems/vue-router/Routes';
+import {paths} from './../../ecosystems/vue-router/Router';
 
 import DataLoader from '../../scripts/DataLoader';
 
@@ -23,11 +23,11 @@ export default Vue.extend({
   
   computed: {
     uriVariations: function() {
-      return this.prepRoute(Routes.private.artists.releasesLookup.variants);
+      return this.prepRoute(paths.private.artists.releasesLookup.variants);
     }, uriArtists: function() {
-      return this.prepRoute(Routes.private.artists.releasesLookup.artists);
+      return this.prepRoute(paths.private.artists.releasesLookup.artists);
     }, uriRecords: function() {
-      return this.prepRoute(Routes.private.artists.releasesLookup.records);
+      return this.prepRoute(paths.private.artists.releasesLookup.records);
     },
     
     variations: function() {
@@ -36,24 +36,26 @@ export default Vue.extend({
     
     countries: function() {
       let c = [];
-      this.dataLoader.dataSource.data.filter(x => x.Country).map(x => x.Country).forEach(x => {
-        if (c.indexOf(x) < 0) {
-          c.push(x);
-        }
-      });
+      this.dataLoader.dataSource.data.filter(x => x.Country).
+        map(x => x.Country).
+        forEach(x => {
+          if (c.indexOf(x) < 0) {
+            c.push(x);
+          }
+        });
       return c;
     },
   },
   
+  mounted: function() {
+    this.dataLoader.load({id: this.id}, true).then(() => {
+      // ignore
+    }).catch((r) => {
+      console.error(r);
+    });
+  },
+  
   methods: {
-    
-    mounted: function() {
-      this.dataLoader.load({id: this.id}, true).then(() => {
-        // ignore
-      }).catch((r) => {
-        console.error(r);
-      });
-    },
     
     prepRoute: function(route) {
       return route.replace(':id', this.id).

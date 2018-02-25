@@ -1,4 +1,4 @@
-import Repeater from '../Repeater/Repeater';
+import DataLoaderWrapper from '../DataLoaderWrapper/DataLoaderWrapper';
 import DataLoader from '../../scripts/DataLoader';
 import {isCallable, isIterable} from './../../scripts/Utils';
 
@@ -14,9 +14,12 @@ export default {
     // ui
     onClick: {},
     hideEmptyState: {},
+    showAvatar: {},
     doInsetDivider: {},
     valueKey: {},
-    textKey: {},
+    toString1: {},
+    toString2: {},
+    toString3: {},
     
     // manipulation
     onBefore: {},
@@ -33,13 +36,23 @@ export default {
     };
   },
   
-  computed: {
-    cDataLoader: function() {
-      return this.dataLoader;
+  methods: {
+    getString1: function(item) {
+      return this.getString(this.toString1, item);
+    }, getString2: function(item) {
+      return this.getString(this.toString2, item);
+    }, getString3: function(item) {
+      return this.getString(this.toString3, item);
+    }, getString: function(key, item) {
+      return isCallable(key) ? key.call(this, item) : item[key];
+    }, getAvatar: function(item) {
+      let s = this.getString1(item);
+      return s ? s.substr(0, 2) : s;
     },
   },
   
   mounted: function() {
+    
     // init
     this.dataLoader = new DataLoader(this.route, this);
     this.dataLoader.onAfter = this.onAfter;
@@ -70,6 +83,6 @@ export default {
   },
   
   components: {
-    Repeater,
+    DataLoaderWrapper,
   },
 };

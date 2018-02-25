@@ -21,3 +21,7 @@ export const isCallable = function(obj) {
   }
   return typeof obj === 'function';
 };
+
+export const clone = function(obj) {
+  return Object.assign({}, obj);
+};

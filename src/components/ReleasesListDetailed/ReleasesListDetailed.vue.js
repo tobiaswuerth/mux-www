@@ -1,71 +1,65 @@
-import Router from './../../ecosystems/vue-router/Router';
-import Routes from './../../ecosystems/vue-router/Routes';
-import Repeater from '../Repeater/Repeater';
+import Router, {paths} from './../../ecosystems/vue-router/Router';
+import DataLoaderWrapper from '../DataLoaderWrapper/DataLoaderWrapper';
+import DataLoader from './../../scripts/DataLoader';
 
 export default {
   name: 'ReleasesListDetailed',
   
   components: {
-    Repeater,
+    DataLoaderWrapper,
   },
   
   data: () => {
     return {
-      routes: Routes,
-      
-      repeater: {
-        
-        global: {
-          payload: {},
-          hideEmptyState: {},
-          route: 'releases/byName',
-          valueKey: 'UniqueId',
-          doPreload: true,
-        },
-        
-        artists: {
-          route: 'releases/artistsById', valueKey: 'UniqueId',
-        },
-        
-        aliases: {
-          route: 'releases/aliasesById',
-          valueKey: 'UniqueId',
-          doPreload: true,
-          hideEmptyState: true,
-        },
-      },
-      
-      data: [],
+      dataLoader: new DataLoader('releases/byName', this), loaderCache: {},
     };
   },
   
-  computed: {
-    payload: function() {
-      return {
-        name: this.name,
-      };
-    },
+  mounted: function() {
+    this.dataLoader.load({name: this.name}).then(() => {
+      // ignore
+    }).catch((r) => {
+      console.error(r);
+    });
   },
   
   methods: {
     doRoute: function(id) {
-      let uri = this.routes.private.releases.details.replace(':id', id);
+      let uri = paths.private.releases.details.replace(':id', id);
       Router.push(uri);
-    }, doRouteArtist: function(id) {
-      let uri = this.routes.private.artists.details.replace(':id', id);
+    },
+    
+    doRouteArtist: function(id) {
+      let uri = paths.private.artists.details.replace(':id', id);
       Router.push(uri);
-    }, getLimittedIdPayload: function(id, pageSize) {
-      let payload = this.getIdPayload(id);
-      payload.pageSize = pageSize || 5;
-      return payload;
-    }, getIdPayload: function(id) {
-      return {
-        id: id,
-      };
+    },
+    
+    getAliasLoader: function(item) {
+      let loader = new DataLoader('releases/aliasesById', this);
+      /*loader.load({id: item.UniqueId}, true).then(() => {
+       // ignore
+       }).catch((r) => {
+       console.error(r);
+       });*/
+      return loader;
+    },
+    
+    getArtistLoader: function(item) {
+      if (this.loaderCache[item.UniqueId]) {
+        return this.loaderCache[item.UniqueId];
+      }
+      let loader = new DataLoader('releases/artistsById', this);
+      this.loaderCache[item.UniqueId] = loader;
+      loader.load({id: item.UniqueId, pageSize: 5}).then(() => {
+        // ignore
+      }).catch((r) => {
+        console.error(r);
+      });
+      return loader;
     },
   },
   
   props: {
-    name: {}, dataSource: {},
+    name: {},
   },
 };

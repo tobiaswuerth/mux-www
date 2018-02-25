@@ -1,12 +1,11 @@
-import Router from './../../ecosystems/vue-router/Router';
-import Routes from './../../ecosystems/vue-router/Routes';
-import Repeater from '../Repeater/Repeater';
+import Router, {paths} from './../../ecosystems/vue-router/Router';
+import DataLoaderWrapper from '../DataLoaderWrapper/DataLoaderWrapper';
 import DataLoader from './../../scripts/DataLoader';
 
 export default {
   name: 'ArtistReleasesList',
   
-  components: {Router, Repeater},
+  components: {Router, DataLoaderWrapper},
   
   props: {
     id: {},
@@ -31,7 +30,7 @@ export default {
     
     doRoute: function(name) {
       let encodedName = encodeURIComponent(name);
-      let uri = Routes.private.artists.releasesLookup.root.replace(':name',
+      let uri = paths.private.artists.releasesLookup.root.replace(':name',
         encodedName).replace(':id', this.id);
       Router.push(uri);
     },

@@ -10,6 +10,7 @@ import RecordsModule from './modules/RecordsModule';
 import TracksModule from './modules/TracksModule';
 import SnackbarModule from './modules/SnackbarModule';
 import WatchModule, {watcher} from './modules/WatchModule';
+import AudioModule from './modules/AudioModule';
 
 Vue.use(Vuex);
 
@@ -29,6 +30,7 @@ const store = new Vuex.Store({
     records: RecordsModule,
     tracks: TracksModule,
     snackbar: SnackbarModule,
+    audio: AudioModule,
   },
   
   plugins: [

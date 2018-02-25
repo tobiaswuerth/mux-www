@@ -1,4 +1,4 @@
-import Routes from './../../ecosystems/vue-router/Routes';
+import {paths} from './../../ecosystems/vue-router/Router';
 import SubContentHub from './../SubContentHub/SubContentHub';
 
 import DataLoader, {onAfterSingle} from './../../scripts/DataLoader';
@@ -22,11 +22,11 @@ export default {
   
   computed: {
     getReleasesById: function() {
-      return Routes.private.artists.releases.replace(':id', this.id);
+      return paths.private.artists.releases.replace(':id', this.id);
     },
     
     getRecordsById: function() {
-      return Routes.private.artists.records.replace(':id', this.id);
+      return paths.private.artists.records.replace(':id', this.id);
     },
   },
   

@@ -2,10 +2,11 @@ import Axios from 'axios';
 import Store from '../Store';
 
 const DEFAULT_PAGE_SIZE = 50;
+export const baseUrl = 'https://mux.fooo.ooo/api/v1';
 
 // init
 const axios = Axios.create({
-  baseURL: 'https://mux.fooo.ooo/api/v1',
+  baseURL: baseUrl,
 });
 
 // config
@@ -16,7 +17,7 @@ const config = {
 };
 
 // Routes
-const routes = {
+export const routes = {
   config,
   
   post: {
@@ -63,6 +64,10 @@ const routes = {
     tracks: {
       all: `${config.prefix.authorized}/tracks`,
       byId: (id) => `${config.prefix.authorized}/tracks/${id}`,
+    },
+    
+    files: {
+      byId: (id) => `${config.prefix.authorized}/files/${id}`,
     },
   },
 };
@@ -113,7 +118,7 @@ async function performDefaultDataRequest(route, payload) {
   let url = `${route}?p=${pageIndex}&ps=${pageSize}`;
   let options = Store.getters['auth/authDefaultOptions'];
   
-  // check cache
+  // check loaderCache
   let entry = cache[url];
   if (entry) {
     return Promise.resolve(entry);

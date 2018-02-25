@@ -1,10 +1,9 @@
 import List from '../List/List';
-import Routes from './../../ecosystems/vue-router/Routes';
-import Router from './../../ecosystems/vue-router/Router';
+import Router, {paths} from './../../ecosystems/vue-router/Router';
 
 const routerPushId = function(id) {
   Router.push(
-    Routes.private.artists.details.replace(':id', encodeURIComponent(id)));
+    paths.private.artists.details.replace(':id', encodeURIComponent(id)));
 };
 
 export default {

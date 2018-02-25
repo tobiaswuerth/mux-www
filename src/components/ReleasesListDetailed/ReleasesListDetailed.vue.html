@@ -1,20 +1,19 @@
-<Repeater :dataLoader="dataLoader" :hideEmptyState="hideEmptyState">
+<DataLoaderWrapper :dataLoader="dataLoader">
 
   <template slot-scope="props">
     <div class="clean-list md-layout md-gutter md-alignment-top-left">
-      <template v-for="item in props.data">
+      <template v-for="item in props.dataLoader.dataSource.data">
         <md-card md-with-hover :key="item.UniqueId" class="entry md-layout-item">
 
           <md-card-header>
             <div class="md-title">{{item.Title}}</div>
             <span class="md-subheading" v-if="item.Disambiguation">{{item.Disambiguation}}</span>
-            <Repeater :dataLoader="dataLoaderAliases" :hideEmptyState="hideEmptyStateAliases">
-              <template slot-scope="props">
-                <span v-if="props.data.length > 0">
-                  a.k.a. {{props.data.map(x => x.Name).join(', ')}}
-                </span>
-              </template>
-            </Repeater>
+            <!-- <DataLoaderWrapper :dataLoader="getAliasLoader(item)" :hideEmptyState="true">
+               <template slot-scope="props">
+                 <p v-if="props.dataLoader.dataSource.data.length > 0">
+                   a.k.a. {{props.dataLoader.dataSource.data.map(x => x.Name).join(', ')}} </p>
+               </template>
+             </DataLoaderWrapper>-->
           </md-card-header>
 
           <md-card-content>
@@ -29,12 +28,10 @@
             </span>
 
             <div>
-              <p class="md-body-2">Artist{{props.data.length > 1 ? 's' : ''}}:</p>
-              <Repeater :route="repeater.artists.route"
-                        :payload="getLimittedIdPayload(item.UniqueId)"
-                        :valueKey="repeater.artists.valueKey">
+              <p class="md-body-2">Artist{{props.dataLoader.dataSource.data.length > 1 ? 's' : ''}}:</p>
+              <DataLoaderWrapper :dataLoader="getArtistLoader(item)" :hideEmptyState="true">
                 <template slot-scope="props">
-                  <template v-for="ac in props.data">
+                  <template v-for="ac in props.dataLoader.dataSource.data">
                     <md-chip class="md-accent small-badge" md-clickable @click="doRouteArtist(ac.Artist.UniqueId)">
                       <small>{{ac.Artist.Name}}</small>
                     </md-chip>
@@ -42,12 +39,12 @@
                 </template>
 
                 <template slot="more" slot-scope="props">
-                  <md-chip class="small-badge" md-clickable @click="props.loadMore">
+                  <md-chip class="small-badge" md-clickable @click="props.dataLoader.loadMore()">
                     more
                     <md-icon>expand_more</md-icon>
                   </md-chip>
                 </template>
-              </Repeater>
+              </DataLoaderWrapper>
             </div>
           </md-card-content>
 
@@ -61,4 +58,4 @@
       </template>
     </div>
   </template>
-</Repeater>
+</DataLoaderWrapper>

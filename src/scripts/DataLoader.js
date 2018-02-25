@@ -1,6 +1,6 @@
 import DataSource from './DataSource';
 import Store from './../ecosystems/vuex/Store';
-import {onceOrMore} from './Utils';
+import {isCallable, onceOrMore} from './Utils';
 
 function DataLoader(route, parent) {
   this.route = route;
@@ -27,6 +27,9 @@ DataLoader.prototype.load = async function(
   // init
   this.isLoading = true;
   this._runningRequests++;
+  if (doPreload) {
+    payload.pageSize = 100; // faster preloading
+  }
   if (!suppressEvent) {
     onceOrMore(this.onBefore, this);
   }
@@ -42,6 +45,7 @@ DataLoader.prototype.load = async function(
       // load more
       updatePayload(payload);
       if (doPreload) {
+        // todo try parallel loading with page guessing
         result = await scope.load(payload, doPreload, true);
       } else {
         scope._morePayloads.push(payload);
@@ -50,7 +54,7 @@ DataLoader.prototype.load = async function(
     
     // finalize
     if (!suppressEvent) {
-      onceOrMore(scope.onAfter, this);
+      onceOrMore(scope.onAfter, scope);
     }
     if (!result) {
       result = Promise.resolve(scope.dataSource.data);
@@ -69,6 +73,7 @@ DataLoader.prototype.load = async function(
 
 DataLoader.prototype.loadAll = async function(payloads, doPreload = false) {
   onceOrMore(this.onBefore, this);
+  this._runningRequests++;
   await Promise.all(payloads.map(p => this.load(p, doPreload, true))).
     then(() => {
       onceOrMore(this.onAfter, this);
@@ -77,6 +82,9 @@ DataLoader.prototype.loadAll = async function(payloads, doPreload = false) {
     catch(r => {
       console.error(r);
       return Promise.reject(r);
+    }).finally(() => {
+      this._runningRequests--;
+      this.isLoading = this._runningRequests > 0;
     });
 };
 
@@ -105,9 +113,10 @@ export default DataLoader;
 export const onAfterUnique = (loader) => {
   if (loader.dataSource.data.length > 0) {
     let vk = loader.parent.valueKey;
-    let d = loader.dataSource.data.map(x => [x[vk], x]);
-    d = new Map(d);
-    loader.dataSource.data = d.values();
+    let d = loader.dataSource.data.map(x => [x[vk].toString().normalize(), x]);
+    d = new Map(d).values();
+    d = Array.from(d);
+    loader.dataSource.data = d;
   }
 };
 
@@ -127,16 +136,20 @@ export const simplyLoad = async (route, payload, filter, map) => {
 
 export const onAfterSort = (loader) => {
   if (loader.dataSource.data.length > 0) {
-    loader.dataSource.data = loader.dataSource.data.sort();
+    let tk = loader.parent.toString1;
+    loader.dataSource.data = loader.dataSource.data.sort((a, b) => {
+      if (isCallable(tk)) {
+        let valA = tk.call(loader, a);
+        let valB = tk.call(loader, b);
+        return valA > valB ? 1 : -1;
+      }
+      return a[tk] > b[tk] ? 1 : -1;
+    });
   }
 };
 
 export const onAfterSelect = (key) => (loader) => {
   if (loader.dataSource.data.length > 0) {
-    loader.dataSource.data = loader.dataSource.data.map(x => {
-      let obj = {};
-      obj[key] = x[key];
-      return obj;
-    });
+    loader.dataSource.data = loader.dataSource.data.map(x => x[key]);
   }
 };

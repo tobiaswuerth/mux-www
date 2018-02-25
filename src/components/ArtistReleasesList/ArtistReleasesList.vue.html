@@ -1,4 +1,4 @@
-<Repeater :dataLoader="dataLoader" :hideEmptyState="hideEmptyState" :key="Math.random()">
+<DataLoaderWrapper :dataLoader="dataLoader" :hideEmptyState="hideEmptyState" :key="Math.random()">
 
   <template>
     <div class="clean-list md-layout md-gutter md-alignment-top-left">
@@ -20,6 +20,7 @@
               <span v-for="c in item.countries" :key="c">
                 <img class="md-layout-item country-flag" :src="`/static/countries/${c}.svg`" :alt="c"/>
                 <!--<md-tooltip md-direction="bottom">{{c}}</md-tooltip>-->
+                <!-- https://github.com/vuematerial/vue-material/issues/1529 -->
               </span>
               </template>
             </md-card-content>
@@ -35,4 +36,4 @@
       </template>
     </div>
   </template>
-</Repeater>
+</DataLoaderWrapper>
