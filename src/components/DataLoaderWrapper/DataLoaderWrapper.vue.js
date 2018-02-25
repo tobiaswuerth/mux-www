@@ -1,11 +1,26 @@
 import Vue from 'vue';
 import {isIterable} from './../../scripts/Utils';
+import DataLoader from './../../scripts/DataLoader';
 
 export default Vue.extend({
   name: 'DataLoaderWrapper',
   
+  data: () => {
+    return {
+      async: true, loader: new DataLoader(null),
+    };
+  },
+  
   props: {
     dataLoader: {}, hideEmptyState: {},
+  },
+  
+  mounted: function() {
+    let self = this;
+    Promise.resolve(this.dataLoader).then(function(v) {
+      self.loader = v;
+      self.async = false;
+    });
   },
   
   computed: {
@@ -13,34 +28,32 @@ export default Vue.extend({
       if (this.hideEmptyState) {
         return false;
       }
-      if (!this.dataLoader) {
+      if (!this.loader) {
         return true;
       }
-      if (this.dataLoader.isLoading || this.dataLoader.hasMore()) {
+      if (this.loader.isLoading || this.loader.hasMore()) {
         return false;
       }
-      if (!this.dataLoader.dataSource) {
+      if (!this.loader.dataSource) {
         return true;
       }
-      return !this.dataLoader.dataSource.data ||
-        isIterable(this.dataLoader.dataSource.data) &&
-        this.dataLoader.dataSource.isEmpty() ||
-        !isIterable(this.dataLoader.dataSource.data) &&
-        Object.keys(this.dataLoader.dataSource.data).length === 0;
+      return !this.loader.dataSource.data ||
+        isIterable(this.loader.dataSource.data) &&
+        this.loader.dataSource.isEmpty() ||
+        !isIterable(this.loader.dataSource.data) &&
+        Object.keys(this.loader.dataSource.data).length === 0;
     },
     
     showUpperSpinner: function() {
-      return !this.dataLoader || !this.dataLoader.dataSource
+      return !this.loader || !this.loader.dataSource
         ? true
-        : this.dataLoader.isLoading;
+        : this.loader.isLoading;
     },
     
     showBottomSpinner: function() {
-      return !this.dataLoader || !this.dataLoader.dataSource ||
-      this.dataLoader.dataSource.isEmpty()
-        ? false
-        : this.dataLoader.isLoading && this.dataLoader.dataSource.data.length >
-        0;
+      return !this.loader || !this.loader.dataSource ||
+      this.loader.dataSource.isEmpty() ? false : this.loader.isLoading &&
+        this.loader.dataSource.data.length > 0;
     },
   },
 });

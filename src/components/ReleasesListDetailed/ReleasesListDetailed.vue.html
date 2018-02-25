@@ -8,12 +8,12 @@
           <md-card-header>
             <div class="md-title">{{item.Title}}</div>
             <span class="md-subheading" v-if="item.Disambiguation">{{item.Disambiguation}}</span>
-            <!-- <DataLoaderWrapper :dataLoader="getAliasLoader(item)" :hideEmptyState="true">
-               <template slot-scope="props">
-                 <p v-if="props.dataLoader.dataSource.data.length > 0">
-                   a.k.a. {{props.dataLoader.dataSource.data.map(x => x.Name).join(', ')}} </p>
-               </template>
-             </DataLoaderWrapper>-->
+            <DataLoaderWrapper :dataLoader="getAliasLoader(item)" :hideEmptyState="true">
+              <template slot-scope="props">
+                <p v-if="props.dataLoader.dataSource.data.length > 0">
+                  a.k.a. {{props.dataLoader.dataSource.data.map(x => x.Name).join(', ')}} </p>
+              </template>
+            </DataLoaderWrapper>
           </md-card-header>
 
           <md-card-content>
@@ -31,10 +31,12 @@
               <p class="md-body-2">Artist{{props.dataLoader.dataSource.data.length > 1 ? 's' : ''}}:</p>
               <DataLoaderWrapper :dataLoader="getArtistLoader(item)" :hideEmptyState="true">
                 <template slot-scope="props">
-                  <template v-for="ac in props.dataLoader.dataSource.data">
-                    <md-chip class="md-accent small-badge" md-clickable @click="doRouteArtist(ac.Artist.UniqueId)">
-                      <small>{{ac.Artist.Name}}</small>
-                    </md-chip>
+                  <template v-if="props.dataLoader.dataSource">
+                    <template v-for="ac in props.dataLoader.dataSource.data">
+                      <md-chip class="md-accent small-badge" md-clickable @click="doRouteArtist(ac.Artist.UniqueId)">
+                        <small>{{ac.Artist.Name}}</small>
+                      </md-chip>
+                    </template>
                   </template>
                 </template>
 

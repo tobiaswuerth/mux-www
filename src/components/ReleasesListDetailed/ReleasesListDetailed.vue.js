@@ -11,7 +11,7 @@ export default {
   
   data: () => {
     return {
-      dataLoader: new DataLoader('releases/byName', this), loaderCache: {},
+      dataLoader: new DataLoader('releases/byName', this),
     };
   },
   
@@ -34,27 +34,15 @@ export default {
       Router.push(uri);
     },
     
-    getAliasLoader: function(item) {
+    getAliasLoader: async function(item) {
       let loader = new DataLoader('releases/aliasesById', this);
-      /*loader.load({id: item.UniqueId}, true).then(() => {
-       // ignore
-       }).catch((r) => {
-       console.error(r);
-       });*/
+      await loader.load({id: item.UniqueId, pageSize: 5});
       return loader;
     },
     
-    getArtistLoader: function(item) {
-      if (this.loaderCache[item.UniqueId]) {
-        return this.loaderCache[item.UniqueId];
-      }
+    getArtistLoader: async function(item) {
       let loader = new DataLoader('releases/artistsById', this);
-      this.loaderCache[item.UniqueId] = loader;
-      loader.load({id: item.UniqueId, pageSize: 5}).then(() => {
-        // ignore
-      }).catch((r) => {
-        console.error(r);
-      });
+      await loader.load({id: item.UniqueId, pageSize: 5});
       return loader;
     },
   },

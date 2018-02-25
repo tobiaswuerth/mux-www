@@ -1,19 +1,23 @@
 <span>
   <template v-if="showUpperSpinner">
-    <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+    <span>
+      <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+    </span>
   </template>
   <template v-else-if="showEmptyState">
     <md-empty-state md-label="Nothing here"
                     md-description="You see this because there is nothing else to display here."></md-empty-state>
   </template>
-  <template v-if="dataLoader">
-    <slot :dataLoader="dataLoader"></slot>
+  <template>
+    <slot :dataLoader="loader"></slot>
   </template>
 
   <template v-if="showBottomSpinner">
-    <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+    <span>
+      <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+    </span>
   </template>
-  <template v-if="dataLoader && dataLoader.hasMore()">
-    <slot :dataLoader="dataLoader" name="more"></slot>
+  <template v-if="loader.hasMore()">
+    <slot :dataLoader="loader" name="more"></slot>
   </template>
 </span>
