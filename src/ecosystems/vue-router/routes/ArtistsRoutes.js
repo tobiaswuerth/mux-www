@@ -1,4 +1,4 @@
-import router from './../Router';
+import Router from './../Router';
 import {prepareRoute} from './../RouterUtils';
 import {
   onAfterSelect, onAfterSort, onAfterUnique, simplyLoad,
@@ -43,7 +43,7 @@ export default [
       toString1: (i) => i.Name,
       valueKey: 'Name',
       onClick: (i) => {
-        router.push(prepareRoute(paths.lookup, {name: i.Name}));
+        Router.push(prepareRoute(paths.lookup, {name: i.Name}));
       },
     },
   },
@@ -69,7 +69,7 @@ export default [
           doPreload: true,
           payload: async (p) => p,
           onClick: (i, p) => {
-            router.push(prepareRoute(paths.recordsLookup.root,
+            Router.push(prepareRoute(paths.recordsLookup.root,
               {id: p.id, name: i.Title}));
           },
         },
@@ -93,7 +93,7 @@ export default [
             {id: p.id}, (i) => i.Title === p.name,
             (i) => Object.assign({id: i.UniqueId})),
           onClick: (i, p) => {
-            router.push(prepareRoute(paths.recordsLookup.root,
+            Router.push(prepareRoute(paths.recordsLookup.root,
               {id: p.id, name: i.Title}));
           },
         },
@@ -110,18 +110,17 @@ export default [
           route: 'releases/artistsById',
           valueKey: 'UniqueId',
           toString1: (i) => i.Name,
-          toString2: (i) => i.Disambiguation
-            ? `a.k.a. ${i.Artist.Disambiguation.join(', ')}`
-            : '',
+          toString2: (i) => i.Disambiguation,
+          toString3: (i) => i.Aliases ? `a.k.a. ${i.Aliases.map(a => a.Name).
+            join(', ')}` : '',
           onAfter: [onAfterSelect('Artist'), onAfterUnique, onAfterSort],
           showAvatar: true,
           doInsetDivider: true,
           payload: async (p) => await simplyLoad('artists/releasesById',
             {id: p.id}, (i) => i.Title.normalize() === p.name.normalize(),
             (i) => Object.assign({id: i.UniqueId})),
-          onClick: (i, p) => {
-            router.push(prepareRoute(paths.artists.lookup, {name: i.Name}));
-          },
+          onClick: (i, p) => Router.push(
+            prepareRoute(paths.details, {id: i.UniqueId})),
         },
       },],
   },

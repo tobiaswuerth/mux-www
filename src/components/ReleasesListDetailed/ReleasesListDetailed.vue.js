@@ -1,12 +1,13 @@
-import Router, {paths} from './../../ecosystems/vue-router/Router';
+import ReleaseCard from './../ReleaseCard/ReleaseCard';
 import DataLoaderWrapper from '../DataLoaderWrapper/DataLoaderWrapper';
 import DataLoader from './../../scripts/DataLoader';
+import Router, {paths} from './../../ecosystems/vue-router/Router';
 
 export default {
   name: 'ReleasesListDetailed',
   
   components: {
-    DataLoaderWrapper,
+    DataLoaderWrapper, ReleaseCard,
   },
   
   data: () => {
@@ -16,35 +17,20 @@ export default {
   },
   
   mounted: function() {
+    this.dataLoader.onAfter = (dataLoader) => {
+      if (dataLoader.dataSource.data.length === 1) {
+        // auto select record
+        let id = dataLoader.dataSource.data[0].UniqueId;
+        Router.push(paths.private.releases.details.replace(':id',
+          encodeURIComponent(id)));
+      }
+    };
+    
     this.dataLoader.load({name: this.name}).then(() => {
       // ignore
     }).catch((r) => {
       console.error(r);
     });
-  },
-  
-  methods: {
-    doRoute: function(id) {
-      let uri = paths.private.releases.details.replace(':id', id);
-      Router.push(uri);
-    },
-    
-    doRouteArtist: function(id) {
-      let uri = paths.private.artists.details.replace(':id', id);
-      Router.push(uri);
-    },
-    
-    getAliasLoader: async function(item) {
-      let loader = new DataLoader('releases/aliasesById', this);
-      await loader.load({id: item.UniqueId, pageSize: 5});
-      return loader;
-    },
-    
-    getArtistLoader: async function(item) {
-      let loader = new DataLoader('releases/artistsById', this);
-      await loader.load({id: item.UniqueId, pageSize: 5});
-      return loader;
-    },
   },
   
   props: {

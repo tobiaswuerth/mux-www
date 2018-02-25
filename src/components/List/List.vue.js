@@ -25,7 +25,7 @@ export default {
     onBefore: {},
     onAfter: {},
     
-    // url router params
+    // url Router params
     id: {},
     name: {},
   },

@@ -1,5 +1,5 @@
 <DataLoaderWrapper :dataLoader="dataLoader" :hideEmptyState="hideEmptyState" :key="Math.random()">
-  <template v-if="dataLoader">
+  <template v-if="dataLoader && !dataLoader.isLoading">
     <md-list class="md-triple-list">
       <template v-for="item in dataLoader.dataSource.data">
         <md-list-item class="clean-list-item" :key="item[valueKey]" @click="onClick(item, $route.params)">

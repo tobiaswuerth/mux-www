@@ -1,1 +1,11 @@
-<ReleasesListDetailed :dataSource="data"></ReleasesListDetailed>
+<DataLoaderWrapper :dataLoader="dataLoader">
+  <template slot-scope="props">
+    <div class="clean-list md-layout md-gutter md-alignment-top-left">
+      <template v-if="!props.dataLoader.isLoading">
+        <template v-for="item in props.dataLoader.dataSource.data">
+          <ReleaseCard :item="item"></ReleaseCard>
+        </template>
+      </template>
+    </div>
+  </template>
+</DataLoaderWrapper>

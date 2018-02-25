@@ -1,62 +1,10 @@
 <DataLoaderWrapper :dataLoader="dataLoader">
-
   <template slot-scope="props">
     <div class="clean-list md-layout md-gutter md-alignment-top-left">
-      <template v-for="item in props.dataLoader.dataSource.data">
-        <md-card md-with-hover :key="item.UniqueId" class="entry md-layout-item">
-
-          <md-card-header>
-            <div class="md-title">{{item.Title}}</div>
-            <span class="md-subheading" v-if="item.Disambiguation">{{item.Disambiguation}}</span>
-            <DataLoaderWrapper :dataLoader="getAliasLoader(item)" :hideEmptyState="true">
-              <template slot-scope="props">
-                <p v-if="props.dataLoader.dataSource.data.length > 0">
-                  a.k.a. {{props.dataLoader.dataSource.data.map(x => x.Name).join(', ')}} </p>
-              </template>
-            </DataLoaderWrapper>
-          </md-card-header>
-
-          <md-card-content>
-            <span class="md-caption">
-              <span v-if="item.Date">Date: {{item.Date.substr(0, 10)}}<br/></span>
-              <span v-if="item.Country">
-                Country: <img class="md-layout-item country-flag"
-                              :src="`/static/countries/${item.Country}.svg`"
-                              :alt="item.Country"/> {{item.Country}}<br/></span>
-              <span v-if="item.Status">Status: {{item.Status}} <br/></span>
-              <span v-if="item.Quality">Quality: {{item.Quality}} <br/></span>
-            </span>
-
-            <div>
-              <p class="md-body-2">Artist{{props.dataLoader.dataSource.data.length > 1 ? 's' : ''}}:</p>
-              <DataLoaderWrapper :dataLoader="getArtistLoader(item)" :hideEmptyState="true">
-                <template slot-scope="props">
-                  <template v-if="props.dataLoader.dataSource">
-                    <template v-for="ac in props.dataLoader.dataSource.data">
-                      <md-chip class="md-accent small-badge" md-clickable @click="doRouteArtist(ac.Artist.UniqueId)">
-                        <small>{{ac.Artist.Name}}</small>
-                      </md-chip>
-                    </template>
-                  </template>
-                </template>
-
-                <template slot="more" slot-scope="props">
-                  <md-chip class="small-badge" md-clickable @click="props.dataLoader.loadMore()">
-                    more
-                    <md-icon>expand_more</md-icon>
-                  </md-chip>
-                </template>
-              </DataLoaderWrapper>
-            </div>
-          </md-card-content>
-
-          <md-card-actions>
-            <md-button @click="doRoute(item.UniqueId)">
-              <md-icon>keyboard_arrow_right</md-icon>
-            </md-button>
-          </md-card-actions>
-
-        </md-card>
+      <template v-if="!props.dataLoader.isLoading">
+        <template v-for="item in props.dataLoader.dataSource.data">
+          <ReleaseCard :item="item"></ReleaseCard>
+        </template>
       </template>
     </div>
   </template>

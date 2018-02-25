@@ -153,3 +153,9 @@ export const onAfterSelect = (key) => (loader) => {
     loader.dataSource.data = loader.dataSource.data.map(x => x[key]);
   }
 };
+
+export const onAfterFilter = (condition) => (loader) => {
+  if (loader.dataSource.data.length > 0) {
+    loader.dataSource.data = loader.dataSource.data.filter(x => condition(x));
+  }
+};
