@@ -2,7 +2,8 @@ import Vue from 'vue';
 import SubContentHub from './../SubContentHub/SubContentHub';
 import {paths} from './../../ecosystems/vue-router/Router';
 
-import DataLoader, {onAfterFilter} from '../../scripts/DataLoader';
+import DataLoader from '../../scripts/DataLoader';
+import {onAfterFilter} from './../../scripts/DataLoaderUtils';
 
 export default Vue.extend({
   name: 'ArtistReleaseDetailsPage',
@@ -31,7 +32,6 @@ export default Vue.extend({
     },
     
     variations: function() {
-      console.log(this.dataLoader.dataSource.data);
       return this.dataLoader.dataSource.data.length;
     },
     
@@ -49,10 +49,9 @@ export default Vue.extend({
   },
   
   mounted: function() {
-    this.dataLoader.onAfter = onAfterFilter((i) => i.Title.normalize() === this.name.normalize());
-    this.dataLoader.load({id: this.id}, true).then(() => {
-      // ignore
-    }).catch((r) => {
+    this.dataLoader.onAfter = onAfterFilter(
+      (i) => i.Title.normalize() === this.name.normalize());
+    this.dataLoader.load({id: this.id}, true).catch((r) => {
       console.error(r);
     });
   },

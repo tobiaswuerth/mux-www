@@ -20,9 +20,7 @@ export default {
     },
     
     onClick: (item) => {
-      Store.dispatch('audio/play', {track: item}).then(() => {
-        // ignore
-      }).catch((r) => {
+      Store.dispatch('audio/play', {track: item}).catch((r) => {
         console.error(r);
       });
     },

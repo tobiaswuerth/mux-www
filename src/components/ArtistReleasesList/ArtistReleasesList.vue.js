@@ -19,9 +19,7 @@ export default {
   
   mounted: function() {
     this.dataLoader.onAfter = this.onAfter;
-    this.dataLoader.load({id: this.id}, true).then(() => {
-      // ignore
-    }).catch((r) => {
+    this.dataLoader.load({id: this.id}, true).catch((r) => {
       console.error(r);
     });
   },

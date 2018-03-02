@@ -3,7 +3,6 @@ import {prepareRoute} from './../RouterUtils';
 import List from './../../../components/List/List';
 import {clone} from './../../../scripts/Utils';
 
-
 const paths = {
   root: '/s',
   lookup: '/s/l/:name',

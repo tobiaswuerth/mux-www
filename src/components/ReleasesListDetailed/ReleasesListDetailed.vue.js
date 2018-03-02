@@ -26,9 +26,7 @@ export default {
       }
     };
     
-    this.dataLoader.load({name: this.name}).then(() => {
-      // ignore
-    }).catch((r) => {
+    this.dataLoader.load({name: this.name}).catch((r) => {
       console.error(r);
     });
   },

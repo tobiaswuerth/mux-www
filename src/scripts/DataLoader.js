@@ -1,14 +1,13 @@
 import DataSource from './DataSource';
 import Store from './../ecosystems/vuex/Store';
-import {isCallable, onceOrMore} from './Utils';
+import {clone, onceOrMore} from './Utils';
 
 function DataLoader(route, parent) {
   this.route = route;
   this.dataSource = new DataSource();
-  this.isLoading = true;
-  this.onBefore = null;
   this.onAfter = null;
   this.parent = parent;
+  this.isLoading = true;
   
   this._morePayloads = [];
   this._runningRequests = 0;
@@ -22,61 +21,110 @@ const updatePayload = (payload) => {
   payload.pageIndex = payload.pageIndex ? payload.pageIndex + 1 : 1;
 };
 
-DataLoader.prototype.load = async function(
-  payload, doPreload = false, suppressEvent = false) {
-  // init
-  this.isLoading = true;
+const preLoad = (config, payload, dataSource) => {
   this._runningRequests++;
-  if (doPreload) {
-    payload.pageSize = 100; // faster preloading
-  }
-  if (!suppressEvent) {
-    onceOrMore(this.onBefore, this);
+  
+  // prepare
+  if (true === config.doPreload) {
+    payload.pageSize = 100; // fastest possible preloading
   }
   
-  // execute load
-  let scope = this;
-  await Store.dispatch(this.route, payload).then(async (v) => {
-    scope.dataSource.addAll(v.data);
-    
-    let result = null;
-    
-    if (v.hasMore) {
-      // load more
-      updatePayload(payload);
-      if (doPreload) {
-        // todo try parallel loading with page guessing
-        result = await scope.load(payload, doPreload, true);
-      } else {
-        scope._morePayloads.push(payload);
-      }
-    }
-    
-    // finalize
-    if (!suppressEvent) {
-      onceOrMore(scope.onAfter, scope);
-    }
-    if (!result) {
-      result = Promise.resolve(scope.dataSource.data);
-    }
-    
-    return result;
-  }).catch(r => {
-    console.error(r);
-    scope._morePayloads.push(payload);
-    return Promise.reject(r);
-  }).finally(() => {
-    scope._runningRequests--;
-    scope.isLoading = scope._runningRequests > 0;
-  });
+  return config.appendToSource === false ? new DataSource() : new DataSource(
+    dataSource.data);
 };
 
-DataLoader.prototype.loadAll = async function(payloads, doPreload = false) {
-  onceOrMore(this.onBefore, this);
-  this._runningRequests++;
-  await Promise.all(payloads.map(p => this.load(p, doPreload, true))).
-    then(() => {
-      onceOrMore(this.onAfter, this);
+DataLoader.prototype.load = async function(payload, config = {}) {
+  // prepare
+  let source = preLoad(config, payload, this.dataSource);
+  
+  // execute and await result
+  return await Store.dispatch(this.route, payload).then(async (v) => {
+      source.addAll(v.data);
+      
+      if (v.hasMore) {
+        updatePayload(payload);
+        
+        // load more
+        if (true === config.doPreload) {
+          let subConfig = clone(config);
+          subConfig.suppressEvents = true;
+          subConfig.appendToSource = false;
+          
+          await this.load(payload, subConfig).
+            then((v) => source.addAll(v)).
+            catch((r) => {
+              console.error(r);
+              return Promise.reject(r);
+            });
+        } else {
+          this._morePayloads.push(payload);
+        }
+      }
+      
+      if (false !== config.appendToSource) {
+        source.addAll(this.dataSource.data);
+      }
+      
+      // events
+      if (true !== config.suppressEvents) {
+        await onceOrMore(this.onAfter, {loader: this, dataSource: source}).
+          catch((r) => {
+            console.error(r);
+            return Promise.reject(r);
+          });
+      }
+      
+      // finalize
+      if (false === config.appendToSource) {
+        return Promise.resolve(source.data);
+      }
+      
+      this.dataSource.data = source.data;
+      return Promise.resolve(this.dataSource.data);
+    }).
+    catch(r => {
+      console.error(r);
+      this._morePayloads.push(payload);
+      return Promise.reject(r);
+    }).
+    finally(() => {
+      this._runningRequests--;
+      this.isLoading = this._runningRequests > 0;
+    });
+};
+
+DataLoader.prototype.loadAll = async function(payloads, config = {}) {
+  // prepare
+  let source = preLoad(config, payloads, this.dataSource);
+  
+  let subConfig = clone(config);
+  subConfig.suppressEvents = true;
+  subConfig.appendToSource = false;
+  
+  // execute
+  let promises = payloads.map(
+    p => this.load(p, subConfig).then((v) => source.addAll(v)));
+  
+  // await and process results
+  return await Promise.all(promises).then(async () => {
+      if (false !== config.appendToSource) {
+        source.addAll(this.dataSource.data);
+      }
+      
+      // events
+      if (true !== config.suppressEvents) {
+        await onceOrMore(this.onAfter, {loader: this, dataSource: source}).
+          catch((r) => {
+            console.error(r);
+          });
+      }
+      
+      // finalize
+      if (false === config.appendToSource) {
+        return Promise.resolve(source.data);
+      }
+      
+      this.dataSource.data = source.data;
       return Promise.resolve(this.dataSource.data);
     }).
     catch(r => {
@@ -88,18 +136,20 @@ DataLoader.prototype.loadAll = async function(payloads, doPreload = false) {
     });
 };
 
-DataLoader.prototype.loadMore = async function(doPreload = false) {
+DataLoader.prototype.loadMore = async function(config = {}) {
   if (this._morePayloads.length === 0) {
     return Promise.resolve();
   }
   
   let promises = [];
+  let p;
   
-  while (this._morePayloads.length > 0) {
-    let p = this._morePayloads.pop();
-    promises.push(this.load(p, doPreload));
+  // execute
+  while ((p = this._morePayloads.shift()) != null) {
+    promises.push(this.load(p, config));
   }
   
+  // await results
   await Promise.all(promises).then(() => {
     return Promise.resolve(this.dataSource.data);
   }).catch(r => {
@@ -110,52 +160,12 @@ DataLoader.prototype.loadMore = async function(doPreload = false) {
 
 export default DataLoader;
 
-export const onAfterUnique = (loader) => {
-  if (loader.dataSource.data.length > 0) {
-    let vk = loader.parent.valueKey;
-    let d = loader.dataSource.data.map(x => [x[vk].toString().normalize(), x]);
-    d = new Map(d).values();
-    d = Array.from(d);
-    loader.dataSource.data = d;
-  }
-};
 
-export const onAfterSingle = (loader) => {
-  if (loader.dataSource.data.length > 0) {
-    loader.dataSource.data = loader.dataSource.data[0];
-  }
-};
 
-export const simplyLoad = async (route, payload, filter, map) => {
-  let preLoader = new DataLoader(route);
-  await preLoader.load(payload, true);
-  let relevant = preLoader.dataSource.data.filter(x => filter(x));
-  let data = relevant.map(x => map(x));
-  return Promise.resolve(data);
-};
 
-export const onAfterSort = (loader) => {
-  if (loader.dataSource.data.length > 0) {
-    let tk = loader.parent.toString1;
-    loader.dataSource.data = loader.dataSource.data.sort((a, b) => {
-      if (isCallable(tk)) {
-        let valA = tk.call(loader, a);
-        let valB = tk.call(loader, b);
-        return valA > valB ? 1 : -1;
-      }
-      return a[tk] > b[tk] ? 1 : -1;
-    });
-  }
-};
 
-export const onAfterSelect = (key) => (loader) => {
-  if (loader.dataSource.data.length > 0) {
-    loader.dataSource.data = loader.dataSource.data.map(x => x[key]);
-  }
-};
 
-export const onAfterFilter = (condition) => (loader) => {
-  if (loader.dataSource.data.length > 0) {
-    loader.dataSource.data = loader.dataSource.data.filter(x => condition(x));
-  }
-};
+
+
+
+

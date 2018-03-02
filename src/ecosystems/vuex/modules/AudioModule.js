@@ -62,7 +62,7 @@ export default {
       commit('source', context.createBufferSource());
       let source = getters.source;
       // todo events
-  
+      
       // prepare request
       let request = new XMLHttpRequest();
       let url = `${baseUrl}${routes.get.files.byId(track.UniqueId)}`;

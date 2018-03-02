@@ -7,9 +7,7 @@ export const watcher = {
     Store.watch(function() {
       return Store.getters['auth/isAuthenticated'];
     }, function(newVal) {
-      Store.dispatch('watch/isAuthenticated', newVal).then(() => {
-        // ignore
-      }).catch(v => {
+      Store.dispatch('watch/isAuthenticated', newVal).catch(v => {
         console.error(v);
       });
     });
@@ -26,9 +24,7 @@ export default {
     },
     
     snackbarHint: function({}, payload) {
-      Store.dispatch('snackbar/hint', payload).then(() => {
-        // ignore
-      }).catch(v => {
+      Store.dispatch('snackbar/hint', payload).catch(v => {
         console.error(v);
       });
     },

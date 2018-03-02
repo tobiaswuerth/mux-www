@@ -1,6 +1,9 @@
 import Vue from 'vue';
-import AsyncDataLoader from '../../scripts/DataLoader';
+import DataLoader from '../../scripts/DataLoader';
 import SubContentHub from './../SubContentHub/SubContentHub';
+import {paths} from './../../ecosystems/vue-router/Router';
+import {simplyLoad} from './../../scripts/DataLoaderUtils';
+import Store from './../../ecosystems/vuex/Store';
 
 export default Vue.extend({
   name: 'ArtistRecordDetailsPage',
@@ -9,112 +12,99 @@ export default Vue.extend({
     SubContentHub,
   },
   
-  mixins: [AsyncDataLoader],
-  
   props: {
     id: {}, name: {},
   },
   
   data: () => {
     return {
-      rawData: [], recordIds: [], requestsRunning: 0,
+      track: null,
     };
   },
   
   computed: {
     uriReleases: function() {
-      return this.prepRoute(this.routes.private.artists.recordsLookup.releases);
+      return this.prepRoute(paths.private.artists.recordsLookup.releases);
     }, uriArtists: function() {
-      return this.prepRoute(this.routes.private.artists.recordsLookup.artists);
+      return this.prepRoute(paths.private.artists.recordsLookup.artists);
     },
   },
   
+  mounted: function() {
+    // load all records of artists with given name
+    simplyLoad('artists/recordsById', {id: this.id},
+      (i) => i.Title.normalize() === this.name.normalize(),
+      (i) => Object.assign({id: i.UniqueId})).then((payloads) => {
+      
+      // then load all tracks related to these records
+      let loader = new DataLoader('records/tracksById');
+      loader.loadAll(payloads, {doPreload: true}).
+        then((data) => {
+          this.initPlayForBestGuess(data);
+        }).
+        catch((r) => {
+          console.error(r);
+        });
+    }).catch((r) => {
+      console.error(r);
+    });
+  },
+  
   methods: {
+    
+    initPlayForBestGuess: function(data) {
+      // sum them up
+      let scores = {};
+      for (let d of data) {
+        let score = d.Score;
+        if (score === 1.0) {
+          // perfect match
+          this.track = d;
+          return;
+        }
+        
+        let track = d.Track;
+        let id = track.UniqueId;
+        
+        let entry = scores[id];
+        if (null == entry) {
+          scores[id] = {
+            count: 1, sum: score, object: d,
+          };
+          continue;
+        }
+        
+        entry.count++;
+        entry.sum += score;
+      }
+      
+      if (scores.length === 0) {
+        this.track = {};
+        return;
+      }
+      
+      // calculate mean for each
+      let means = Object.keys(scores).map(id => {
+        let calcObj = scores[id];
+        return {
+          id: id, mean: (calcObj.sum / calcObj.count).toFixed(6),
+        };
+      });
+      
+      let bestGuess = means.sort((a, b) => a.mean < b.mean ? 1 : -1)[0];
+      this.track = scores[bestGuess.id].object.Track;
+    },
     
     prepRoute: function(route) {
       return route.replace(':id', this.id).
         replace(':name', encodeURIComponent(this.name));
     },
     
-    processLoadedAliases: function() {
-      let d = {};
-      
-      this.rawData.forEach(x => {
-        if (!d[x.UniqueId]) {
-          d[x.UniqueId] = x;
-        }
-      });
-      
-      d = Object.values(d);
-      
-      this.data = {
-        data: d, hasMore: false,
-      };
-    },
-    
-    loadRecordAliases: function(recordId, pageIndex = 0) {
-      this.requestsRunning++;
-      
-      // get artists of release
-      this.$store.dispatch('records/aliasesById',
-        {id: recordId, pageIndex: pageIndex}).
-        then(v => {
-          this.rawData = this.rawData.concat(v.data);
-          if (v.hasMore) {
-            this.loadRecordAliases(recordId, pageIndex + 1);
-          }
-        }).
-        catch(x => {
-          console.error(x);
-        }).finally(() => {
-        this.requestsRunning--;
-        
-        if (this.requestsRunning === 0) {
-          // all fetching requests are done -> process
-          this.processLoadedAliases();
-        }
-      });
-    },
-    
-    loadAliases: function() {
-      this.recordIds.forEach(x => {
-        this.loadRecordAliases(x);
-      });
-    },
-    
     play: function() {
-      
-    },
-    
-    load: function() {
-      // validate
-      if (!this.hasMore || this.state === this.states.loading) {
-        return;
-      }
-      
-      this.state = this.states.loading;
-      
-      // get records ids
-      this.$store.dispatch('artists/recordsById',
-        {id: this.id, pageIndex: this.pageIndex}).
-        then(v => {
-          let ids = v.data.filter(x => x.Title === this.name).
-            map(x => x.UniqueId);
-          this.recordIds = this.recordIds.concat(ids);
-          this.hasMore = v.hasMore;
-          
-          if (this.hasMore) {
-            this.state = this.states.ready;
-            this.loadMore();
-          } else {
-            // all repeases fetched -> now go fetch artists
-            this.loadAliases();
-          }
-        }).catch(x => {
-        console.error(x);
-      }).finally(() => {
-        this.state = this.states.ready;
+      Store.dispatch('audio/play', {track: this.track}).catch((r) => {
+        console.error(r);
       });
     },
+    
   },
 });

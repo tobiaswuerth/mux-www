@@ -72,11 +72,10 @@ export default {
         : this.dataLoader.load;
       
       // execute action
-      action.call(this.dataLoader, payloads, this.doPreload).then(() => {
-        // ignore
-      }).catch((r) => {
-        console.error(r);
-      });
+      action.call(this.dataLoader, payloads, {doPreload: this.doPreload}).
+        catch((r) => {
+          console.error(r);
+        });
     }).catch((r) => {
       console.error(r);
     });

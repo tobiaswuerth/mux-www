@@ -1,5 +1,5 @@
-function DataSource() {
-  this.data = [];
+function DataSource(data = []) {
+  this.data = data;
 }
 
 DataSource.prototype.add = function(data) {

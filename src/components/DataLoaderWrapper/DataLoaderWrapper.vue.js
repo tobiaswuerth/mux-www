@@ -7,7 +7,7 @@ export default Vue.extend({
   
   data: () => {
     return {
-      async: true, loader: new DataLoader(null),
+      async: true, loader: new DataLoader(null, this),
     };
   },
   

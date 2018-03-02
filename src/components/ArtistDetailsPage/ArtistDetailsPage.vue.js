@@ -1,7 +1,8 @@
 import {paths} from './../../ecosystems/vue-router/Router';
 import SubContentHub from './../SubContentHub/SubContentHub';
 
-import DataLoader, {onAfterSingle} from './../../scripts/DataLoader';
+import DataLoader from './../../scripts/DataLoader';
+import {onAfterSingle} from './../../scripts/DataLoaderUtils';
 
 export default {
   name: 'ArtistDetailsPage',
@@ -32,9 +33,7 @@ export default {
   
   mounted: function() {
     this.dataLoader.onAfter = onAfterSingle;
-    this.dataLoader.load({id: this.id}).then(() => {
-      // ignore
-    }).catch((r) => {
+    this.dataLoader.load({id: this.id}).catch((r) => {
       console.error(r);
     });
   },

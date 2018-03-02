@@ -5,15 +5,31 @@ export const isIterable = function(obj) {
   return typeof obj[Symbol.iterator] === 'function';
 };
 
-export const onceOrMore = function(prop, payload) {
+async function asyncInvoke(input, payload) {
+  await Promise.resolve(input).then(async (v) => {
+    if (isCallable(v)) {
+      await v.call(this, payload);
+    }
+  }).catch((r) => {
+    console.error(r);
+  });
+}
+
+export async function onceOrMore(prop, payload) {
   if (prop) {
     if (isIterable(prop)) {
-      prop.forEach(p => p(payload));
+      await prop.reduce(
+        (a, b) => asyncInvoke(a, payload).then(() => asyncInvoke(b, payload))).
+        catch((r) => {
+          console.error(r);
+        });
     } else {
-      prop(payload);
+      await asyncInvoke(prop, payload).catch((r) => {
+        console.error(r);
+      });
     }
   }
-};
+}
 
 export const isCallable = function(obj) {
   if (!obj) {
@@ -24,4 +40,16 @@ export const isCallable = function(obj) {
 
 export const clone = function(obj) {
   return Object.assign({}, obj);
+};
+
+export const resolve = function(obj, payload) {
+  let i = 0;
+  while (isCallable(obj)) {
+    obj = obj.call(this, payload);
+    
+    if (i++ >= 25) {
+      throw new Error('infinite loop call (?)');
+    }
+  }
+  return obj;
 };

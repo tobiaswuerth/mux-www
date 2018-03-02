@@ -1,10 +1,11 @@
 import Router from './../Router';
 import {prepareRoute} from './../RouterUtils';
-import {
-  onAfterSelect, onAfterSort, onAfterUnique, simplyLoad,
-} from './../../../scripts/DataLoader';
+import {simplyLoad,} from '../../../scripts/DataLoaderUtils';
 import List from './../../../components/List/List';
 import {clone} from './../../../scripts/Utils';
+import {
+  onAfterSelect, onAfterSort, onAfterUnique,
+} from './../../../scripts/DataLoaderUtils';
 
 const ArtistsListDetailed = () => import('./../../../components/ArtistsListDetailed/ArtistsListDetailed');
 const ArtistDetailsPage = () => import('./../../../components/ArtistDetailsPage/ArtistDetailsPage');
@@ -12,7 +13,6 @@ const ArtistReleasesList = () => import('./../../../components/ArtistReleasesLis
 const ArtistReleaseDetailsPage = () => import('./../../../components/ArtistReleaseDetailsPage/ArtistReleaseDetailsPage');
 const ArtistReleaseVariationsList = () => import('./../../../components/ArtistReleaseVariationsList/ArtistReleaseVariationsList');
 const ArtistRecordDetailsPage = () => import('./../../../components/ArtistRecordDetailsPage/ArtistRecordDetailsPage');
-const ArtistRecordArtistsList = () => import('./../../../components/ArtistRecordArtistsList/ArtistRecordArtistsList');
 const ArtistRecordReleasesList = () => import('./../../../components/ArtistRecordReleasesList/ArtistRecordReleasesList');
 
 export const paths = {
@@ -64,10 +64,11 @@ export default [
         path: paths.records, component: clone(List), props: {
           route: 'artists/recordsById',
           valueKey: 'Title',
+          id: {},
+          name: {},
           toString1: (i) => i.Title,
-          onAfter: [onAfterUnique, onAfterSort],
-          doPreload: true,
           payload: async (p) => p,
+          onAfter: onAfterUnique,
           onClick: (i, p) => {
             Router.push(prepareRoute(paths.recordsLookup.root,
               {id: p.id, name: i.Title}));
@@ -89,8 +90,9 @@ export default [
           valueKey: 'Title',
           toString1: (i) => i.Title,
           onAfter: [onAfterUnique, onAfterSort],
+          doPreload: true,
           payload: async (p) => await simplyLoad('artists/releasesById',
-            {id: p.id}, (i) => i.Title === p.name,
+            {id: p.id}, (i) => i.Title.normalize() === p.name.normalize(),
             (i) => Object.assign({id: i.UniqueId})),
           onClick: (i, p) => {
             Router.push(prepareRoute(paths.recordsLookup.root,
@@ -111,7 +113,8 @@ export default [
           valueKey: 'UniqueId',
           toString1: (i) => i.Name,
           toString2: (i) => i.Disambiguation,
-          toString3: (i) => i.Aliases ? `a.k.a. ${i.Aliases.map(a => a.Name).
+          toString3: (i) => i.Aliases.length > 0 ? `a.k.a. ${i.Aliases.map(
+            a => a.Name).
             join(', ')}` : '',
           onAfter: [onAfterSelect('Artist'), onAfterUnique, onAfterSort],
           showAvatar: true,
@@ -126,13 +129,12 @@ export default [
   },
   {
     path: paths.recordsLookup.root,
-    component: ArtistRecordDetailsPage,
-    redirect: paths.recordsLookup.artists,
+    component: ArtistRecordDetailsPage, //redirect: paths.recordsLookup.artists,
     props: true,
     children: [
       {
         path: paths.recordsLookup.artists,
-        component: ArtistRecordArtistsList,
+        component: clone(List),
         props: true,
       },
       {

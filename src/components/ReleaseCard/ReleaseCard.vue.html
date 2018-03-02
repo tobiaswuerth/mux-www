@@ -12,15 +12,13 @@
   </md-card-header>
 
   <md-card-content>
-            <span class="md-caption">
-              <span v-if="item.Date">Date: {{item.Date.substr(0, 10)}}<br/></span>
-              <span v-if="item.Country">
-                Country: <img class="md-layout-item country-flag"
-                              :src="`/static/countries/${item.Country}.svg`"
-                              :alt="item.Country"/> {{item.Country}}<br/></span>
-              <span v-if="item.Status">Status: {{item.Status}} <br/></span>
-              <span v-if="item.Quality">Quality: {{item.Quality}} <br/></span>
-            </span>
+   <span class="md-caption">
+     <span v-if="item.Date">Date: {{item.Date.substr(0, 10)}}<br/></span>
+     <span v-if="item.Country">
+       Country: <img class="md-layout-item country-flag" :src="`/static/countries/${item.Country}.svg`" :alt="item.Country"/> {{item.Country}}<br/></span>
+     <span v-if="item.Status">Status: {{item.Status}} <br/></span>
+     <span v-if="item.Quality">Quality: {{item.Quality}} <br/></span>
+    </span>
 
     <div>
       <DataLoaderWrapper :dataLoader="getArtistLoader(item)" :hideEmptyState="true">

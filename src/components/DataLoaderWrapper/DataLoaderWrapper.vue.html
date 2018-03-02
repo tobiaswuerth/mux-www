@@ -10,7 +10,9 @@
   </template>
 
   <span :key="Math.random()">
-    <slot :dataLoader="loader"></slot>
+    <template v-if="loader">
+      <slot :dataLoader="loader"></slot>
+    </template>
   </span>
 
   <template v-if="showBottomSpinner">
