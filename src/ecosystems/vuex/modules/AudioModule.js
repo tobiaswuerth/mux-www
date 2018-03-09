@@ -129,7 +129,7 @@ export default {
     async play({commit, getters, dispatch}, payload) {
       await dispatch('pause');
       let entry = getters.currentEntry;
-      if (!entry) {
+      if (!entry || payload.track) {
         entry = createEntry(entry, payload, getters, commit);
       }
       if (!entry) {
