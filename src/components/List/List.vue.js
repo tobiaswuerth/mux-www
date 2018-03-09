@@ -26,8 +26,7 @@ export default {
     onAfter: {},
     
     // url Router params
-    id: {},
-    name: {},
+    id: {}, name: {}, generic1: {},
   },
   
   data: () => {
@@ -72,10 +71,7 @@ export default {
         : this.dataLoader.load;
       
       // execute action
-      action.call(this.dataLoader, payloads, {doPreload: this.doPreload}).
-        catch((r) => {
-          console.error(r);
-        });
+      action.call(this.dataLoader, payloads, {doPreload: this.doPreload});
     }).catch((r) => {
       console.error(r);
     });

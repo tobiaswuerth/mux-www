@@ -1,39 +1,35 @@
-<DataLoaderWrapper :dataLoader="dataLoader" :hideEmptyState="hideEmptyState" :key="Math.random()">
+<div class="clean-list md-layout md-gutter md-alignment-top-left">
+  <span v-if="isLoading">
+    <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+  </span>
+  <template v-for="item in data">
+    <md-card md-with-hover :key="item.title" class="entry md-layout-item">
 
-  <template>
-    <div class="clean-list md-layout md-gutter md-alignment-top-left">
-      <template v-if="!dataLoader.isLoading">
-        <template v-for="item in dataLoader.dataSource.data">
-          <md-card md-with-hover :key="item.title" class="entry md-layout-item">
-
-            <md-card-header>
-              <div class="md-title">{{item.title}}</div>
-              <div class="md-subhead">released <span v-if="item.countries && item.countries.length > 0">
+      <md-card-header>
+        <div class="md-title">{{item.title}}</div>
+        <div class="md-subhead">released <span v-if="item.countries && item.countries.length > 0">
             in <b>{{item.countries.length}}</b>
           countr{{item.countries.length === 1 ? 'y' : 'ies'}}
           </span> in <b>{{item.variations}}</b> variation{{item.variations > 1 ? 's' : ''}}
-              </div>
-            </md-card-header>
+        </div>
+      </md-card-header>
 
-            <md-card-content>
-              <template v-if="item.countries">
+      <md-card-content>
+        <template v-if="item.countries">
               <span v-for="c in item.countries" :key="c">
                 <img class="md-layout-item country-flag" :src="`/static/countries/${c}.svg`" :alt="c"/>
                 <!--<md-tooltip md-direction="bottom">{{c}}</md-tooltip>-->
                 <!-- https://github.com/vuematerial/vue-material/issues/1529 -->
               </span>
-              </template>
-            </md-card-content>
-
-            <md-card-actions>
-              <md-button @click="doRoute(item.title)">
-                <md-icon>keyboard_arrow_right</md-icon>
-              </md-button>
-            </md-card-actions>
-
-          </md-card>
         </template>
-      </template>
-    </div>
+      </md-card-content>
+
+      <md-card-actions>
+        <md-button @click="doRoute(item.title)">
+          <md-icon>keyboard_arrow_right</md-icon>
+        </md-button>
+      </md-card-actions>
+
+    </md-card>
   </template>
-</DataLoaderWrapper>
+</div>

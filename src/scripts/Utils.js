@@ -5,6 +5,24 @@ export const isIterable = function(obj) {
   return typeof obj[Symbol.iterator] === 'function';
 };
 
+export const isObject = function(obj) {
+  if (null == obj) {
+    return false;
+  }
+  return typeof obj === 'object';
+};
+
+export const isCallable = function(obj) {
+  if (!obj) {
+    return false;
+  }
+  return typeof obj === 'function';
+};
+
+export const makeUnique = function(iterable) {
+  return [...new Set(iterable)];
+};
+
 async function asyncInvoke(input, payload) {
   await Promise.resolve(input).then(async (v) => {
     if (isCallable(v)) {
@@ -30,13 +48,6 @@ export async function onceOrMore(prop, payload) {
     }
   }
 }
-
-export const isCallable = function(obj) {
-  if (!obj) {
-    return false;
-  }
-  return typeof obj === 'function';
-};
 
 export const clone = function(obj) {
   return Object.assign({}, obj);

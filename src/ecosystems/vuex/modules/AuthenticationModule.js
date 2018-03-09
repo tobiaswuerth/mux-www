@@ -1,4 +1,5 @@
 import Store from '../Store';
+import Router from '../../vue-router/Router';
 
 let i = 0;
 const loginStates = {
@@ -45,7 +46,10 @@ export default {
   },
   
   mutations: {
-    isAuthenticated: (s, payload) => s.isAuthenticated = payload,
+    isAuthenticated: (s, payload) => {
+      s.isAuthenticated = payload;
+      Router.push('/');
+    },
     data: (s, payload) => s.data = payload,
     loginState: (s, payload) => s.loginState = payload,
   },

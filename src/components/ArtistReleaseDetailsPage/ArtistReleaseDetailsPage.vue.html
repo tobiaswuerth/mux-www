@@ -9,12 +9,14 @@
           </span> in <b>{{variations}}</b> variation{{variations > 1 ? 's' : ''}}
         </div>
         <span v-for="c in countries" :key="c">
-        <img class="md-layout-item country-flag" :src="`/static/countries/${c}.svg`" :alt="c"/>
-        <md-tooltip md-direction="bottom">{{c}}</md-tooltip>
-      </span>
+          <img class="md-layout-item country-flag" :src="`/static/countries/${c}.svg`" :alt="c"/>
+          <md-tooltip md-direction="bottom">{{c}}</md-tooltip>
+        </span>
       </template>
       <template v-else>
-        <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+        <span>
+          <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+        </span>
       </template>
     </div>
   </template>

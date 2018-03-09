@@ -14,9 +14,21 @@ export default {
   },
   
   mounted: function() {
-    window.onerror = function(message) {
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
+      let string = (msg || '').toLowerCase();
+      let substring = 'script error';
+      if (string.indexOf(substring) > -1) {
+        Store.dispatch('snackbar/hint',
+          'Script Error: See Browser Console for Detail');
+        return false;
+      }
+    
+      let message = [
+        'Message: ' + msg, 'URL: ' + url, 'Line: ' + lineNo,
+        'Column: ' + columnNo, 'Error object: ' + JSON.stringify(error)].join(
+        ' - ');
       Store.dispatch('snackbar/hint', message);
-      return true;
+      return false;
     };
   },
   

@@ -1,19 +1,20 @@
 <SubContentHub>
   <template>
     <div>
-      <div class="md-title">{{name}}</div>
+      <span class="md-title">{{name}}</span>
 
-      <div>
+      <span :key="Math.random()" v-if="!track">
+        <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+      </span>
 
-        <div v-if="!track">
-          <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
-        </div>
-        <div v-else>
-          <md-button class="play-button md-primary md-raised md-icon-button" @click="play">
-            <md-icon>play_arrow</md-icon>
-          </md-button>
-        </div>
-
+      <div :key="Math.random()" v-else>
+         <span class="md-icon" :style="matchIconStyle">
+          {{matchIcon}}
+          <md-tooltip>Match: {{(match*100)}}% / {{matchLabel}}</md-tooltip>
+        </span>
+        <md-button class="play-button md-primary md-raised md-icon-button" @click="play">
+          <md-icon>play_arrow</md-icon>
+        </md-button>
       </div>
 
     </div>

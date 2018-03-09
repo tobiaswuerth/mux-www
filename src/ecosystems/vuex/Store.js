@@ -9,7 +9,6 @@ import ReleasesModule from './modules/ReleasesModule';
 import RecordsModule from './modules/RecordsModule';
 import TracksModule from './modules/TracksModule';
 import SnackbarModule from './modules/SnackbarModule';
-import WatchModule, {watcher} from './modules/WatchModule';
 import AudioModule from './modules/AudioModule';
 
 Vue.use(Vuex);
@@ -24,7 +23,6 @@ const store = new Vuex.Store({
   modules: {
     repo: RepositoryModule,
     auth: AuthenticationModule,
-    watch: WatchModule,
     artists: ArtistsModule,
     releases: ReleasesModule,
     records: RecordsModule,
@@ -38,8 +36,3 @@ const store = new Vuex.Store({
 });
 
 export default store;
-
-// additional initializing
-// note: this is after 'default export' because these actions may require a
-// reference to this store module
-watcher.initialize();

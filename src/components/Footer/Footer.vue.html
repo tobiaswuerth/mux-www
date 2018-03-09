@@ -1,9 +1,12 @@
 <md-content class="">
 
-  <md-progress-bar class="bar" md-mode="buffer" :md-value="60" :md-buffer="80"></md-progress-bar>
+  <md-progress-bar class="bar" md-mode="determinate" :md-value="progress"></md-progress-bar>
+
+  <div class="md-layout md-alignment-center-center" v-if="entry && entry.track">
+    <span class="md-caption">{{entry.track.Path}}</span> - [{{currentTime}}/{{entry.track.Duration}}]
+  </div>
 
   <div class="md-layout md-gutter md-alignment-center-center">
-
     <md-button class="md-fab md-mini md-raised md-plain">
       <md-icon>skip_previous</md-icon>
     </md-button>
@@ -12,9 +15,12 @@
       <md-icon>replay_10</md-icon>
     </md-button>
 
-    <md-button class="md-fab md-raised md-primary">
-      <!-- <md-icon>pause</md-icon>-->
-      <md-icon>play_arrow</md-icon>
+    <md-button class="md-fab md-raised md-elevation-3" :class="isLoading ? 'md-plain' : 'md-primary'" @click="mainAction">
+      <md-icon :key="Math.random()" v-if="isReady">play_arrow</md-icon>
+      <md-icon :key="Math.random()" v-else-if="isPlaying">pause</md-icon>
+      <md-icon :key="Math.random()" v-else-if="isLoading">
+        <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+      </md-icon>
     </md-button>
 
     <md-button class="md-fab md-mini md-raised md-plain">

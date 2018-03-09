@@ -82,7 +82,7 @@ DataLoader.prototype.load = async function(payload, config = {}) {
       this.dataSource.data = source.data;
       return Promise.resolve(this.dataSource.data);
     }).
-    catch(r => {
+    catch((r) => {
       console.error(r);
       this._morePayloads.push(payload);
       return Promise.reject(r);

@@ -1,9 +1,33 @@
 import Vue from 'vue';
-import DataLoader from '../../scripts/DataLoader';
 import SubContentHub from './../SubContentHub/SubContentHub';
 import {paths} from './../../ecosystems/vue-router/Router';
-import {simplyLoad} from './../../scripts/DataLoaderUtils';
+import {prepareRoute} from './../../ecosystems/vue-router/RouterUtils';
+import {
+  onAfterFilter, onAfterMap, simplyLoad, simplyLoadAll,
+} from './../../scripts/DataLoaderUtils';
 import Store from './../../ecosystems/vuex/Store';
+
+const matchScale = {
+  1: {
+    icon: 'filter_1', text: 'horrible',
+  }, 2: {
+    icon: 'filter_2', text: 'horrible',
+  }, 3: {
+    icon: 'filter_3', text: 'horrible',
+  }, 4: {
+    icon: 'filter_4', text: 'very bad',
+  }, 5: {
+    icon: 'filter_5', text: 'bad',
+  }, 6: {
+    icon: 'filter_6', text: 'ok',
+  }, 7: {
+    icon: 'filter_7', text: 'good',
+  }, 8: {
+    icon: 'filter_8', text: 'very good',
+  }, 9: {
+    icon: 'filter_9_plus', text: 'excellent',
+  },
+};
 
 export default Vue.extend({
   name: 'ArtistRecordDetailsPage',
@@ -13,44 +37,111 @@ export default Vue.extend({
   },
   
   props: {
-    id: {}, name: {},
+    id: {}, name: {}, generic1: {},
   },
   
   data: () => {
     return {
-      track: null,
+      track: null, match: 0,
     };
   },
   
   computed: {
     uriReleases: function() {
-      return this.prepRoute(paths.private.artists.recordsLookup.releases);
+      return prepareRoute(this.generic1
+        ? paths.private.artists.recordsLookup.releasesFull
+        : paths.private.artists.recordsLookup.releasesShort, {
+        id: this.id, name: this.name, 'generic1?': this.generic1,
+      });
     }, uriArtists: function() {
-      return this.prepRoute(paths.private.artists.recordsLookup.artists);
+      return prepareRoute(this.generic1
+        ? paths.private.artists.recordsLookup.artistsFull
+        : paths.private.artists.recordsLookup.artistsShort, {
+        id: this.id, name: this.name, 'generic1?': this.generic1,
+      });
+    },
+  
+    matchIconStyle: function() {
+      if (this.match >= 100.0) {
+        this.match = 99.0;
+      }
+    
+      let r;
+      let g;
+    
+      if (this.match < 50.0) {
+        r = Math.floor(255 * (this.match / 50));
+        g = 255;
+      } else {
+        r = 255;
+        g = Math.floor(255 * ((50 - this.match % 50) / 50));
+      }
+    
+      return `color: rgb(${r},${g},0); float: right;`;
+    },
+  
+    matchLabel: function() {
+      return this.matchScaleEntry.text;
+    },
+  
+    matchScaleEntry: function() {
+      let category = Math.round(this.match * 10);
+      category = category < 1 ? 1 : category > 9 ? 9 : category;
+      return matchScale[category];
+    },
+  
+    matchIcon: function() {
+      return this.matchScaleEntry.icon;
     },
   },
   
   mounted: function() {
-    // load all records of artists with given name
-    simplyLoad('artists/recordsById', {id: this.id},
-      (i) => i.Title.normalize() === this.name.normalize(),
-      (i) => Object.assign({id: i.UniqueId})).then((payloads) => {
-      
-      // then load all tracks related to these records
-      let loader = new DataLoader('records/tracksById');
-      loader.loadAll(payloads, {doPreload: true}).
-        then((data) => {
-          this.initPlayForBestGuess(data);
-        }).
-        catch((r) => {
-          console.error(r);
-        });
-    }).catch((r) => {
-      console.error(r);
-    });
+    if (this.generic1) {
+      // load records with given name via release
+      simplyLoad('artists/releasesById', {id: this.id}, [
+        onAfterFilter((i) => i.Title.normalize() === this.generic1.normalize()),
+        onAfterMap((i) => Object.assign({id: i.UniqueId}))]).
+        then((payloads) => {
+          simplyLoadAll('releases/recordsById', payloads, [
+            onAfterFilter((i) => i.Title.normalize() === this.name.normalize()),
+            onAfterMap((i) => Object.assign({id: i.UniqueId}))]).
+            then((payloads) => {
+              this.processRecordIds(payloads);
+            }).
+            catch((r) => {
+              console.error(r);
+            });
+        }).catch((r) => {
+        console.error(r);
+      });
+    } else {
+      // load direct
+      simplyLoad('artists/recordsById', {id: this.id}, [
+        onAfterFilter((i) => i.Title.normalize() === this.name.normalize()),
+        onAfterMap((i) => Object.assign({id: i.UniqueId}))]).
+        then((payloads) => {
+          this.processRecordIds(payloads);
+        }).catch((r) => {
+        console.error(r);
+      });
+    }
   },
   
   methods: {
+  
+    processRecordIds: function(payloads) {
+      // load all tracks related to these records
+      simplyLoadAll('records/tracksById', payloads).then((data) => {
+        this.initPlayForBestGuess(data);
+      }).catch((r) => {
+        console.error(r);
+      });
+      simplyLoadAll('records/aliasesById', payloads).then((data) => {
+        console.log(data);
+      }).catch((r) => {
+        console.error(r);
+      });
+    },
     
     initPlayForBestGuess: function(data) {
       // sum them up
@@ -60,6 +151,7 @@ export default Vue.extend({
         if (score === 1.0) {
           // perfect match
           this.track = d;
+          this.match = 1.0;
           return;
         }
         
@@ -92,12 +184,10 @@ export default Vue.extend({
       });
       
       let bestGuess = means.sort((a, b) => a.mean < b.mean ? 1 : -1)[0];
-      this.track = scores[bestGuess.id].object.Track;
-    },
-    
-    prepRoute: function(route) {
-      return route.replace(':id', this.id).
-        replace(':name', encodeURIComponent(this.name));
+  
+      let entry = scores[bestGuess.id];
+      this.track = entry.object.Track;
+      this.match = bestGuess.mean;
     },
     
     play: function() {

@@ -3,7 +3,7 @@ import {prepareRoute} from './../RouterUtils';
 import List from './../../../components/List/List';
 import {clone} from './../../../scripts/Utils';
 import ReleaseDetailsPage from './../../../components/ReleaseDetailsPage/ReleaseDetailsPage';
-import {onAfterSelect} from '../../../scripts/DataLoaderUtils';
+import {onAfterMap} from '../../../scripts/DataLoaderUtils';
 import {paths as recordsPaths} from './RecordsRoutes';
 import {paths as artistsPaths} from './ArtistsRoutes';
 import {onAfterSort} from './../../../scripts/DataLoaderUtils';
@@ -59,7 +59,7 @@ export default [
           showAvatar: true,
           doInsetDivider: true,
           payload: async (p) => p,
-          onAfter: [onAfterSelect('Artist'), onAfterSort],
+          onAfter: [onAfterMap(i => i.Artist), onAfterSort],
           toString1: (i) => i.Name,
           toString2: (i) => i.Disambiguation,
           toString3: (i) => i.Aliases.length > 0 ? `a.k.a. ${i.Aliases.map(

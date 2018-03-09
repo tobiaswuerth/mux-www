@@ -1,11 +1,8 @@
 import Router, {paths} from './../../ecosystems/vue-router/Router';
-import DataLoaderWrapper from '../DataLoaderWrapper/DataLoaderWrapper';
-import DataLoader from './../../scripts/DataLoader';
+import {simplyLoad} from './../../scripts/DataLoaderUtils';
 
 export default {
   name: 'ArtistReleasesList',
-  
-  components: {Router, DataLoaderWrapper},
   
   props: {
     id: {},
@@ -13,15 +10,19 @@ export default {
   
   data: () => {
     return {
-      dataLoader: new DataLoader('artists/releasesById'), hideEmptyState: false,
+      data: [], hideEmptyState: false, isLoading: true,
     };
   },
   
   mounted: function() {
-    this.dataLoader.onAfter = this.onAfter;
-    this.dataLoader.load({id: this.id}, true).catch((r) => {
-      console.error(r);
-    });
+    simplyLoad('artists/releasesById', {id: this.id}, this.onAfter).
+      then((data) => {
+        this.data = data;
+        this.isLoading = false;
+      }).
+      catch((r) => {
+        console.error(r);
+      });
   },
   
   methods: {
