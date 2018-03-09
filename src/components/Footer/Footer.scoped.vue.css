@@ -2,3 +2,15 @@
   width: 100%;
   padding: 0;
 }
+
+.currentTime {
+  position: absolute;
+  left: 8px;
+  bottom: 50px;
+}
+
+.totalTime {
+  position: fixed;
+  right: 8px;
+  bottom: 50px;
+}

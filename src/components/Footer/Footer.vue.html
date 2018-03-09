@@ -3,10 +3,14 @@
   <md-progress-bar class="bar" md-mode="determinate" :md-value="progress"></md-progress-bar>
 
   <div class="md-layout md-alignment-center-center" v-if="entry && entry.track">
-    <span class="md-caption">{{entry.track.Path}}</span> - [{{currentTime}}/{{entry.track.Duration}}]
+    <span class="md-caption">{{entry.track.Path}}</span>
   </div>
 
   <div class="md-layout md-gutter md-alignment-center-center">
+    <span class="currentTime">
+      {{currentTimeLabel}}
+    </span>
+
     <md-button class="md-fab md-mini md-raised md-plain">
       <md-icon>skip_previous</md-icon>
     </md-button>
@@ -30,6 +34,10 @@
     <md-button class="md-fab md-mini md-raised md-plain">
       <md-icon>skip_next</md-icon>
     </md-button>
+
+    <span class="totalTime">
+      {{trackDurationLabel}}
+    </span>
 
   </div>
 </md-content>

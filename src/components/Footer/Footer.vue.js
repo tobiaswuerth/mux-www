@@ -1,6 +1,26 @@
 import Store from './../../ecosystems/vuex/Store';
 import {states as audioStates} from './../../ecosystems/vuex/modules/AudioModule';
 
+const secondsToReadableString = function(seconds) {
+  let hours = Math.floor(seconds / 3600);
+  seconds = seconds - (hours * 3600);
+  let minutes = Math.floor(seconds / 60);
+  seconds = seconds - (minutes * 60);
+  let result = '';
+  if (hours > 0) {
+    result += `${hours}:`;
+  }
+  if (minutes < 10) {
+    result += 0;
+  }
+  result += minutes + ':';
+  if (seconds < 10) {
+    result += 0;
+  }
+  result += seconds.toFixed(0);
+  return result;
+};
+
 export default {
   name: 'Footer',
   
@@ -9,8 +29,7 @@ export default {
       state: audioStates.ready,
       track: null,
       currentTime: 0,
-      progress: 0,
-      entry: null,
+      progress: 0, entry: {},
     };
   },
   
@@ -23,6 +42,11 @@ export default {
       return this.entry && this.entry.audioState === audioStates.ready;
     }, isPlaying: function() {
       return this.entry && this.entry.audioState === audioStates.playing;
+    }, currentTimeLabel: function() {
+      return secondsToReadableString(this.currentTime);
+    }, trackDurationLabel: function() {
+      return secondsToReadableString(
+        this.entry.track ? this.entry.track.Duration : 0);
     },
   },
   
@@ -55,7 +79,6 @@ export default {
         }
         this.currentTime = Math.round(bestGuess);
         this.progress = this.currentTime * 100 / this.entry.track.Duration;
-        this.currentTime = bestGuess;
       } else {
         this.progress = 0;
         this.currentTime = 0;
