@@ -10,6 +10,7 @@ import {
   simplyLoad,
   simplyLoadAll,
 } from './../../../scripts/DataLoaderUtils';
+import ReleasesListDetailed from '../../../components/ReleasesListDetailed/ReleasesListDetailed';
 
 const ArtistsListDetailed = () => import('./../../../components/ArtistsListDetailed/ArtistsListDetailed');
 const ArtistDetailsPage = () => import('./../../../components/ArtistDetailsPage/ArtistDetailsPage');
@@ -17,7 +18,6 @@ const ArtistReleasesList = () => import('./../../../components/ArtistReleasesLis
 const ArtistReleaseDetailsPage = () => import('./../../../components/ArtistReleaseDetailsPage/ArtistReleaseDetailsPage');
 const ArtistReleaseVariationsList = () => import('./../../../components/ArtistReleaseVariationsList/ArtistReleaseVariationsList');
 const ArtistRecordDetailsPage = () => import('./../../../components/ArtistRecordDetailsPage/ArtistRecordDetailsPage');
-const ArtistRecordReleasesList = () => import('./../../../components/ArtistRecordReleasesList/ArtistRecordReleasesList');
 
 export const paths = {
   root: '/a',
@@ -229,7 +229,40 @@ export default [
       {
         path: paths.recordsLookup.releasesFull,
         alias: paths.recordsLookup.releasesShort,
-        component: ArtistRecordReleasesList,
-        props: true,
+        component: clone(ReleasesListDetailed),
+        props: {
+          route: 'records/releasesById', payload: async (p) => {
+            let filterTitleBy = (x) => (i) => i.Title.normalize() ===
+              x.normalize();
+            let keyMapper = onAfterMap((i) => Object.assign({id: i.UniqueId}));
+            let payload = {id: p.id};
+      
+            // load via release
+            if (p.generic1) {
+              let payloads = await simplyLoad('artists/releasesById', payload,
+                [onAfterFilter(filterTitleBy(p.generic1)), keyMapper]).
+                catch((r) => {
+                  console.error(r);
+                });
+              return await simplyLoadAll('releases/recordsById', payloads,
+                [onAfterFilter(filterTitleBy(p.name)), keyMapper]).
+                catch((r) => {
+                  console.error(r);
+                });
+            }
+      
+            // load direct
+            return await simplyLoad('artists/recordsById', payload,
+              [onAfterFilter(filterTitleBy(p.name)), keyMapper]).catch((r) => {
+              console.error(r);
+            });
+          }, doPreload: true, onAfter: (loader) => {
+            if (loader.dataSource.data.length === 1) {
+              // auto select record
+              let id = loader.dataSource.data[0].UniqueId;
+              Router.push(paths.details.replace(':id', encodeURIComponent(id)));
+            }
+          },
+        },
       },],
   }];
