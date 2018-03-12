@@ -12,7 +12,6 @@ import {
 } from './../../../scripts/DataLoaderUtils';
 import ReleasesListDetailed from '../../../components/ReleasesListDetailed/ReleasesListDetailed';
 
-const ArtistsListDetailed = () => import('./../../../components/ArtistsListDetailed/ArtistsListDetailed');
 const ArtistDetailsPage = () => import('./../../../components/ArtistDetailsPage/ArtistDetailsPage');
 const ArtistReleasesList = () => import('./../../../components/ArtistReleasesList/ArtistReleasesList');
 const ArtistReleaseDetailsPage = () => import('./../../../components/ArtistReleaseDetailsPage/ArtistReleaseDetailsPage');
@@ -55,9 +54,26 @@ export default [
     },
   },
   {
-    path: paths.lookup,
-    component: ArtistsListDetailed,
-    props: true,
+    path: paths.lookup, component: clone(List), props: {
+      route: 'artists/byName',
+      valueKey: 'UniqueId',
+      toString1: (i) => i.Name,
+      toString2: (i) => i.Disambiguation,
+      toString3: (i) => i.Aliases.length > 0 ? `a.k.a. ${i.Aliases.map(
+        a => a.Name).
+        join(', ')}` : '',
+      onAfter: (p) => {
+        let data = p.dataSource.data;
+        if (data.length === 1) {
+          Router.push(prepareRoute(paths.details, {id: data[0].UniqueId}));
+        }
+      },
+      showAvatar: true,
+      doInsetDivider: true,
+      payload: async (p) => p,
+      onClick: (i) => Router.push(
+        prepareRoute(paths.details, {id: i.UniqueId})),
+    },
   },
   {
     path: paths.details,
