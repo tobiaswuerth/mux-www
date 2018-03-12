@@ -6,6 +6,7 @@ import {
   onAfterFilter, onAfterMap, simplyLoad, simplyLoadAll,
 } from './../../scripts/DataLoaderUtils';
 import Store from './../../ecosystems/vuex/Store';
+import {secondsToReadableString} from './../../scripts/Utils';
 
 const matchScale = [
   {
@@ -33,7 +34,7 @@ export default Vue.extend({
   
   data: () => {
     return {
-      track: null, match: 0, aliases: '',
+      track: null, match: 0, aliases: '', disambiguation: '', duration: '',
     };
   },
   
@@ -53,22 +54,23 @@ export default Vue.extend({
     },
     
     matchIconStyle: function() {
-      if (this.match >= 100.0) {
-        this.match = 99.0;
+      let m = this.match * 100;
+      if (m >= 100.0) {
+        m = 99.0;
       }
       
       let r;
       let g;
-      
-      if (this.match < 50.0) {
-        r = Math.floor(255 * (this.match / 50));
-        g = 255;
-      } else {
+  
+      if (m < 50.0) {
+        g = Math.floor(255 * (m / 50));
         r = 255;
-        g = Math.floor(255 * ((50 - this.match % 50) / 50));
+      } else {
+        g = 255;
+        r = Math.floor(255 * ((50 - m % 50) / 50));
       }
-      
-      return `color: rgb(${r},${g},0); float: right;`;
+  
+      return `color: rgb(${r},${g},0);`;
     },
     
     matchLabel: function() {
@@ -97,11 +99,10 @@ export default Vue.extend({
         onAfterFilter((i) => i.Title.normalize() === this.generic1.normalize()),
         onAfterMap((i) => Object.assign({id: i.UniqueId}))]).
         then((payloads) => {
-          simplyLoadAll('releases/recordsById', payloads, [
-            onAfterFilter((i) => i.Title.normalize() === this.name.normalize()),
-            onAfterMap((i) => Object.assign({id: i.UniqueId}))]).
-            then((payloads) => {
-              this.processRecordIds(payloads);
+          simplyLoadAll('releases/recordsById', payloads, onAfterFilter(
+            (i) => i.Title.normalize() === this.name.normalize())).
+            then((data) => {
+              this.processRecords(data);
             }).
             catch((r) => {
               console.error(r);
@@ -111,11 +112,10 @@ export default Vue.extend({
       });
     } else {
       // load direct
-      simplyLoad('artists/recordsById', {id: this.id}, [
-        onAfterFilter((i) => i.Title.normalize() === this.name.normalize()),
-        onAfterMap((i) => Object.assign({id: i.UniqueId}))]).
-        then((payloads) => {
-          this.processRecordIds(payloads);
+      simplyLoad('artists/recordsById', {id: this.id},
+        onAfterFilter((i) => i.Title.normalize() === this.name.normalize())).
+        then((data) => {
+          this.processRecords(data);
         }).catch((r) => {
         console.error(r);
       });
@@ -123,9 +123,15 @@ export default Vue.extend({
   },
   
   methods: {
-    
-    processRecordIds: function(payloads) {
+  
+    processRecords: function(records) {
+      this.disambiguation = [
+        ...new Set(records.map(r => r.Disambiguation))].join(', ');
+      this.duration = `${secondsToReadableString(records.reduce(
+        (a, b) => a + (b.Length / 1000), 0) / records.length)}min`;
+      
       // load all tracks related to these records
+      let payloads = records.map((i) => Object.assign({id: i.UniqueId}));
       simplyLoadAll('records/tracksById', payloads).then((data) => {
         this.initPlayForBestGuess(data);
       }).catch((r) => {
