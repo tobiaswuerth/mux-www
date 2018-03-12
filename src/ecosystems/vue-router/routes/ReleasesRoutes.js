@@ -8,7 +8,7 @@ import {paths as recordsPaths} from './RecordsRoutes';
 import {paths as artistsPaths} from './ArtistsRoutes';
 import {onAfterSort} from './../../../scripts/DataLoaderUtils';
 
-const ReleasesListDetailed = () => import('../../../components/ReleasesListDetailed/ReleasesListDetailed');
+import ReleasesListDetailed from '../../../components/ReleasesListDetailed/ReleasesListDetailed';
 
 export const paths = {
   root: '/r',
@@ -32,9 +32,18 @@ export default [
     },
   },
   {
-    path: paths.lookup,
-    component: ReleasesListDetailed,
-    props: true,
+    path: paths.lookup, component: clone(ReleasesListDetailed), props: {
+      route: 'releases/byName',
+      payload: async (p) => p,
+      doPreload: true,
+      onAfter: (loader) => {
+        if (loader.dataSource.data.length === 1) {
+          // auto select record
+          let id = loader.dataSource.data[0].UniqueId;
+          Router.push(paths.details.replace(':id', encodeURIComponent(id)));
+        }
+      },
+    },
   },
   {
     path: paths.details,

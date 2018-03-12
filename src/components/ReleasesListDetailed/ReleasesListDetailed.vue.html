@@ -1,4 +1,4 @@
-<DataLoaderWrapper :dataLoader="dataLoader">
+<DataLoaderWrapper :dataLoader="initLoader">
   <template slot-scope="props">
     <div class="clean-list md-layout md-gutter md-alignment-top-left">
       <template v-if="!props.dataLoader.isLoading">

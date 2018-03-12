@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import {isIterable} from './../../scripts/Utils';
+import {isCallable, isIterable} from './../../scripts/Utils';
 import DataLoader from './../../scripts/DataLoader';
 
 export default Vue.extend({
@@ -17,7 +17,10 @@ export default Vue.extend({
   
   mounted: function() {
     let self = this;
-    Promise.resolve(this.dataLoader).then(function(v) {
+    let promise = isCallable(this.dataLoader)
+      ? this.dataLoader.call(this)
+      : this.dataLoader;
+    Promise.resolve(promise).then(function(v) {
       self.loader = v;
       self.async = false;
     });

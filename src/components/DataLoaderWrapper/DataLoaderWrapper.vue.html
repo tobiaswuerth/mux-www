@@ -20,7 +20,7 @@
       <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
     </span>
   </template>
-  <template v-if="loader.hasMore()">
+  <template v-if="loader && loader.hasMore()">
     <slot :dataLoader="loader" name="more"></slot>
   </template>
 </span>
