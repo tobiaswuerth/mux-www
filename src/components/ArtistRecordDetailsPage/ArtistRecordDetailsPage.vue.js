@@ -61,7 +61,7 @@ export default Vue.extend({
       
       let r;
       let g;
-  
+      
       if (m < 50.0) {
         g = Math.floor(255 * (m / 50));
         r = 255;
@@ -69,7 +69,7 @@ export default Vue.extend({
         g = 255;
         r = Math.floor(255 * ((50 - m % 50) / 50));
       }
-  
+      
       return `color: rgb(${r},${g},0);`;
     },
     
@@ -123,7 +123,7 @@ export default Vue.extend({
   },
   
   methods: {
-  
+    
     processRecords: function(records) {
       this.disambiguation = [
         ...new Set(records.map(r => r.Disambiguation))].join(', ');
