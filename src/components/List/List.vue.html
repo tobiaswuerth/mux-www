@@ -4,9 +4,7 @@
       <template v-for="item in dataLoader.dataSource.data">
         <md-list-item class="clean-list-item" :key="item[valueKey]" @click="onClick(item, $route.params)">
           <slot :item="item">
-            <md-avatar class="md-avatar-icon" v-if="showAvatar">
-              {{getAvatar(item)}}
-            </md-avatar>
+            <md-avatar class="md-avatar-icon" v-if="showAvatar"> {{getAvatar(item)}}</md-avatar>
 
             <div class="md-list-item-text">
               <span> {{getString1(item)}} </span> <span v-if="toString2"> {{getString2(item)}} </span>

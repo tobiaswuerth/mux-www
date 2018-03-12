@@ -6,28 +6,20 @@ import {
   onAfterFilter, onAfterMap, simplyLoad, simplyLoadAll,
 } from './../../scripts/DataLoaderUtils';
 import Store from './../../ecosystems/vuex/Store';
+import {secondsToReadableString} from './../../scripts/Utils';
 
-const matchScale = {
-  1: {
-    icon: 'filter_1', text: 'horrible',
-  }, 2: {
-    icon: 'filter_2', text: 'horrible',
-  }, 3: {
-    icon: 'filter_3', text: 'horrible',
-  }, 4: {
-    icon: 'filter_4', text: 'very bad',
-  }, 5: {
-    icon: 'filter_5', text: 'bad',
-  }, 6: {
-    icon: 'filter_6', text: 'ok',
-  }, 7: {
-    icon: 'filter_7', text: 'good',
-  }, 8: {
-    icon: 'filter_8', text: 'very good',
-  }, 9: {
-    icon: 'filter_9_plus', text: 'excellent',
-  },
-};
+const matchScale = [
+  {
+    from: .0, to: .6, icon: 'sentiment_very_dissatisfied', text: 'horrible',
+  }, {
+    from: .6, to: .785, icon: 'sentiment_dissatisfied', text: 'bad',
+  }, {
+    from: .785, to: .85, icon: 'sentiment_neutral', text: 'ok',
+  }, {
+    from: .85, to: .925, icon: 'sentiment_satisfied', text: 'good',
+  }, {
+    from: .925, to: 1, icon: 'sentiment_very_satisfied', text: 'excellent',
+  }];
 
 export default Vue.extend({
   name: 'ArtistRecordDetailsPage',
@@ -42,7 +34,7 @@ export default Vue.extend({
   
   data: () => {
     return {
-      track: null, match: 0,
+      track: null, match: 0, aliases: '', disambiguation: '', duration: '',
     };
   },
   
@@ -62,22 +54,23 @@ export default Vue.extend({
     },
     
     matchIconStyle: function() {
-      if (this.match >= 100.0) {
-        this.match = 99.0;
+      let m = this.match * 100;
+      if (m >= 100.0) {
+        m = 99.0;
       }
       
       let r;
       let g;
       
-      if (this.match < 50.0) {
-        r = Math.floor(255 * (this.match / 50));
-        g = 255;
-      } else {
+      if (m < 50.0) {
+        g = Math.floor(255 * (m / 50));
         r = 255;
-        g = Math.floor(255 * ((50 - this.match % 50) / 50));
+      } else {
+        g = 255;
+        r = Math.floor(255 * ((50 - m % 50) / 50));
       }
       
-      return `color: rgb(${r},${g},0); float: right;`;
+      return `color: rgb(${r},${g},0);`;
     },
     
     matchLabel: function() {
@@ -85,9 +78,13 @@ export default Vue.extend({
     },
     
     matchScaleEntry: function() {
-      let category = Math.round(this.match * 10);
-      category = category < 1 ? 1 : category > 9 ? 9 : category;
-      return matchScale[category];
+      for (let i = 0; i < matchScale.length; i++) {
+        let entry = matchScale[i];
+        if (this.match >= entry.from && this.match <= entry.to) {
+          return entry;
+        }
+      }
+      return {};
     },
     
     matchIcon: function() {
@@ -102,11 +99,10 @@ export default Vue.extend({
         onAfterFilter((i) => i.Title.normalize() === this.generic1.normalize()),
         onAfterMap((i) => Object.assign({id: i.UniqueId}))]).
         then((payloads) => {
-          simplyLoadAll('releases/recordsById', payloads, [
-            onAfterFilter((i) => i.Title.normalize() === this.name.normalize()),
-            onAfterMap((i) => Object.assign({id: i.UniqueId}))]).
-            then((payloads) => {
-              this.processRecordIds(payloads);
+          simplyLoadAll('releases/recordsById', payloads, onAfterFilter(
+            (i) => i.Title.normalize() === this.name.normalize())).
+            then((data) => {
+              this.processRecords(data);
             }).
             catch((r) => {
               console.error(r);
@@ -116,11 +112,10 @@ export default Vue.extend({
       });
     } else {
       // load direct
-      simplyLoad('artists/recordsById', {id: this.id}, [
-        onAfterFilter((i) => i.Title.normalize() === this.name.normalize()),
-        onAfterMap((i) => Object.assign({id: i.UniqueId}))]).
-        then((payloads) => {
-          this.processRecordIds(payloads);
+      simplyLoad('artists/recordsById', {id: this.id},
+        onAfterFilter((i) => i.Title.normalize() === this.name.normalize())).
+        then((data) => {
+          this.processRecords(data);
         }).catch((r) => {
         console.error(r);
       });
@@ -129,15 +124,21 @@ export default Vue.extend({
   
   methods: {
     
-    processRecordIds: function(payloads) {
+    processRecords: function(records) {
+      this.disambiguation = [
+        ...new Set(records.map(r => r.Disambiguation))].join(', ');
+      this.duration = `${secondsToReadableString(records.reduce(
+        (a, b) => a + (b.Length / 1000), 0) / records.length)}min`;
+      
       // load all tracks related to these records
+      let payloads = records.map((i) => Object.assign({id: i.UniqueId}));
       simplyLoadAll('records/tracksById', payloads).then((data) => {
         this.initPlayForBestGuess(data);
       }).catch((r) => {
         console.error(r);
       });
       simplyLoadAll('records/aliasesById', payloads).then((data) => {
-        console.log(data);
+        this.aliases = data.map(d => d.Name).join(', ');
       }).catch((r) => {
         console.error(r);
       });
