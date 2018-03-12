@@ -15,7 +15,6 @@ import ReleasesListDetailed from '../../../components/ReleasesListDetailed/Relea
 const ArtistDetailsPage = () => import('./../../../components/ArtistDetailsPage/ArtistDetailsPage');
 const ArtistReleasesList = () => import('./../../../components/ArtistReleasesList/ArtistReleasesList');
 const ArtistReleaseDetailsPage = () => import('./../../../components/ArtistReleaseDetailsPage/ArtistReleaseDetailsPage');
-const ArtistReleaseVariationsList = () => import('./../../../components/ArtistReleaseVariationsList/ArtistReleaseVariationsList');
 const ArtistRecordDetailsPage = () => import('./../../../components/ArtistRecordDetailsPage/ArtistRecordDetailsPage');
 
 export const paths = {
@@ -128,8 +127,14 @@ export default [
       },
       {
         path: paths.releasesLookup.variants,
-        component: ArtistReleaseVariationsList,
-        props: true,
+        component: clone(ReleasesListDetailed),
+        props: {
+          route: 'releases/byName',
+          payload: async (p) => p.name.variations().
+            map(n => Object.assign({name: n})),
+          doPreload: true,
+          onAfter: onAfterUnique,
+        },
       },
       {
         path: paths.releasesLookup.artists,
