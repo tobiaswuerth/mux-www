@@ -1,7 +1,8 @@
 <SubContentHub>
   <template>
     <div>
-      <span class="md-title">{{name}}</span>
+      <div class="md-title">{{name}}</div>
+      <span class="md-subheading" v-if="aliases">a.k.a. {{aliases}}</span>
 
       <span :key="Math.random()" v-if="!track">
         <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
@@ -10,7 +11,7 @@
       <div :key="Math.random()" v-else>
          <span class="md-icon" :style="matchIconStyle">
           {{matchIcon}}
-          <md-tooltip>Match: {{(match*100)}}% / {{matchLabel}}</md-tooltip>
+          <md-tooltip>Match: {{(match*100).toFixed(3)}}% / {{matchLabel}}</md-tooltip>
         </span>
         <md-button class="play-button md-primary md-raised md-icon-button" @click="play">
           <md-icon>play_arrow</md-icon>

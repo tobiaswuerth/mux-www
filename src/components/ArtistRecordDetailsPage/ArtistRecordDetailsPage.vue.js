@@ -33,7 +33,7 @@ export default Vue.extend({
   
   data: () => {
     return {
-      track: null, match: 0,
+      track: null, match: 0, aliases: '',
     };
   },
   
@@ -132,7 +132,7 @@ export default Vue.extend({
         console.error(r);
       });
       simplyLoadAll('records/aliasesById', payloads).then((data) => {
-        console.log(data); // todo
+        this.aliases = data.map(d => d.Name).join(', ');
       }).catch((r) => {
         console.error(r);
       });
