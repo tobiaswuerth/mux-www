@@ -256,13 +256,7 @@ export default [
               [onAfterFilter(filterTitleBy(p.name)), keyMapper]).catch((r) => {
               console.error(r);
             });
-          }, doPreload: true, onAfter: (loader) => {
-            if (loader.dataSource.data.length === 1) {
-              // auto select record
-              let id = loader.dataSource.data[0].UniqueId;
-              Router.push(paths.details.replace(':id', encodeURIComponent(id)));
-            }
-          },
+          }, doPreload: true,
         },
       },],
   }];
