@@ -7,27 +7,18 @@ import {
 } from './../../scripts/DataLoaderUtils';
 import Store from './../../ecosystems/vuex/Store';
 
-const matchScale = {
-  1: {
-    icon: 'filter_1', text: 'horrible',
-  }, 2: {
-    icon: 'filter_2', text: 'horrible',
-  }, 3: {
-    icon: 'filter_3', text: 'horrible',
-  }, 4: {
-    icon: 'filter_4', text: 'very bad',
-  }, 5: {
-    icon: 'filter_5', text: 'bad',
-  }, 6: {
-    icon: 'filter_6', text: 'ok',
-  }, 7: {
-    icon: 'filter_7', text: 'good',
-  }, 8: {
-    icon: 'filter_8', text: 'very good',
-  }, 9: {
-    icon: 'filter_9_plus', text: 'excellent',
-  },
-};
+const matchScale = [
+  {
+    from: .0, to: .6, icon: 'sentiment_very_dissatisfied', text: 'horrible',
+  }, {
+    from: .6, to: .785, icon: 'sentiment_dissatisfied', text: 'bad',
+  }, {
+    from: .785, to: .85, icon: 'sentiment_neutral', text: 'ok',
+  }, {
+    from: .85, to: .925, icon: 'sentiment_satisfied', text: 'good',
+  }, {
+    from: .925, to: 1, icon: 'sentiment_very_satisfied', text: 'excellent',
+  }];
 
 export default Vue.extend({
   name: 'ArtistRecordDetailsPage',
@@ -85,9 +76,13 @@ export default Vue.extend({
     },
     
     matchScaleEntry: function() {
-      let category = Math.round(this.match * 10);
-      category = category < 1 ? 1 : category > 9 ? 9 : category;
-      return matchScale[category];
+      for (let i = 0; i < matchScale.length; i++) {
+        let entry = matchScale[i];
+        if (this.match >= entry.from && this.match <= entry.to) {
+          return entry;
+        }
+      }
+      return {};
     },
     
     matchIcon: function() {
@@ -137,7 +132,7 @@ export default Vue.extend({
         console.error(r);
       });
       simplyLoadAll('records/aliasesById', payloads).then((data) => {
-        console.log(data);
+        console.log(data); // todo
       }).catch((r) => {
         console.error(r);
       });
