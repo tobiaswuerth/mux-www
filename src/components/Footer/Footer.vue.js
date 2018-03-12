@@ -1,25 +1,6 @@
 import Store from './../../ecosystems/vuex/Store';
 import {states as audioStates} from './../../ecosystems/vuex/modules/AudioModule';
-
-const secondsToReadableString = function(seconds) {
-  let hours = Math.floor(seconds / 3600);
-  seconds = seconds - (hours * 3600);
-  let minutes = Math.floor(seconds / 60);
-  seconds = seconds - (minutes * 60);
-  let result = '';
-  if (hours > 0) {
-    result += `${hours}:`;
-  }
-  if (minutes < 10) {
-    result += 0;
-  }
-  result += minutes + ':';
-  if (seconds < 10) {
-    result += 0;
-  }
-  result += seconds.toFixed(0);
-  return result;
-};
+import {secondsToReadableString} from './../../scripts/Utils';
 
 export default {
   name: 'Footer',

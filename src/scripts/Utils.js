@@ -19,6 +19,26 @@ export const isCallable = function(obj) {
   return typeof obj === 'function';
 };
 
+export const secondsToReadableString = function(seconds) {
+  let hours = Math.floor(seconds / 3600);
+  seconds = seconds - (hours * 3600);
+  let minutes = Math.floor(seconds / 60);
+  seconds = seconds - (minutes * 60);
+  let result = '';
+  if (hours > 0) {
+    result += `${hours}:`;
+  }
+  if (minutes < 10) {
+    result += 0;
+  }
+  result += minutes + ':';
+  if (seconds < 10) {
+    result += 0;
+  }
+  result += seconds.toFixed(0);
+  return result;
+};
+
 export const makeUnique = function(iterable) {
   return [...new Set(iterable)];
 };
