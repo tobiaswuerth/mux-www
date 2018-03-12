@@ -3,10 +3,11 @@ import {prepareRoute} from './../RouterUtils';
 import List from './../../../components/List/List';
 import {clone} from './../../../scripts/Utils';
 import ReleaseDetailsPage from './../../../components/ReleaseDetailsPage/ReleaseDetailsPage';
-import {onAfterMap} from '../../../scripts/DataLoaderUtils';
+import {
+  onAfterMap, onAfterSingle, onAfterSort, simplyLoad,
+} from '../../../scripts/DataLoaderUtils';
 import {paths as recordsPaths} from './RecordsRoutes';
 import {paths as artistsPaths} from './ArtistsRoutes';
-import {onAfterSort} from './../../../scripts/DataLoaderUtils';
 
 import ReleasesListDetailed from '../../../components/ReleasesListDetailed/ReleasesListDetailed';
 
@@ -15,7 +16,7 @@ export const paths = {
   lookup: '/r/l/:name',
   details: '/r/:id',
   artists: '/r/:id/a',
-  records: '/r/:id/s',
+  records: '/r/:id/s', variations: '/r/:id/r',
 };
 
 export default [
@@ -75,6 +76,15 @@ export default [
             a => a.Name).join(', ')}` : '',
           onClick: (i) => Router.push(
             prepareRoute(artistsPaths.details, {id: i.UniqueId})),
+        },
+      }, {
+        path: paths.variations, component: clone(ReleasesListDetailed), props: {
+          route: 'releases/byName',
+          payload: async (p) => await simplyLoad('releases/byId', p, [
+            onAfterMap(
+              (i) => i.Title.variations().map(t => Object.assign({name: t}))),
+            onAfterSingle]),
+          doPreload: true,
         },
       },],
   },

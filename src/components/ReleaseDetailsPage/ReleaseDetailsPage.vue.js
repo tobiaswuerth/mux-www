@@ -23,10 +23,7 @@ export default Vue.extend({
   
   computed: {
     uriVariations: function() {
-      return this.dataLoader.dataSource.data.Title
-        ? paths.private.releases.lookup.replace(':name',
-          encodeURIComponent(this.dataLoader.dataSource.data.Title))
-        : '';
+      return this.prepRoute(paths.private.releases.variations);
     }, uriArtists: function() {
       return this.prepRoute(paths.private.releases.artists);
     }, uriRecords: function() {
