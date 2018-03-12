@@ -26,7 +26,9 @@ export default {
     onAfter: {},
     
     // url Router params
-    id: {}, name: {}, generic1: {},
+    id: {},
+    name: {},
+    generic1: {},
   },
   
   data: () => {

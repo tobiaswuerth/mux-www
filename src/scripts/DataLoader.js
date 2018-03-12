@@ -106,7 +106,7 @@ DataLoader.prototype.loadMore = async function(config = {}) {
   this._morePayloads = [];
   return await this.loadAll(payloads, config).catch((r) => {
     console.error(r);
-  })
+  });
 };
 
 export default DataLoader;

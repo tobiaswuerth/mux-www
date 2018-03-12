@@ -9,7 +9,9 @@ export default {
     return {
       state: audioStates.ready,
       track: null,
-      currentTime: 0, progress: 0, entry: {},
+      currentTime: 0,
+      progress: 0,
+      entry: {},
     };
   },
   

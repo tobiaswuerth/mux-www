@@ -22,7 +22,7 @@ export default {
           'Script Error: See Browser Console for Detail');
         return false;
       }
-  
+      
       let message = [
         'Message: ' + msg, 'URL: ' + url, 'Line: ' + lineNo,
         'Column: ' + columnNo, 'Error object: ' + JSON.stringify(error)].join(

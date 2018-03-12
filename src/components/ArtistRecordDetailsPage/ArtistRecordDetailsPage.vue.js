@@ -60,15 +60,15 @@ export default Vue.extend({
         id: this.id, name: this.name, 'generic1?': this.generic1,
       });
     },
-  
+    
     matchIconStyle: function() {
       if (this.match >= 100.0) {
         this.match = 99.0;
       }
-    
+      
       let r;
       let g;
-    
+      
       if (this.match < 50.0) {
         r = Math.floor(255 * (this.match / 50));
         g = 255;
@@ -76,20 +76,20 @@ export default Vue.extend({
         r = 255;
         g = Math.floor(255 * ((50 - this.match % 50) / 50));
       }
-    
+      
       return `color: rgb(${r},${g},0); float: right;`;
     },
-  
+    
     matchLabel: function() {
       return this.matchScaleEntry.text;
     },
-  
+    
     matchScaleEntry: function() {
       let category = Math.round(this.match * 10);
       category = category < 1 ? 1 : category > 9 ? 9 : category;
       return matchScale[category];
     },
-  
+    
     matchIcon: function() {
       return this.matchScaleEntry.icon;
     },
@@ -128,7 +128,7 @@ export default Vue.extend({
   },
   
   methods: {
-  
+    
     processRecordIds: function(payloads) {
       // load all tracks related to these records
       simplyLoadAll('records/tracksById', payloads).then((data) => {
@@ -184,7 +184,7 @@ export default Vue.extend({
       });
       
       let bestGuess = means.sort((a, b) => a.mean < b.mean ? 1 : -1)[0];
-  
+      
       let entry = scores[bestGuess.id];
       this.track = entry.object.Track;
       this.match = bestGuess.mean;

@@ -139,31 +139,31 @@ export default [
               catch((r) => {
                 console.error(r);
               });
-  
+            
             let data = [];
             let append = (d) => data = data.concat(d);
             let promises = [];
-  
+            
             // get artists via release
             promises.push(simplyLoadAll('releases/artistsById', payloads,
               onAfterMap(i => i.Artist.UniqueId)).
               then(append));
-  
+            
             // get artists via records
             payloads = await simplyLoadAll('releases/recordsById', payloads,
               onAfterMap((i) => Object.assign({id: i.UniqueId})));
             promises.push(simplyLoadAll('records/artistsById', payloads,
               onAfterMap(i => i.Artist.UniqueId)).
               then(append));
-  
+            
             // wait for all to be loaded
             await Promise.all(promises).catch((r) => {
               console.error(r);
             });
-  
+            
             data = makeUnique(data);
             data = data.map(d => Object.assign({id: d}));
-  
+            
             return Promise.resolve(data);
           },
           onClick: (i) => Router.push(
@@ -201,7 +201,7 @@ export default [
               x.normalize();
             let keyMapper = onAfterMap((i) => Object.assign({id: i.UniqueId}));
             let payload = {id: p.id};
-  
+            
             // load via release
             if (p.generic1) {
               let payloads = await simplyLoad('artists/releasesById', payload,
@@ -215,7 +215,7 @@ export default [
                   console.error(r);
                 });
             }
-  
+            
             // load direct
             return await simplyLoad('artists/recordsById', payload,
               [onAfterFilter(filterFactory(p.name)), keyMapper]).catch((r) => {
@@ -236,7 +236,7 @@ export default [
               x.normalize();
             let keyMapper = onAfterMap((i) => Object.assign({id: i.UniqueId}));
             let payload = {id: p.id};
-      
+            
             // load via release
             if (p.generic1) {
               let payloads = await simplyLoad('artists/releasesById', payload,
@@ -250,7 +250,7 @@ export default [
                   console.error(r);
                 });
             }
-      
+            
             // load direct
             return await simplyLoad('artists/recordsById', payload,
               [onAfterFilter(filterTitleBy(p.name)), keyMapper]).catch((r) => {

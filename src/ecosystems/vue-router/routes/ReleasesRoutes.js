@@ -16,7 +16,8 @@ export const paths = {
   lookup: '/r/l/:name',
   details: '/r/:id',
   artists: '/r/:id/a',
-  records: '/r/:id/s', variations: '/r/:id/r',
+  records: '/r/:id/s',
+  variations: '/r/:id/r',
 };
 
 export default [
@@ -33,7 +34,9 @@ export default [
     },
   },
   {
-    path: paths.lookup, component: clone(ReleasesListDetailed), props: {
+    path: paths.lookup,
+    component: clone(ReleasesListDetailed),
+    props: {
       route: 'releases/byName',
       payload: async (p) => p,
       doPreload: true,
