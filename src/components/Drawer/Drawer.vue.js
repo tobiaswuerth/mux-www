@@ -1,9 +1,9 @@
-import {routes} from '../../ecosystems/vue-router/Router';
+import {paths} from '../../ecosystems/vue-router/Router';
 
 export default {
   name: 'LayoutDrawer',
   
   data: () => ({
-    routes,
+    routes: paths,
   }),
 };

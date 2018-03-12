@@ -2,10 +2,11 @@ import Axios from 'axios';
 import Store from '../Store';
 
 const DEFAULT_PAGE_SIZE = 50;
+export const baseUrl = 'https://mux.fooo.ooo/api/v1';
 
 // init
 const axios = Axios.create({
-  baseURL: 'https://mux.fooo.ooo/api/v1',
+  baseURL: baseUrl,
 });
 
 // config
@@ -15,8 +16,8 @@ const config = {
   },
 };
 
-// routes
-const routes = {
+// Routes
+export const routes = {
   config,
   
   post: {
@@ -46,6 +47,7 @@ const routes = {
       byId: (id) => `${config.prefix.authorized}/releases/${id}`,
       artistsById: (id) => `${config.prefix.authorized}/releases/${id}/artists`,
       recordsById: (id) => `${config.prefix.authorized}/releases/${id}/records`,
+      aliasesById: (id) => `${config.prefix.authorized}/releases/${id}/aliases`,
     },
     
     records: {
@@ -53,11 +55,19 @@ const routes = {
       byName: (name) => `${config.prefix.authorized}/records/lookup/${encodeURIComponent(
         name)}`,
       byId: (id) => `${config.prefix.authorized}/records/${id}`,
+      tracksById: (id) => `${config.prefix.authorized}/records/${id}/tracks`,
+      releasesById: (id) => `${config.prefix.authorized}/records/${id}/releases`,
+      artistsById: (id) => `${config.prefix.authorized}/records/${id}/artists`,
+      aliasesById: (id) => `${config.prefix.authorized}/records/${id}/aliases`,
     },
     
     tracks: {
       all: `${config.prefix.authorized}/tracks`,
       byId: (id) => `${config.prefix.authorized}/tracks/${id}`,
+    },
+    
+    files: {
+      byId: (id) => `${config.prefix.authorized}/files/${id}`,
     },
   },
 };
@@ -87,12 +97,32 @@ async function performParamDefaultDataRequest(payload, props) {
   return performDefaultDataRequest(route, payload);
 }
 
+const cache = {};
+const cacheInvalidationInterval = 1000 * 60 * 5; // 5min;
+
+setInterval(() => {
+  let now = new Date();
+  let keysToDelete = [];
+  Object.keys(cache).forEach(x => {
+    if ((now - cache[x].date) > cacheInvalidationInterval) {
+      keysToDelete.push(x);
+    }
+  });
+  keysToDelete.forEach(x => delete cache[x]);
+}, cacheInvalidationInterval);
+
 async function performDefaultDataRequest(route, payload) {
   // prepare
   let pageIndex = payload.pageIndex || 0;
   let pageSize = payload.pageSize || DEFAULT_PAGE_SIZE;
   let url = `${route}?p=${pageIndex}&ps=${pageSize}`;
   let options = Store.getters['auth/authDefaultOptions'];
+  
+  // check loaderCache
+  let entry = cache[url];
+  if (entry) {
+    return Promise.resolve(entry);
+  }
   
   // perform request
   let response = await axios.get(url, options);
@@ -101,7 +131,12 @@ async function performDefaultDataRequest(route, payload) {
   let data = response.data;
   let count = data.length;
   let hasMore = count === pageSize;
-  return Promise.resolve({data, count, hasMore, pageIndex, pageSize});
+  let resolvedData = {
+    data, count, hasMore, pageIndex, pageSize, date: new Date(),
+  };
+  cache[url] = resolvedData;
+  
+  return Promise.resolve(resolvedData);
 }
 
 export default {
@@ -150,6 +185,9 @@ export default {
     }, async releaseRecordsById({}, payload) {
       return await performParamDefaultDataRequest(payload,
         {id: routes.get.releases.recordsById});
+    }, async releasesAliasesById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.releases.aliasesById});
     },
     
     // records
@@ -161,6 +199,18 @@ export default {
     }, async recordById({}, payload) {
       return await performParamDefaultDataRequest(payload,
         {id: routes.get.records.byId});
+    }, async recordTracksById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.records.tracksById});
+    }, async recordReleasesById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.records.releasesById});
+    }, async recordArtistsById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.records.artistsById});
+    }, async recordAliasesById({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {id: routes.get.records.aliasesById});
     },
     
     // tracks

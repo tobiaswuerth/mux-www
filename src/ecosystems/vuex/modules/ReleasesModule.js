@@ -23,5 +23,9 @@ export default {
     async recordsById({}, payload) {
       return await Store.dispatch('repo/releaseRecordsById', payload);
     },
+    
+    async aliasesById({}, payload) {
+      return await Store.dispatch('repo/releasesAliasesById', payload);
+    },
   },
 };

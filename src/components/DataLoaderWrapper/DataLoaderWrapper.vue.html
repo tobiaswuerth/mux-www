@@ -1,0 +1,26 @@
+<span>
+  <template v-if="showUpperSpinner">
+    <span :key="Math.random()">
+      <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+    </span>
+  </template>
+  <template v-else-if="showEmptyState">
+    <md-empty-state md-label="Nothing here"
+                    md-description="You see this because there is nothing else to display here."></md-empty-state>
+  </template>
+
+  <span :key="Math.random()">
+    <template v-if="loader">
+      <slot :dataLoader="loader"></slot>
+    </template>
+  </span>
+
+  <template v-if="showBottomSpinner">
+    <span :key="Math.random()">
+      <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+    </span>
+  </template>
+  <template v-if="loader && loader.hasMore()">
+    <slot :dataLoader="loader" name="more"></slot>
+  </template>
+</span>

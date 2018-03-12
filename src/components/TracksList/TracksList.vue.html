@@ -1,11 +1,11 @@
-<List :route="route" :destination="destination" :valueKey="valueKey">
+<List :route="route" :onClick="onClick" :doInsetDivider="true">
   <template slot-scope="props">
-      <span class="md-list-item-text">
+    <md-button class="play-button md-primary md-raised md-icon-button">
+      <md-icon>play_arrow</md-icon> <!-- todo pause button -->
+    </md-button>
+    <span class="md-list-item-text">
         <span>{{props.item.Path}}</span>
         <span class="md-caption">Duration: {{toReadable(props.item.Duration)}}</span>
       </span>
-    <md-button class="md-icon-button md-list-action">
-      <md-icon class="md-primary">keyboard_arrow_right</md-icon>
-    </md-button>
   </template>
 </List>

@@ -3,14 +3,9 @@
     Navigation
   </md-toolbar>
 
-  <md-list-item :to="routes.private.tracks.root">
-    <md-icon>view_headline</md-icon>
-    <span class="md-list-item-text">Tracks</span>
-  </md-list-item>
-
-  <md-list-item :to="routes.private.records.root">
-    <md-icon>view_list</md-icon>
-    <span class="md-list-item-text">Records</span>
+  <md-list-item :to="routes.private.artists.root">
+    <md-icon>people</md-icon>
+    <span class="md-list-item-text">Artists</span>
   </md-list-item>
 
   <md-list-item :to="routes.private.releases.root">
@@ -18,8 +13,14 @@
     <span class="md-list-item-text">Releases</span>
   </md-list-item>
 
-  <md-list-item :to="routes.private.artists.root">
-    <md-icon>people</md-icon>
-    <span class="md-list-item-text">Artists</span>
+  <md-list-item :to="routes.private.records.root">
+    <md-icon>view_list</md-icon>
+    <span class="md-list-item-text">Records</span>
   </md-list-item>
+
+  <md-list-item :to="routes.private.tracks.root">
+    <md-icon>view_headline</md-icon>
+    <span class="md-list-item-text">Tracks</span>
+  </md-list-item>
+
 </div>

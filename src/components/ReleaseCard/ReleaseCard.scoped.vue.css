@@ -1,0 +1,16 @@
+.country-flag {
+  width: 12px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.entry {
+  min-width: 250px;
+  max-width: 500px;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.small-badge {
+  margin: 2px;
+}

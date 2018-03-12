@@ -1,5 +1,5 @@
 import List from './../List/List';
-import {routes} from './../../ecosystems/vue-router/Router';
+import Store from './../../ecosystems/vuex/Store';
 
 export default {
   name: 'TracksList',
@@ -8,7 +8,7 @@ export default {
   
   data: () => {
     return {
-      routes, route: 'tracks/all', valueKey: 'UniqueId',
+      route: 'tracks/all',
     };
   },
   
@@ -19,9 +19,10 @@ export default {
       return `${minutes}:${seconds < 10 ? '0' : ''}${seconds.toFixed(0)}`;
     },
     
-    destination: function(name) {
-      return routes.private.tracks.details.replace(':id',
-        encodeURIComponent(name));
+    onClick: (item) => {
+      Store.dispatch('audio/play', {track: item}).catch((r) => {
+        console.error(r);
+      });
     },
   },
 };

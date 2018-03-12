@@ -1,0 +1,37 @@
+<SubContentHub>
+  <template>
+
+    <div>
+      <template v-if="!dataLoader.isLoading">
+        <div class="md-title">
+          {{dataLoader.dataSource.data.Title}}
+        </div>
+        <div class="md-subheading" v-if="dataLoader.dataSource.data.Disambiguation">
+          {{dataLoader.dataSource.data.Disambiguation}}
+        </div>
+        <div v-if="dataLoader.dataSource.data.Country">
+          <img class="md-layout-item country-flag"
+               :src="`/static/countries/${dataLoader.dataSource.data.Country}.svg`"
+               :alt="dataLoader.dataSource.data.Country"/> {{dataLoader.dataSource.data.Country}}
+        </div>
+        <span class="md-caption">
+         <span v-if="dataLoader.dataSource.data.Date">Date: {{dataLoader.dataSource.data.Date.substr(0, 10)}}<br/></span>
+         <span v-if="dataLoader.dataSource.data.Status">Status: {{dataLoader.dataSource.data.Status}} <br/></span>
+         <span v-if="dataLoader.dataSource.data.Quality">Quality: {{dataLoader.dataSource.data.Quality}}</span>
+        </span>
+
+      </template>
+      <template v-else>
+        <span>
+          <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+        </span>
+      </template>
+    </div>
+  </template>
+
+  <template slot="tabs">
+    <md-tab :to="uriRecords" md-label="Records"></md-tab>
+    <md-tab :to="uriArtists" md-label="Artists"></md-tab>
+    <md-tab :to="uriVariations" md-label="Variations"></md-tab>
+  </template>
+</SubContentHub>

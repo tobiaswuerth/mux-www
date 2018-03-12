@@ -1,10 +1,8 @@
-import Router, {routes} from './../../ecosystems/vue-router/Router';
-import Repeater from './../DataRepeater/DataRepeater';
+import Router, {paths} from './../../ecosystems/vue-router/Router';
+import {simplyLoad} from './../../scripts/DataLoaderUtils';
 
 export default {
   name: 'ArtistReleasesList',
-  
-  components: {Router, Repeater},
   
   props: {
     id: {},
@@ -12,30 +10,34 @@ export default {
   
   data: () => {
     return {
-      routes, route: 'artists/releasesById', doPreload: true,
+      data: [], hideEmptyState: false, isLoading: true,
     };
   },
   
-  computed: {
-    payload: function() {
-      return {
-        id: this.id,
-      };
-    },
+  mounted: function() {
+    simplyLoad('artists/releasesById', {id: this.id}, this.onAfter).
+      then((data) => {
+        this.data = data;
+        this.isLoading = false;
+      }).
+      catch((r) => {
+        console.error(r);
+      });
   },
   
   methods: {
+    
     doRoute: function(name) {
       let encodedName = encodeURIComponent(name);
-      let uri = this.routes.private.artists.releasesLookup.root.replace(':name',
+      let uri = paths.private.artists.releasesLookup.root.replace(':name',
         encodedName).replace(':id', this.id);
       Router.push(uri);
     },
     
-    postProcessor: function(data) {
+    onAfter: function(loader) {
       let d = {};
       
-      data.forEach(x => {
+      loader.dataSource.data.forEach(x => {
         let title = x.Title;
         let country = x.Country;
         
@@ -54,7 +56,7 @@ export default {
         };
       });
       
-      return d;
+      loader.dataSource.data = d;
     },
   },
 };

@@ -1,12 +1,12 @@
 <SubContentHub>
   <template>
-    <span :key="`__1`" v-if="isLoading">
-    <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+    <span :key="`__1`" v-if="dataLoader.isLoading">
+      <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
     </span> <span :key="`__2`" v-else>
-       <span class="md-title">{{data.Name}}</span>
-       <span v-if="data.Disambiguation">{{data.Disambiguation}}</span>
-       <p v-if="data.Aliases && data.Aliases.length > 0" class="md-caption">
-         a.k.a. {{data.Aliases.map(x => x.Name).join(', ')}}
+       <span class="md-title">{{dataLoader.dataSource.data.Name}}</span>
+       <span v-if="dataLoader.dataSource.data.Disambiguation">{{dataLoader.dataSource.data.Disambiguation}}</span>
+       <p v-if="dataLoader.dataSource.data.Aliases && dataLoader.dataSource.data.Aliases.length > 0" class="md-caption">
+         a.k.a. {{dataLoader.dataSource.data.Aliases.map(x => x.Name).join(', ')}}
        </p>
     </span>
   </template>
