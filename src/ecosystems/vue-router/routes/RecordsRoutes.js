@@ -1,6 +1,7 @@
 import Router from './../Router';
 import {prepareRoute} from './../RouterUtils';
 import List from './../../../components/List/List';
+import ReleasesListDetailed from './../../../components/ReleasesListDetailed/ReleasesListDetailed';
 import {clone, secondsToReadableString} from './../../../scripts/Utils';
 import Store from './../../vuex/Store';
 import {onAfterMap, onAfterSort,} from './../../../scripts/DataLoaderUtils';
@@ -53,7 +54,9 @@ export default [
       toString3: (i) => i.Length ? `Length: ${secondsToReadableString(i.Length /
         1000)} min` : '',
       showAvatar: true,
-      doInsetDivider: true, payload: async (p) => p, onAfter: (p) => {
+      doInsetDivider: true,
+      payload: async (p) => p,
+      onAfter: (p) => {
         let data = p.dataSource.data;
         if (data.length === 1) {
           Router.push(prepareRoute(paths.details, {id: data[0].UniqueId}));
@@ -86,6 +89,12 @@ export default [
           onClick: (i) => Router.push(
             prepareRoute(artistPaths.details, {id: i.UniqueId})),
         },
-        
-      }],
+      }, {
+        path: paths.releases, component: clone(ReleasesListDetailed), props: {
+          route: 'records/releasesById',
+          payload: async (p) => p,
+          doPreload: true,
+        },
+    
+      },],
   }];
