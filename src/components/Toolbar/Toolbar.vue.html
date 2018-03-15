@@ -1,5 +1,5 @@
 <md-toolbar class="md-primary">
-  <a href="/"> <img src="../../assets/logo-128-filled-rounded.png" clasS="icon" alt="Logo"> </a>
+  <router-link to="/"><img src="../../assets/logo-128-filled-rounded.png" clasS="icon" alt="Logo"></router-link>
   <md-field class="md-toolbar-section-end searchbar" :style="{ display: currentRoute ? 'flex' : 'none' }">
     <label>Search</label>
     <md-input v-model="query"></md-input>

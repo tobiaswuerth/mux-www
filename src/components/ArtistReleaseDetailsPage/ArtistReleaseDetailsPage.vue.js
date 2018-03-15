@@ -15,6 +15,8 @@ export default Vue.extend({
   data: () => {
     return {
       dataLoader: new DataLoader('artists/releasesById'),
+      countries: [],
+      variations: 0,
     };
   },
   
@@ -30,33 +32,29 @@ export default Vue.extend({
     }, uriRecords: function() {
       return this.prepRoute(paths.private.artists.releasesLookup.records);
     },
-    
-    variations: function() {
-      return this.dataLoader.dataSource.data.length;
-    },
-    
-    countries: function() {
-      let c = [];
-      this.dataLoader.dataSource.data.filter(x => x.Country).
-        map(x => x.Country).
-        forEach(x => {
-          if (c.indexOf(x) < 0) {
-            c.push(x);
-          }
-        });
-      return c;
-    },
   },
   
   mounted: function() {
-    this.dataLoader.onAfter = onAfterFilter(
-      (i) => i.Title.normalize() === this.name.normalize());
-    this.dataLoader.load({id: this.id}, true).catch((r) => {
+    this.dataLoader.onAfter = [
+      onAfterFilter((i) => i.Title.normalize() === this.name.normalize()),
+      this.postProcessing];
+    this.dataLoader.load({id: this.id}, {doPreload: true}).catch((r) => {
       console.error(r);
     });
   },
   
   methods: {
+  
+    postProcessing: function(p) {
+      p.dataSource.data.filter(x => x.Country).
+        map(x => x.Country).
+        forEach(x => {
+          this.variations++;
+          if (this.countries.indexOf(x) < 0) {
+            this.countries.push(x);
+          }
+        });
+    },
     
     prepRoute: function(route) {
       return route.replace(':id', this.id).

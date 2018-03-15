@@ -19,8 +19,7 @@ const ArtistReleaseDetailsPage = () => import('./../../../components/ArtistRelea
 const ArtistRecordDetailsPage = () => import('./../../../components/ArtistRecordDetailsPage/ArtistRecordDetailsPage');
 
 export const paths = {
-  root: '/a',
-  lookup: '/a/l/:name', search: '/a/s/:name',
+  root: '/a', lookup: '/a/l/:name', search: '/a/s/:name',
   details: '/a/:id',
   releases: '/a/:id/r',
   releasesLookup: {
@@ -141,11 +140,8 @@ export default [
         path: paths.releasesLookup.variants,
         component: clone(ReleasesListDetailed),
         props: {
-          route: 'releases/byName',
-          payload: async (p) => p.name.variations().
-            map(n => Object.assign({name: n})),
-          doPreload: true,
-          onAfter: onAfterUnique,
+          route: 'releases/byName', payload: async (p) => p.name.variations().
+            map(n => Object.assign({name: n})), doPreload: true,
         },
       },
       {

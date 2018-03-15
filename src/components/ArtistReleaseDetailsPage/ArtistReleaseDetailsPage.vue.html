@@ -3,10 +3,10 @@
     <div>
       <span class="md-title">{{name}}</span>
       <template v-if="!dataLoader.isLoading">
-        <div class="md-caption">this release got published in<span v-if="countries.length > 0">
-            in <b>{{countries.length}}</b>
-          countr{{countries.length === 1 ? 'y' : 'ies'}}
-          </span> in <b>{{variations}}</b> variation{{variations > 1 ? 's' : ''}}
+        <div class="md-caption">this release got published in <span v-if="countries.length > 0">
+            <b>{{countries.length}}</b>
+          countr{{countries.length === 1 ? 'y' : 'ies'}} in
+          </span> <b>{{variations}}</b> variation{{variations > 1 ? 's' : ''}}
         </div>
         <span v-for="c in countries" :key="c">
           <img class="md-layout-item country-flag" :src="`/static/countries/${c}.svg`" :alt="c"/>

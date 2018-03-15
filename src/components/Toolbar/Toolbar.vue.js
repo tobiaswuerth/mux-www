@@ -16,6 +16,10 @@ const relevantPaths = [
 export default {
   name: 'Toolbar',
   
+  components: {
+    Router,
+  },
+  
   data: () => {
     return {
       query: '',
