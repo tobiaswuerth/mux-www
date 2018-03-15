@@ -84,3 +84,40 @@ export const resolve = function(obj, payload) {
   }
   return obj;
 };
+
+export const matchScale = [
+  {
+    from: .0,
+    to: .7,
+    icon: 'sentiment_very_dissatisfied',
+    text: 'horrible',
+    color: '#ff0000',
+  },
+  {
+    from: .7,
+    to: .825,
+    icon: 'sentiment_dissatisfied',
+    text: 'bad',
+    color: '#ff7f00',
+  },
+  {
+    from: .825,
+    to: .9,
+    icon: 'sentiment_neutral',
+    text: 'ok',
+    color: '#ffff00',
+  },
+  {
+    from: .9,
+    to: .95,
+    icon: 'sentiment_satisfied',
+    text: 'good',
+    color: '#7fff00',
+  },
+  {
+    from: .95,
+    to: 1,
+    icon: 'sentiment_very_satisfied',
+    text: 'excellent',
+    color: '#00ff00',
+  }];

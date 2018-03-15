@@ -49,34 +49,41 @@ export default {
     }, getAvatar: function(item) {
       let s = this.getString1(item);
       return s ? s.substr(0, 2) : s;
+    }, load: function() {
+      // prepare payload
+      let loadPayload = this.payload
+        ? isCallable(this.payload)
+          ? this.payload.call(this, this.$route.params)
+          : Promise.resolve(this.payload)
+        : Promise.resolve({});
+    
+      loadPayload.then((payloads) => {
+        // prepare action
+        let action = isIterable(payloads)
+          ? this.dataLoader.loadAll
+          : this.dataLoader.load;
+      
+        // execute action
+        this.dataLoader.reset();
+        action.call(this.dataLoader, payloads, {doPreload: this.doPreload});
+      }).catch((r) => {
+        console.error(r);
+      });
+    },
+  },
+  
+  watch: {
+    '$route': function() {
+      this.load();
     },
   },
   
   mounted: function() {
-    
-    // init
     this.dataLoader = new DataLoader(this.route, this);
     this.dataLoader.onAfter = this.onAfter;
     this.dataLoader.onBefore = this.onBefore;
     
-    // prepare payload
-    let loadPayload = this.payload
-      ? isCallable(this.payload)
-        ? this.payload.call(this, this.$route.params)
-        : Promise.resolve(this.payload)
-      : Promise.resolve({});
-    
-    loadPayload.then((payloads) => {
-      // prepare action
-      let action = isIterable(payloads)
-        ? this.dataLoader.loadAll
-        : this.dataLoader.load;
-      
-      // execute action
-      action.call(this.dataLoader, payloads, {doPreload: this.doPreload});
-    }).catch((r) => {
-      console.error(r);
-    });
+    this.load();
   },
   
   components: {

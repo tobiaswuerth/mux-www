@@ -21,6 +21,13 @@ const updatePayload = (payload) => {
   payload.pageIndex = payload.pageIndex ? payload.pageIndex + 1 : 1;
 };
 
+DataLoader.prototype.reset = async function() {
+  this.dataSource.data = [];
+  this.isLoading = true;
+  this._morePayloads = [];
+  this._runningRequests = 0;
+};
+
 DataLoader.prototype.load = async function(payload, config = {}) {
   return await this.loadAll([payload], config);
 };

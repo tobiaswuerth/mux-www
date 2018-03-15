@@ -2,20 +2,21 @@ export default {
   namespaced: true,
   
   state: {
-    data: [],
+    hints: [], searchQuery: '',
   },
   
   getters: {
-    data: s => s.data,
+    hints: s => s.hints, searchQuery: s => s.searchQuery,
   },
   
   mutations: {
-    data: (s, payload) => s.data = payload,
+    hints: (s, payload) => s.hints = payload,
+    searchQuery: (s, payload) => s.searchQuery = payload,
   },
   
   actions: {
     async hint({commit}, payload) {
-      commit('data', {
+      commit('hints', {
         message: payload.message || payload,
       });
     },

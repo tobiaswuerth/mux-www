@@ -2,9 +2,7 @@ import Vue from 'vue';
 import SubContentHub from './../SubContentHub/SubContentHub';
 import {paths} from './../../ecosystems/vue-router/Router';
 import {prepareRoute} from './../../ecosystems/vue-router/RouterUtils';
-import {
-  onAfterFilter, onAfterMap, simplyLoad, simplyLoadAll,
-} from './../../scripts/DataLoaderUtils';
+import {onAfterSingle, simplyLoad} from './../../scripts/DataLoaderUtils';
 import Store from './../../ecosystems/vuex/Store';
 import {matchScale, secondsToReadableString} from './../../scripts/Utils';
 
@@ -16,27 +14,28 @@ export default Vue.extend({
   },
   
   props: {
-    id: {}, name: {}, generic1: {},
+    id: {},
   },
   
   data: () => {
     return {
-      track: null, match: 0, aliases: '', disambiguation: '', duration: '',
+      track: null,
+      match: 0,
+      aliases: '',
+      record: null,
+      isLoading: true,
+      duration: '',
     };
   },
   
   computed: {
     uriReleases: function() {
-      return prepareRoute(this.generic1
-        ? paths.private.artists.recordsLookup.releasesFull
-        : paths.private.artists.recordsLookup.releasesShort, {
-        id: this.id, name: this.name, 'generic1?': this.generic1,
+      return prepareRoute(paths.private.records.releases, {
+        id: this.id,
       });
     }, uriArtists: function() {
-      return prepareRoute(this.generic1
-        ? paths.private.artists.recordsLookup.artistsFull
-        : paths.private.artists.recordsLookup.artistsShort, {
-        id: this.id, name: this.name, 'generic1?': this.generic1,
+      return prepareRoute(paths.private.records.artists, {
+        id: this.id,
       });
     },
     
@@ -63,58 +62,24 @@ export default Vue.extend({
     },
   },
   
-  mounted: function() {
-    if (this.generic1) {
-      // load records with given name via release
-      simplyLoad('artists/releasesById', {id: this.id}, [
-        onAfterFilter((i) => i.Title.normalize() === this.generic1.normalize()),
-        onAfterMap((i) => Object.assign({id: i.UniqueId}))]).
-        then((payloads) => {
-          simplyLoadAll('releases/recordsById', payloads, onAfterFilter(
-            (i) => i.Title.normalize() === this.name.normalize())).
-            then((data) => {
-              this.processRecords(data);
-            }).
-            catch((r) => {
-              console.error(r);
-            });
-        }).catch((r) => {
-        console.error(r);
-      });
-    } else {
-      // load direct
-      simplyLoad('artists/recordsById', {id: this.id},
-        onAfterFilter((i) => i.Title.normalize() === this.name.normalize())).
-        then((data) => {
-          this.processRecords(data);
-        }).catch((r) => {
-        console.error(r);
-      });
-    }
+  mounted: async function() {
+    let payload = {id: this.id};
+    
+    await simplyLoad('records/byId', payload, onAfterSingle).then((record) => {
+      this.record = record;
+      this.duration = secondsToReadableString(this.record.Length / 1000);
+    });
+    await simplyLoad('records/tracksById', payload).then((data) => {
+      this.initPlayForBestGuess(data);
+    });
+    await simplyLoad('records/aliasesById', payload).then((data) => {
+      this.aliases = data.map(d => d.Name).join(', ');
+    });
+    
+    this.isLoading = false;
   },
   
   methods: {
-    
-    processRecords: function(records) {
-      this.disambiguation = [
-        ...new Set(records.map(r => r.Disambiguation))].join(', ');
-      this.duration = `${secondsToReadableString(records.reduce(
-        (a, b) => a + (b.Length / 1000), 0) / records.length)}min`;
-      
-      // load all tracks related to these records
-      let payloads = records.map((i) => Object.assign({id: i.UniqueId}));
-      simplyLoadAll('records/tracksById', payloads).then((data) => {
-        this.initPlayForBestGuess(data);
-      }).catch((r) => {
-        console.error(r);
-      });
-      simplyLoadAll('records/aliasesById', payloads).then((data) => {
-        this.aliases = data.map(d => d.Name).join(', ');
-      }).catch((r) => {
-        console.error(r);
-      });
-    },
-    
     initPlayForBestGuess: function(data) {
       // sum them up
       let scores = {};

@@ -1,0 +1,31 @@
+<SubContentHub>
+  <template>
+    <div>
+      <div :key="Math.random()" v-if="!isLoading">
+        <md-button class="play-button md-primary md-raised md-icon-button" @click="play">
+          <md-icon>play_arrow</md-icon>
+        </md-button>
+        <span class="md-icon match-icon" :style="matchIconStyle">
+          {{matchIcon}}
+          <md-tooltip>Match: {{(match*100).toFixed(3)}}% / {{matchLabel}}</md-tooltip>
+        </span>
+      </div>
+      <template v-if="record">
+        <div class="md-title">{{record.Title}}</div>
+        <div class="md-subheading" v-if="record.Disambiguation">{{record.Disambiguation}}</div>
+        <div class="md-caption">
+          <div v-if="aliases">a.k.a. {{aliases}}</div>
+          <div>{{duration}}</div>
+        </div>
+      </template>
+      <span :key="Math.random()" v-if="isLoading">
+        <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+      </span>
+    </div>
+  </template>
+
+  <template slot="tabs">
+    <md-tab :to="uriArtists" md-label="Artists"></md-tab>
+    <md-tab :to="uriReleases" md-label="Releases"></md-tab>
+  </template>
+</SubContentHub>

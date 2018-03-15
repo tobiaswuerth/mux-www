@@ -52,14 +52,13 @@ export const onAfterFilter = (condition) => (payload) => {
   }
 };
 
-export const simplyLoad = async (route, payload, onAfter) => {
+export const simplyLoad = async (route, payload = {}, onAfter = null) => {
   let loader = new DataLoader(route);
   let config = {doPreload: true};
   loader.onAfter = onAfter;
-  let data = await loader.load(payload, config).catch((r) => {
+  return await loader.load(payload, config).catch((r) => {
     console.error(r);
   });
-  return Promise.resolve(data);
 };
 
 export const simplyLoadAll = async (route, payloads, onAfter) => {

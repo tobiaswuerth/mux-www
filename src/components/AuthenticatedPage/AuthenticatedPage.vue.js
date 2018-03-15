@@ -18,7 +18,7 @@ export default {
       let string = (msg || '').toLowerCase();
       let substring = 'script error';
       if (string.indexOf(substring) > -1) {
-        Store.dispatch('snackbar/hint',
+        Store.dispatch('global/hint',
           'Script Error: See Browser Console for Detail');
         return false;
       }
@@ -27,14 +27,14 @@ export default {
         'Message: ' + msg, 'URL: ' + url, 'Line: ' + lineNo,
         'Column: ' + columnNo, 'Error object: ' + JSON.stringify(error)].join(
         ' - ');
-      Store.dispatch('snackbar/hint', message);
+      Store.dispatch('global/hint', message);
       return false;
     };
   },
   
   computed: {
     dataSnackbar: function() {
-      return Store.getters['snackbar/data'];
+      return Store.getters['global/hints'];
     },
   },
 };
