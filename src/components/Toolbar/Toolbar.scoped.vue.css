@@ -1,10 +1,32 @@
 .icon {
-  width: 40px;
+  width: 43px;
   opacity: .925;
 }
 
 .searchbar {
+  margin: 5px 10px;
+  padding: 0;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, .35);
+}
+
+.search-field {
+  margin: 0 15px;
+  -webkit-text-fill-color: white !important;
+  mso-fills-color: white !important;
+  mso-scheme-fill-color: white !important;
+}
+
+.search-icon {
+  margin: 0 10px;
+}
+
+@media (min-width: 960px) {
+  .searchbar {
+    right: calc(25%);
+  }
+}
+
+.grow {
   flex-grow: 1;
-  margin-left: 15px;
-  margin-right: 15px;
 }
