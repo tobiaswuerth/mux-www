@@ -10,15 +10,39 @@ import {secondsToReadableString} from './../../scripts/Utils';
 
 const matchScale = [
   {
-    from: .0, to: .6, icon: 'sentiment_very_dissatisfied', text: 'horrible',
-  }, {
-    from: .6, to: .785, icon: 'sentiment_dissatisfied', text: 'bad',
-  }, {
-    from: .785, to: .85, icon: 'sentiment_neutral', text: 'ok',
-  }, {
-    from: .85, to: .925, icon: 'sentiment_satisfied', text: 'good',
-  }, {
-    from: .925, to: 1, icon: 'sentiment_very_satisfied', text: 'excellent',
+    from: .0,
+    to: .6,
+    icon: 'sentiment_very_dissatisfied',
+    text: 'horrible',
+    color: '#ff0000',
+  },
+  {
+    from: .6,
+    to: .785,
+    icon: 'sentiment_dissatisfied',
+    text: 'bad',
+    color: '#ff7f00',
+  },
+  {
+    from: .785,
+    to: .85,
+    icon: 'sentiment_neutral',
+    text: 'ok',
+    color: '#ffff00',
+  },
+  {
+    from: .85,
+    to: .925,
+    icon: 'sentiment_satisfied',
+    text: 'good',
+    color: '#7fff00',
+  },
+  {
+    from: .925,
+    to: 1,
+    icon: 'sentiment_very_satisfied',
+    text: 'excellent',
+    color: '#00ff00',
   }];
 
 export default Vue.extend({
@@ -54,23 +78,7 @@ export default Vue.extend({
     },
     
     matchIconStyle: function() {
-      let m = this.match * 100;
-      if (m >= 100.0) {
-        m = 99.0;
-      }
-      
-      let r;
-      let g;
-      
-      if (m < 50.0) {
-        g = Math.floor(255 * (m / 50));
-        r = 255;
-      } else {
-        g = 255;
-        r = Math.floor(255 * ((50 - m % 50) / 50));
-      }
-      
-      return `color: rgb(${r},${g},0);`;
+      return `color: ${this.matchScaleEntry.color};`;
     },
     
     matchLabel: function() {
