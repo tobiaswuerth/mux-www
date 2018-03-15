@@ -6,44 +6,7 @@ import {
   onAfterFilter, onAfterMap, simplyLoad, simplyLoadAll,
 } from './../../scripts/DataLoaderUtils';
 import Store from './../../ecosystems/vuex/Store';
-import {secondsToReadableString} from './../../scripts/Utils';
-
-const matchScale = [
-  {
-    from: .0,
-    to: .6,
-    icon: 'sentiment_very_dissatisfied',
-    text: 'horrible',
-    color: '#ff0000',
-  },
-  {
-    from: .6,
-    to: .785,
-    icon: 'sentiment_dissatisfied',
-    text: 'bad',
-    color: '#ff7f00',
-  },
-  {
-    from: .785,
-    to: .85,
-    icon: 'sentiment_neutral',
-    text: 'ok',
-    color: '#ffff00',
-  },
-  {
-    from: .85,
-    to: .925,
-    icon: 'sentiment_satisfied',
-    text: 'good',
-    color: '#7fff00',
-  },
-  {
-    from: .925,
-    to: 1,
-    icon: 'sentiment_very_satisfied',
-    text: 'excellent',
-    color: '#00ff00',
-  }];
+import {matchScale, secondsToReadableString} from './../../scripts/Utils';
 
 export default Vue.extend({
   name: 'ArtistRecordDetailsPage',
