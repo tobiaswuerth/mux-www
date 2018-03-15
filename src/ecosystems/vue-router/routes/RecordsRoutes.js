@@ -5,8 +5,7 @@ import {clone, secondsToReadableString} from './../../../scripts/Utils';
 import Store from './../../vuex/Store';
 
 export const paths = {
-  root: '/s',
-  lookup: '/s/l/:name', search: '/s/s/:name',
+  root: '/s', lookup: '/s/l/:name', search: '/s/s/:name',
   details: '/s/:id',
   artists: '/s/:id/a',
   releases: '/s/:id/r',
@@ -43,7 +42,12 @@ export default [
         1000)} min` : '',
       showAvatar: true,
       doInsetDivider: true,
-      payload: async (p) => p,
+      payload: async (p) => p, onAfter: (p) => {
+        let data = p.dataSource.data;
+        if (data.length === 1) {
+          Router.push(prepareRoute(paths.details, {id: data[0].UniqueId}));
+        }
+      },
       onClick: (i) => Router.push(
         prepareRoute(paths.details, {id: i.UniqueId})),
     },
