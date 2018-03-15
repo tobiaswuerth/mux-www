@@ -35,6 +35,8 @@ export const routes = {
       all: `${config.prefix.authorized}/artists`,
       byName: (name) => `${config.prefix.authorized}/artists/lookup/
         ${encodeURIComponent(name)}`,
+      likeName: (name) => `${config.prefix.authorized}/artists/search/
+        ${encodeURIComponent(name)}`,
       byId: (id) => `${config.prefix.authorized}/artists/${id}`,
       releasesById: (id) => `${config.prefix.authorized}/artists/${id}/releases`,
       recordsById: (id) => `${config.prefix.authorized}/artists/${id}/records`,
@@ -43,6 +45,8 @@ export const routes = {
     releases: {
       all: `${config.prefix.authorized}/releases`,
       byName: (name) => `${config.prefix.authorized}/releases/lookup/${encodeURIComponent(
+        name)}`,
+      likeName: (name) => `${config.prefix.authorized}/releases/search/${encodeURIComponent(
         name)}`,
       byId: (id) => `${config.prefix.authorized}/releases/${id}`,
       artistsById: (id) => `${config.prefix.authorized}/releases/${id}/artists`,
@@ -53,6 +57,8 @@ export const routes = {
     records: {
       all: `${config.prefix.authorized}/records`,
       byName: (name) => `${config.prefix.authorized}/records/lookup/${encodeURIComponent(
+        name)}`,
+      likeName: (name) => `${config.prefix.authorized}/records/search/${encodeURIComponent(
         name)}`,
       byId: (id) => `${config.prefix.authorized}/records/${id}`,
       tracksById: (id) => `${config.prefix.authorized}/records/${id}/tracks`,
@@ -168,6 +174,9 @@ export default {
     }, async artistRecordsById({}, payload) {
       return await performParamDefaultDataRequest(payload,
         {id: routes.get.artists.recordsById});
+    }, async artistsLikeName({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {name: routes.get.artists.likeName});
     },
     
     // releases
@@ -188,6 +197,9 @@ export default {
     }, async releasesAliasesById({}, payload) {
       return await performParamDefaultDataRequest(payload,
         {id: routes.get.releases.aliasesById});
+    }, async releasesLikeName({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {name: routes.get.releases.likeName});
     },
     
     // records
@@ -211,6 +223,9 @@ export default {
     }, async recordAliasesById({}, payload) {
       return await performParamDefaultDataRequest(payload,
         {id: routes.get.records.aliasesById});
+    }, async recordsLikeName({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {name: routes.get.records.likeName});
     },
     
     // tracks

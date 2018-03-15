@@ -1,4 +1,8 @@
 <md-toolbar class="md-primary">
-  <img src="../../assets/logo-128-transparent.png" clasS="icon" alt="Logo">
-  <h3 class="md-title">Mux</h3>
+  <a href="/"> <img src="../../assets/logo-128-filled-rounded.png" clasS="icon" alt="Logo"> </a>
+  <md-field class="md-toolbar-section-end searchbar" :style="{ display: currentRoute ? 'flex' : 'none' }">
+    <label>Search</label>
+    <md-input v-model="query"></md-input>
+    <md-icon>search</md-icon>
+  </md-field>
 </md-toolbar>

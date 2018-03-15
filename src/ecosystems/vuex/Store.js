@@ -8,7 +8,7 @@ import ArtistsModule from './modules/ArtistsModule';
 import ReleasesModule from './modules/ReleasesModule';
 import RecordsModule from './modules/RecordsModule';
 import TracksModule from './modules/TracksModule';
-import SnackbarModule from './modules/SnackbarModule';
+import GlobalModule from './modules/GlobalModule';
 import AudioModule from './modules/AudioModule';
 
 Vue.use(Vuex);
@@ -26,8 +26,7 @@ const store = new Vuex.Store({
     artists: ArtistsModule,
     releases: ReleasesModule,
     records: RecordsModule,
-    tracks: TracksModule,
-    snackbar: SnackbarModule,
+    tracks: TracksModule, global: GlobalModule,
     audio: AudioModule,
   },
   

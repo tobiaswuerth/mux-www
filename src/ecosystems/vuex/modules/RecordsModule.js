@@ -31,5 +31,9 @@ export default {
     async aliasesById({}, payload) {
       return await Store.dispatch('repo/recordAliasesById', payload);
     },
+  
+    async likeName({}, payload) {
+      return await Store.dispatch('repo/recordsLikeName', payload);
+    },
   },
 };

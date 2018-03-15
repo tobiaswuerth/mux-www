@@ -1,4 +1,5 @@
 import Router from './../Router';
+import Store from './../../vuex/Store';
 import {prepareRoute} from './../RouterUtils';
 import List from './../../../components/List/List';
 import {clone, makeUnique} from './../../../scripts/Utils';
@@ -19,7 +20,7 @@ const ArtistRecordDetailsPage = () => import('./../../../components/ArtistRecord
 
 export const paths = {
   root: '/a',
-  lookup: '/a/l/:name',
+  lookup: '/a/l/:name', search: '/a/s/:name',
   details: '/a/:id',
   releases: '/a/:id/r',
   releasesLookup: {
@@ -53,6 +54,17 @@ export default [
     },
   },
   {
+    path: paths.search, component: clone(List), props: {
+      route: 'artists/likeName',
+      toString1: (i) => i.Name,
+      payload: async (p) => p,
+      valueKey: 'Name',
+      onClick: (i) => {
+        Store.commit('global/searchQuery', '');
+        Router.push(prepareRoute(paths.lookup, {name: i.Name}));
+      },
+    },
+  }, {
     path: paths.lookup, component: clone(List), props: {
       route: 'artists/byName',
       valueKey: 'UniqueId',
