@@ -122,7 +122,7 @@ export default Vue.extend({
         let score = d.Score;
         if (score === 1.0) {
           // perfect match
-          this.track = d;
+          this.track = d.Track;
           this.match = 1.0;
           return;
         }
