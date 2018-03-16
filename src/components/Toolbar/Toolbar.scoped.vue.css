@@ -4,21 +4,21 @@
 }
 
 .searchbar {
-  margin: 5px 10px;
-  padding: 0;
+  margin: 5px 10px !important;
+  padding: 0 !important;
   border-radius: 4px;
-  background-color: rgba(255, 255, 255, .35);
+  background-color: rgba(255, 255, 255, .25);
 }
 
 .search-field {
-  margin: 0 15px;
+  margin: 0 15px !important;
   -webkit-text-fill-color: white !important;
   mso-fills-color: white !important;
   mso-scheme-fill-color: white !important;
 }
 
 .search-icon {
-  margin: 0 10px;
+  margin: 0 10px !important;
 }
 
 @media (min-width: 960px) {
