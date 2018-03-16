@@ -12,8 +12,7 @@ import {paths as artistsPaths} from './ArtistsRoutes';
 import ReleasesListDetailed from '../../../components/ReleasesListDetailed/ReleasesListDetailed';
 
 export const paths = {
-  root: '/r',
-  lookup: '/r/l/:name', search: '/r/s/:name',
+  root: '/r', lookup: '/r/l/:name', search: '/r/s/:name',
   details: '/r/:id',
   artists: '/r/:id/a',
   records: '/r/:id/s',
