@@ -5,12 +5,22 @@
 }
 
 .entry {
-  min-width: 250px;
-  max-width: 500px;
-  padding: 0;
-  margin-bottom: 20px;
+  min-width: 190px;
+  max-width: 300px;
+  padding: 0 !important;
+  margin: 10px;
+  min-height: 300px;
 }
 
 .small-badge {
   margin: 2px;
+}
+
+.fill {
+  margin: 0;
+  padding: 0 15px;
+}
+
+.grow {
+  flex-grow: 1;
 }

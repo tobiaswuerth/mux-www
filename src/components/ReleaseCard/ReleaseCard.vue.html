@@ -1,52 +1,49 @@
-<md-card md-with-hover :key="item.UniqueId" class="entry md-layout-item">
+<div @click="doRoute(item.UniqueId)" :key="item.UniqueId" class="entry md-layout-item">
+  <md-card md-with-hover class="fill grow">
 
-  <md-card-header>
-    <div class="md-title">{{item.Title}}</div>
-    <span class="md-subheading" v-if="item.Disambiguation">{{item.Disambiguation}}</span>
-    <DataLoaderWrapper :dataLoader="getAliasLoader(item)" :hideEmptyState="true">
-      <template slot-scope="props">
-        <p v-if="props.dataLoader.dataSource.data.length > 0">
-          a.k.a. {{props.dataLoader.dataSource.data.map(x => x.Name).join(', ')}} </p>
-      </template>
-    </DataLoaderWrapper>
-  </md-card-header>
-
-  <md-card-content>
-   <span class="md-caption">
-     <span v-if="item.Date">Date: {{item.Date.substr(0, 10)}}<br/></span>
-     <span v-if="item.Country">
-       Country: <img class="md-layout-item country-flag" :src="`/static/countries/${item.Country}.svg`" :alt="item.Country"/> {{item.Country}}<br/></span>
-     <span v-if="item.Status">Status: {{item.Status}} <br/></span>
-     <span v-if="item.Quality">Quality: {{item.Quality}} <br/></span>
-    </span>
-
-    <div>
-      <DataLoaderWrapper :dataLoader="getArtistLoader(item)" :hideEmptyState="true">
+    <md-card-header>
+      <div class="md-title">{{item.Title}}</div>
+      <span class="md-subheading" v-if="item.Disambiguation">{{item.Disambiguation}}</span>
+      <DataLoaderWrapper :dataLoader="getAliasLoader(item)" :hideEmptyState="true">
         <template slot-scope="props">
-          <template v-if="!props.dataLoader.isLoading">
-            <p class="md-body-2">Artist{{props.dataLoader.dataSource.data.length > 1 ? 's' : ''}}:</p>
-            <template v-for="ac in props.dataLoader.dataSource.data">
-              <md-chip class="md-accent small-badge" md-clickable @click="doRouteArtist(ac.Artist.UniqueId)">
-                <small>{{ac.Artist.Name}}</small>
-              </md-chip>
-            </template>
-          </template>
-        </template>
-
-        <template slot="more" slot-scope="props">
-          <md-chip class="small-badge" md-clickable @click="props.dataLoader.loadMore()">
-            more
-            <md-icon>expand_more</md-icon>
-          </md-chip>
+          <p v-if="props.dataLoader.dataSource.data.length > 0">
+            a.k.a. {{props.dataLoader.dataSource.data.map(x => x.Name).join(', ')}} </p>
         </template>
       </DataLoaderWrapper>
-    </div>
-  </md-card-content>
+    </md-card-header>
+    <md-divider></md-divider>
+    <md-card-content>
+      <div>
+        <div class="md-caption">
+          <span v-if="item.Date">Date: {{item.Date.substr(0, 10)}}<br/></span> <span v-if="item.Country">
+          Country: <img class="md-layout-item country-flag" :src="`/static/countries/${item.Country}.svg`" :alt="item.Country"/> {{item.Country}}<br/></span>
+          <span v-if="item.Status">Status: {{item.Status}} <br/></span>
+          <span v-if="item.Quality">Quality: {{item.Quality}} <br/></span>
+        </div>
+      </div>
+      <br>
+      <div>
+        <DataLoaderWrapper :dataLoader="getArtistLoader(item)" :hideEmptyState="true">
+          <template slot-scope="props">
+            <template v-if="!props.dataLoader.isLoading">
+              <span class="md-caption">by</span>
+              <template v-for="ac in props.dataLoader.dataSource.data">
+                <md-chip class="md-accent small-badge" md-clickable @click="doRouteArtist(ac.Artist.UniqueId)">
+                  <small>{{ac.Artist.Name}}</small>
+                </md-chip>
+              </template>
+            </template>
+          </template>
 
-  <md-card-actions>
-    <md-button @click="doRoute(item.UniqueId)">
-      <md-icon>keyboard_arrow_right</md-icon>
-    </md-button>
-  </md-card-actions>
+          <template slot="more" slot-scope="props">
+            <md-chip class="small-badge" md-clickable @click="props.dataLoader.loadMore()">
+              more
+              <md-icon>expand_more</md-icon>
+            </md-chip>
+          </template>
+        </DataLoaderWrapper>
+      </div>
+    </md-card-content>
+  </md-card>
 
-</md-card>
+</div>
