@@ -1,5 +1,4 @@
 import Router from './../Router';
-import Store from './../../vuex/Store';
 import {prepareRoute} from './../RouterUtils';
 import List from './../../../components/List/List';
 import {clone} from './../../../scripts/Utils';
@@ -40,7 +39,6 @@ export default [
       payload: async (p) => p,
       valueKey: 'Title',
       onClick: (i) => {
-        Store.commit('global/searchQuery', '');
         Router.push(prepareRoute(paths.lookup, {name: i.Title}));
       },
     },

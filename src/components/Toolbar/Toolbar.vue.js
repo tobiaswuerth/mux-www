@@ -2,7 +2,6 @@ import {paths as artistPaths} from './../../ecosystems/vue-router/routes/Artists
 import {paths as recordPaths} from './../../ecosystems/vue-router/routes/RecordsRoutes';
 import {paths as releasePaths} from './../../ecosystems/vue-router/routes/ReleasesRoutes';
 import {_} from 'underscore';
-import Store from './../../ecosystems/vuex/Store';
 import Router from './../../ecosystems/vue-router/Router';
 
 const relevantPaths = [
@@ -62,10 +61,11 @@ export default {
   
   methods: {
     updateValue: function(val) {
-      Store.commit('global/searchQuery', val);
-      
       // update route
       let match = this.currentRoute;
+      if (!match) {
+        return;
+      }
       match = match.replace(':name', encodeURIComponent(val));
       Router.push(match);
     },
@@ -75,5 +75,11 @@ export default {
     query: _.debounce(function(v) {
       this.updateValue(v);
     }, 750),
+  
+    '$route': function() {
+      if (this.query && !this.currentRoute) {
+        this.query = '';
+      }
+    },
   },
 };
