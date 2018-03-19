@@ -13,7 +13,7 @@ const emptyPlaylistEntry = {
   source: null,
   audioState: states.defined,
   startedAt: null,
-  pausedAt: null,
+  pausedAt: null, key: null,
 };
 
 let continueSource = function(entry, getters, commit) {
@@ -46,14 +46,20 @@ let createEntry = function(entry, payload, getters, commit) {
   entry = clone(emptyPlaylistEntry);
   entry.track = payload.track;
   entry.source = getters.context.createBufferSource();
+  entry.key = Math.random();
   getters.playlist.unshift(entry);
   commit('playlistIndex', {suppressEvents: true, data: 0});
   entry = getters.currentEntry;
   return entry;
 };
 
-let loadSource = function(getters, entry) {
+let loadSource = function(entry, getters) {
+  if (entry.audioState !== states.defined) {
+    return;
+  }
+  
   // prepare request
+  entry.audioState = states.loading;
   let request = new XMLHttpRequest();
   let url = `${baseUrl}${routes.get.files.byId(entry.track.UniqueId)}`;
   request.open('GET', url, true);
@@ -71,9 +77,12 @@ let loadSource = function(getters, entry) {
       source.connect(getters.context.destination);
       source.buffer = buffer;
       entry.buffer = buffer;
-      source.start(0);
-      entry.startedAt = new Date();
-      entry.audioState = states.playing;
+  
+      if (this.currentEntry.key === entry.key) {
+        source.start(0);
+        entry.startedAt = new Date();
+        entry.audioState = states.playing;
+      }
     }).catch((r) => {
       console.error(r);
     });
@@ -133,15 +142,14 @@ export default {
         entry = createEntry(entry, payload, getters, commit);
       }
       if (!entry) {
-        return;
+        return Promise.resolve();
       }
       
       if (entry.audioState === states.defined) {
-        loadSource(getters, entry);
+        loadSource(entry, getters);
       } else if (entry.audioState === states.ready) {
         continueSource(entry, getters, commit);
       }
-      
     },
   },
 };
