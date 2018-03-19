@@ -2,16 +2,15 @@ export default {
   namespaced: true,
   
   state: {
-    hints: [], searchQuery: '',
+    hints: [],
   },
   
   getters: {
-    hints: s => s.hints, searchQuery: s => s.searchQuery,
+    hints: s => s.hints,
   },
   
   mutations: {
     hints: (s, payload) => s.hints = payload,
-    searchQuery: (s, payload) => s.searchQuery = payload,
   },
   
   actions: {

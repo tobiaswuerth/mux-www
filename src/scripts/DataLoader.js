@@ -11,6 +11,7 @@ function DataLoader(route, parent) {
   
   this._morePayloads = [];
   this._runningRequests = 0;
+  this.lastReset = null;
 }
 
 DataLoader.prototype.hasMore = function() {
@@ -21,11 +22,12 @@ const updatePayload = (payload) => {
   payload.pageIndex = payload.pageIndex ? payload.pageIndex + 1 : 1;
 };
 
-DataLoader.prototype.reset = async function() {
+DataLoader.prototype.reset = function() {
   this.dataSource.data = [];
   this.isLoading = true;
   this._morePayloads = [];
   this._runningRequests = 0;
+  this.lastReset = performance.now();
 };
 
 DataLoader.prototype.load = async function(payload, config = {}) {
@@ -44,8 +46,14 @@ DataLoader.prototype.loadAll = async function(payloads, config = {}) {
   let source = new DataSource();
   
   // execute
+  let start = performance.now();
   let promises = payloads.map(
     p => Store.dispatch(this.route, p).then(async (v) => {
+        if (this.lastReset && start < this.lastReset &&
+          this.lastReset < performance.now()) {
+          // ignore this response, it is not needed anymore
+          return;
+        }
         source.addAll(v.data);
         
         if (v.hasMore) {

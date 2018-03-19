@@ -3,7 +3,6 @@ import {prepareRoute} from './../RouterUtils';
 import List from './../../../components/List/List';
 import ReleasesListDetailed from './../../../components/ReleasesListDetailed/ReleasesListDetailed';
 import {clone, secondsToReadableString} from './../../../scripts/Utils';
-import Store from './../../vuex/Store';
 import {onAfterMap, onAfterSort,} from './../../../scripts/DataLoaderUtils';
 import {paths as artistPaths} from './ArtistsRoutes';
 
@@ -38,7 +37,6 @@ export default [
       payload: async (p) => p,
       valueKey: 'Title',
       onClick: (i) => {
-        Store.commit('global/searchQuery', '');
         Router.push(prepareRoute(paths.lookup, {name: i.Title}));
       },
     },

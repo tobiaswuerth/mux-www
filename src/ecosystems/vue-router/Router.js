@@ -13,10 +13,11 @@ Vue.use(Router);
 const LoginPage = () => import('../../components/LoginPage/LoginPage');
 const AuthenticatedPage = () => import('../../components/AuthenticatedPage/AuthenticatedPage');
 const WelcomeScreen = () => import('../../components/WelcomeScreen/WelcomeScreen');
+const PlaylistPage = () => import('../../components/PlaylistPage/PlaylistPage');
 
 const paths = {
   private: {
-    root: '/',
+    root: '/', playlist: '/p',
     artists: artistsPaths,
     tracks: tracksPaths,
     records: recordsPaths,
@@ -33,6 +34,8 @@ const routes = ArtistsRoutes.concat(TracksRoutes).
   concat(RecordsRoutes).concat(ReleasesRoutes).concat([
     {
       path: paths.private.root, component: WelcomeScreen,
+    }, {
+      path: paths.private.playlist, component: PlaylistPage,
     }]);
 
 const router = new Router({

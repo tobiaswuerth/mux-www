@@ -1,5 +1,4 @@
 import Router from './../Router';
-import Store from './../../vuex/Store';
 import {prepareRoute} from './../RouterUtils';
 import List from './../../../components/List/List';
 import {clone} from './../../../scripts/Utils';
@@ -13,8 +12,7 @@ import {paths as artistsPaths} from './ArtistsRoutes';
 import ReleasesListDetailed from '../../../components/ReleasesListDetailed/ReleasesListDetailed';
 
 export const paths = {
-  root: '/r',
-  lookup: '/r/l/:name', search: '/r/s/:name',
+  root: '/r', lookup: '/r/l/:name', search: '/r/s/:name',
   details: '/r/:id',
   artists: '/r/:id/a',
   records: '/r/:id/s',
@@ -40,7 +38,6 @@ export default [
       payload: async (p) => p,
       valueKey: 'Title',
       onClick: (i) => {
-        Store.commit('global/searchQuery', '');
         Router.push(prepareRoute(paths.lookup, {name: i.Title}));
       },
     },
