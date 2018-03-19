@@ -1,9 +1,14 @@
 import Store from './../../ecosystems/vuex/Store';
 import {states as audioStates} from './../../ecosystems/vuex/modules/AudioModule';
 import {secondsToReadableString} from './../../scripts/Utils';
+import Router, {paths} from './../../ecosystems/vue-router/Router';
 
 export default {
   name: 'Footer',
+  
+  components: {
+    Router,
+  },
   
   data: () => {
     return {
@@ -16,6 +21,10 @@ export default {
   },
   
   computed: {
+    routePlaylist: function() {
+      return paths.private.playlist;
+    },
+    
     isLoading: function() {
       let entry = this.entry;
       return !entry || entry.audioState === audioStates.loading ||

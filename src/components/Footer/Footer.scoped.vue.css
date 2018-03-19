@@ -14,3 +14,11 @@
   right: 8px;
   bottom: 50px;
 }
+
+.playlist {
+  float: right;
+  cursor: pointer;
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+}
