@@ -1,8 +1,40 @@
 <md-toolbar class="md-primary">
   <router-link to="/"><img src="../../assets/logo-128-filled-rounded.png" clasS="icon" alt="Logo"></router-link>
-  <h3 class="md-title md-xsmall-hide md-small-hide grow">Mux</h3>
-  <md-field class="md-toolbar-section-end searchbar grow" :style="{ display: currentRoute ? 'flex' : 'none' }">
+  <h3 class="md-title md-xsmall-hide title md-small-hide grow">Mux</h3>
+  <md-field class="md-toolbar-section-end searchbar md-inline grow">
+    <label class="search-label">Search...</label>
     <md-input class="search-field" v-model="query"></md-input>
+    <span class="result-span">
+    <md-content class="results md-elevation-15 md-scrollbar md-layout" :style="{ display: displayResults ? 'flex' : 'none' }">
+      <template v-for="loader in [loaderArtists, loaderReleases, loaderRecords]">
+        <div :key="Math.random()"
+             class="result-list md-xsmall-size-100 md-small-size-100 md-medium-size-33 md-size-33 md-large-size-33 md-xlarge-size-33">
+          <md-list>
+            <template v-if="loader.isLoading">
+              <span>
+                <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+              </span>
+            </template>
+            <template v-else>
+              <template v-for="item in loader.dataSource.data">
+                <md-list-item :to="item.value" :key="item.value">
+                  <md-icon>{{item.icon}}</md-icon>
+                  <span class="md-list-item-text">{{item.label}}</span>
+                </md-list-item>
+              </template>
+              <template v-if="loader.dataSource.data.length === 0">
+                <md-list-item :key="Math.random()">
+                  <span class="md-list-item-text">-</span>
+                </md-list-item>
+              </template>
+            </template>
+          </md-list>
+          <md-divider class="divider"></md-divider>
+        </div>
+      </template>
+    </md-content>
+      </span>
     <md-icon class="search-icon">search</md-icon>
   </md-field>
+
 </md-toolbar>
