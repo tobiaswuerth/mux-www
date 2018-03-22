@@ -1,5 +1,6 @@
 import Axios from 'axios';
 import Store from '../Store';
+import Router from './../../vue-router/Router';
 
 const DEFAULT_PAGE_SIZE = 50;
 export const baseUrl = 'https://mux.fooo.ooo/api/v1';
@@ -131,7 +132,13 @@ async function performDefaultDataRequest(route, payload) {
   }
   
   // perform request
-  let response = await axios.get(url, options);
+  let response = await axios.get(url, options).catch((e) => {
+    if (e.response && e.response.status === 401) {
+      // auth exception
+      localStorage.clear();
+      Router.push('/');
+    }
+  });
   
   // prepare return
   let data = response.data;
