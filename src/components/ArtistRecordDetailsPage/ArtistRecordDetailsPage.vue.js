@@ -163,7 +163,8 @@ export default Vue.extend({
     },
     
     play: function() {
-      Store.dispatch('audio/play', {track: this.track}).catch((r) => {
+      Store.dispatch('audio/play', {track: this.track, title: this.name}).
+        catch((r) => {
         console.error(r);
       });
     },

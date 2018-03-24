@@ -1,0 +1,13 @@
+.playlist-item:after {
+  content: '';
+  height: 1px;
+  background: rgba(0, 0, 0, .17);
+  position: absolute;
+  bottom: 0;
+  left: 68px;
+  right: 0;
+}
+
+.sortable-chosen {
+  background-color: rgba(68, 138, 255, .17);
+}

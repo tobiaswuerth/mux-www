@@ -64,16 +64,24 @@ export default Vue.extend({
   
   mounted: async function() {
     let payload = {id: this.id};
-    
-    await simplyLoad('records/byId', payload, onAfterSingle).then((record) => {
-      this.record = record;
-      this.duration = secondsToReadableString(this.record.Length / 1000);
-    });
-    await simplyLoad('records/tracksById', payload).then((data) => {
+  
+    let loadRecord = simplyLoad('records/byId', payload, onAfterSingle).
+      then((record) => {
+        this.record = record;
+        this.duration = secondsToReadableString(this.record.Length / 1000);
+      });
+  
+    let loadTracks = simplyLoad('records/tracksById', payload).then((data) => {
       this.initPlayForBestGuess(data);
     });
-    await simplyLoad('records/aliasesById', payload).then((data) => {
-      this.aliases = data.map(d => d.Name).join(', ');
+  
+    let loadAliases = simplyLoad('records/aliasesById', payload).
+      then((data) => {
+        this.aliases = data.map(d => d.Name).join(', ');
+      });
+  
+    Promise.all([loadRecord, loadTracks, loadAliases]).catch((r) => {
+      console.error(r);
     });
     
     this.isLoading = false;
@@ -87,8 +95,8 @@ export default Vue.extend({
         let score = d.Score;
         if (score === 1.0) {
           // perfect match
-          this.track = d;
-          this.match = 1.0;
+          this.track = d.Track;
+          this.match = d.Score;
           return;
         }
         
