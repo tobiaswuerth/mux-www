@@ -1,7 +1,6 @@
 // modules
 import Vue from 'vue';
 import VueMaterial from 'vue-material';
-import VueSortable from 'vue-sortable';
 // components
 import App from '../../components/App/App.vue';
 // css
@@ -20,7 +19,6 @@ Extensions.initialize();
 Vue.use(VueMaterial);
 Vue.use(Router);
 Vue.use(Store);
-Vue.use(VueSortable);
 
 // config
 Vue.config.productionTip = false;

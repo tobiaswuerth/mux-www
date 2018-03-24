@@ -53,23 +53,28 @@ export default {
     getEntry: function() {
       return Store.getters['audio/currentEntry'] ||
         {audioState: audioStates.ready};
-    }, updateValues: function() {
+    },
+  
+    updateValues: function() {
       this.entry = this.getEntry();
       if (this.entry && this.entry.track) {
         let now = new Date();
-        let started = this.entry.startedAt || now;
-        let paused = this.entry.pausedAt || now;
-        if (paused < started) {
-          paused = now;
+        console.log(now);
+        let pausedAt = this.entry.pausedAt || now;
+        pausedAt = pausedAt.getTime();
+        let startedAt = this.entry.startedAt || now;
+        console.log(this.entry.startedAt);
+        startedAt = startedAt.getTime();
+        console.log(pausedAt);
+        console.log(startedAt);
+        if (pausedAt < startedAt) {
+          pausedAt = now;
+          console.log('here');
         }
-        
-        let bestGuess = Math.abs((paused - started) / 1000);
-        let duration = this.entry.track.Duration;
-        if (bestGuess > duration) {
-          bestGuess = duration;
-        }
-        this.currentTime = Math.round(bestGuess);
-        this.progress = this.currentTime * 100 / this.entry.track.Duration;
+        let timeMs = Math.abs(pausedAt - startedAt);
+        console.log(timeMs);
+        this.currentTime = Math.round(timeMs / 1000);
+        this.progress = Math.round(timeMs / 10 / this.entry.track.Duration);
       } else {
         this.progress = 0;
         this.currentTime = 0;

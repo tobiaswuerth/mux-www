@@ -18,7 +18,7 @@
 }
 
 .result-span {
-  transition: visibility .3s;
+  transition: visibility .35s;
 }
 
 .search-field ~ .result-span {

@@ -10,22 +10,25 @@ export const states = {
 const emptyPlaylistEntry = {
   track: null,
   buffer: null,
-  source: null,
+  source: null, title: null,
   audioState: states.defined,
-  startedAt: null,
-  pausedAt: null, key: null,
+  startedAt: null, pausedAt: null, key: null,
 };
 
 let continueSource = function(entry, getters, commit) {
   let now = new Date();
-  let timeMs = ((entry.pausedAt || now) - (entry.startedAt || now));
+  let pausedAt = entry.pausedAt || now;
+  let startedAt = entry.startedAt || now;
+  let timeMs = pausedAt.getTime() - startedAt.getTime();
   let context = getters.context;
   entry.source = context.createBufferSource();
   let source = entry.source;
   
   entry.source.onended = function(v) {
+    let playNext = Math.round(v.srcElement.context.currentTime) >
+      Math.round(entry.track.Duration);
     let index = getters.playlistIndex + 1;
-    if ((getters.playlist.length) > index) {
+    if (playNext && getters.playlist.length > index) {
       console.log('playing next');
       commit('playlistIndex', index);
     }
@@ -34,12 +37,13 @@ let continueSource = function(entry, getters, commit) {
   source.connect(context.destination);
   source.buffer = entry.buffer;
   source.start(0, timeMs / 1000);
-  let timestamp = now - timeMs;
+  let timestamp = now.getTime() - timeMs;
+  console.log(timestamp);
   entry.startedAt = new Date(timestamp);
   entry.audioState = states.playing;
 };
 
-let createEntry = function(entry, payload, getters, commit) {
+let prependNewEntry = function(entry, payload, getters, commit) {
   if (!payload.track) {
     return null;
   }
@@ -47,9 +51,9 @@ let createEntry = function(entry, payload, getters, commit) {
   entry.track = payload.track;
   entry.source = getters.context.createBufferSource();
   entry.key = Math.random();
+  entry.title = payload.title || entry.track.Path;
   getters.playlist.unshift(entry);
-  commit('playlistIndex', {suppressEvents: true, data: 0});
-  entry = getters.currentEntry;
+  commit('playlistIndex', 0);
   return entry;
 };
 
@@ -78,13 +82,14 @@ let loadSource = function(entry, getters) {
       source.buffer = buffer;
       entry.buffer = buffer;
   
-      if (this.currentEntry.key === entry.key) {
+      if (getters.currentEntry.key === entry.key) {
         source.start(0);
         entry.startedAt = new Date();
         entry.audioState = states.playing;
       }
     }).catch((r) => {
       console.error(r);
+      entry.audioState = states.defined;
     });
   };
   
@@ -112,14 +117,7 @@ export default {
   
   mutations: {
     playlist: (s, payload) => s.playlist = payload,
-    playlistIndex: (s, payload) => {
-      if (payload.suppressEvents) {
-        s.playlistIndex = payload.data;
-      } else {
-        s.playlistIndex = payload;
-        s.dispatch('audio/play');
-      }
-    },
+    playlistIndex: (s, payload) => s.playlistIndex = payload,
   },
   
   actions: {
@@ -137,9 +135,10 @@ export default {
     
     async play({commit, getters, dispatch}, payload) {
       await dispatch('pause');
+      console.log('play');
       let entry = getters.currentEntry;
-      if (!entry || payload.track) {
-        entry = createEntry(entry, payload, getters, commit);
+      if (!entry || (payload && payload.track)) {
+        entry = prependNewEntry(entry, payload, getters, commit);
       }
       if (!entry) {
         return Promise.resolve();
@@ -150,6 +149,35 @@ export default {
       } else if (entry.audioState === states.ready) {
         continueSource(entry, getters, commit);
       }
+    },
+  
+    async setPlaylist({commit, dispatch, getters}, payload) {
+      // find current index
+      let idx = null;
+      let entry = getters.currentEntry;
+      if (entry) {
+        for (let i = 0; i < payload.length; i++) {
+          if (payload[i].key === entry.key) {
+            idx = i;
+            break;
+          }
+        }
+      }
+    
+      if (null === idx) {
+        // currently playing item is not in list anymore
+        await dispatch('pause');
+        idx = 0;
+      }
+    
+      // update values
+      commit('playlist', payload);
+      commit('playlistIndex', idx);
+    },
+  
+    async setPlaylistIndex({commit, dispatch}, payload) {
+      commit('playlistIndex', payload);
+      await dispatch('play');
     },
   },
 };
