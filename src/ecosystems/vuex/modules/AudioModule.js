@@ -9,13 +9,11 @@ export const states = {
 
 const emptyPlaylistEntry = {
   track: null,
-  buffer: null,
-  source: null, title: null,
-  audioState: states.defined,
-  startedAt: null, pausedAt: null, key: null,
+  buffer: null, source: null, title: null,
+  audioState: states.defined, startedAt: null, pausedAt: null, key: null,
 };
 
-let continueSource = function(entry, getters, commit) {
+let continueSource = function(entry, getters, dispatch) {
   let now = new Date();
   let pausedAt = entry.pausedAt || now;
   let startedAt = entry.startedAt || now;
@@ -27,10 +25,8 @@ let continueSource = function(entry, getters, commit) {
   entry.source.onended = function(v) {
     let playNext = Math.round(v.srcElement.context.currentTime) >
       Math.round(entry.track.Duration);
-    let index = getters.playlistIndex + 1;
-    if (playNext && getters.playlist.length > index) {
-      console.log('playing next');
-      commit('playlistIndex', index);
+    if (playNext) {
+      dispatch('next').catch(console.error);
     }
   };
   
@@ -147,7 +143,7 @@ export default {
       if (entry.audioState === states.defined) {
         loadSource(entry, getters);
       } else if (entry.audioState === states.ready) {
-        continueSource(entry, getters, commit);
+        continueSource(entry, getters, dispatch);
       }
     },
   
@@ -178,6 +174,26 @@ export default {
     async setPlaylistIndex({commit, dispatch}, payload) {
       commit('playlistIndex', payload);
       await dispatch('play');
+    },
+  
+    async next({dispatch, getters}) {
+      let index = getters.playlistIndex + 1;
+      let threshold = getters.playlist.length;
+      if (index >= threshold) {
+        index = 0; // end of list, start from beginning
+      }
+    
+      await dispatch('setPlaylistIndex', index).catch(console.error);
+    },
+  
+    async previous({dispatch, getters}) {
+      let index = getters.playlistIndex - 1;
+      if (index < 0) {
+        let threshold = getters.playlist.length;
+        index = threshold > 0 ? threshold - 1 : 0; // beginning of list,
+        // start from the end
+      }
+      await dispatch('setPlaylistIndex', index).catch(console.error);
     },
   },
 };

@@ -59,20 +59,15 @@ export default {
       this.entry = this.getEntry();
       if (this.entry && this.entry.track) {
         let now = new Date();
-        console.log(now);
         let pausedAt = this.entry.pausedAt || now;
         pausedAt = pausedAt.getTime();
         let startedAt = this.entry.startedAt || now;
-        console.log(this.entry.startedAt);
         startedAt = startedAt.getTime();
-        console.log(pausedAt);
-        console.log(startedAt);
         if (pausedAt < startedAt) {
           pausedAt = now;
           console.log('here');
         }
         let timeMs = Math.abs(pausedAt - startedAt);
-        console.log(timeMs);
         this.currentTime = Math.round(timeMs / 1000);
         this.progress = Math.round(timeMs / 10 / this.entry.track.Duration);
       } else {
@@ -91,6 +86,14 @@ export default {
           console.error(r);
         });
       }
+    },
+  
+    next: function() {
+      Store.dispatch('audio/next').catch(console.error);
+    },
+  
+    previous: function() {
+      Store.dispatch('audio/previous').catch(console.error);
     },
   },
 };
