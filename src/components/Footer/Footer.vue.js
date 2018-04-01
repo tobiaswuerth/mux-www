@@ -109,5 +109,36 @@ export default {
       let relativeChange = skipTo - currentTime;
       Store.dispatch('audio/moveTime', relativeChange).catch(console.error);
     },
+  
+    skipRemove: function() {
+      let entry = Store.getters['audio/currentEntry'];
+      if (!entry) {
+        return;
+      }
+      let currentTimeMs = getCurrentPlaylistEntryTimeMs(entry);
+      let goalTimeMs = currentTimeMs - 10000;
+      if (0 > goalTimeMs) {
+        goalTimeMs = 0;
+      }
+      let relativeChangeMs = goalTimeMs - currentTimeMs;
+      Store.dispatch('audio/moveTime', relativeChangeMs / 1000).
+        catch(console.error);
+    },
+  
+    skipAdd: function() {
+      let entry = Store.getters['audio/currentEntry'];
+      if (!entry) {
+        return;
+      }
+      let currentTimeMs = getCurrentPlaylistEntryTimeMs(entry);
+      let goalTimeMs = currentTimeMs + 10000;
+      let maxTimeMs = entry.track.Duration * 1000;
+      if (goalTimeMs > maxTimeMs) {
+        goalTimeMs = maxTimeMs;
+      }
+      let relativeChangeMs = goalTimeMs - currentTimeMs;
+      Store.dispatch('audio/moveTime', relativeChangeMs / 1000).
+        catch(console.error);
+    },
   },
 };
