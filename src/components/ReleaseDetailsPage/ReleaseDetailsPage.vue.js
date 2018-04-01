@@ -2,7 +2,9 @@ import Vue from 'vue';
 import SubContentHub from './../SubContentHub/SubContentHub';
 import {paths} from './../../ecosystems/vue-router/Router';
 import DataLoader from '../../scripts/DataLoader';
-import {onAfterSingle} from './../../scripts/DataLoaderUtils';
+import {onAfterSingle, simplyLoad} from './../../scripts/DataLoaderUtils';
+import {getBestMatchingTrack} from './../../scripts/DataUtils';
+import Store from './../../ecosystems/vuex/Store';
 
 export default Vue.extend({
   name: 'ReleaseDetailsPage',
@@ -43,6 +45,38 @@ export default Vue.extend({
     
     prepRoute: function(route) {
       return route.replace(':id', this.id);
+    },
+  
+    addToPlaylist: function() {
+      simplyLoad('releases/recordsById', {id: this.id}).then((d) => {
+        d.forEach((r) => {
+          simplyLoad('records/tracksById', {id: r.UniqueId}).then((t) => {
+            let matchEntry = getBestMatchingTrack(t);
+            Store.dispatch('audio/addToPlaylist',
+              {track: matchEntry.track, title: r.Title}).catch(console.error);
+          }).catch(console.error);
+        });
+      }).catch(console.error);
+    },
+  
+    play: function() {
+      let performedPlay = false;
+      simplyLoad('releases/recordsById', {id: this.id}).then((d) => {
+        d.forEach((r) => {
+          simplyLoad('records/tracksById', {id: r.UniqueId}).then((t) => {
+            let matchEntry = getBestMatchingTrack(t);
+            Store.dispatch('audio/addToPlaylist',
+              {track: matchEntry.track, title: r.Title}).then(() => {
+              if (!performedPlay) {
+                performedPlay = true;
+                let lastIdx = Store.getters['audio/playlist'].length - 1;
+                Store.dispatch('audio/setPlaylistIndex', lastIdx).
+                  catch(console.error);
+              }
+            }).catch(console.error);
+          }).catch(console.error);
+        });
+      }).catch(console.error);
     },
     
   },

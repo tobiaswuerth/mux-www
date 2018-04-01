@@ -3,3 +3,7 @@
   margin-left: 2px;
   margin-right: 2px;
 }
+
+.play-button {
+  float: right
+}

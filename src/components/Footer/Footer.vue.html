@@ -1,7 +1,8 @@
 <md-content class="">
 
-  <md-progress-bar class="bar" md-mode="determinate" :md-value="progress"></md-progress-bar>
-
+  <span @click="progressClicked($event) ">
+    <md-progress-bar class="bar" md-mode="determinate" :md-value="progress"></md-progress-bar>
+  </span>
   <div class="md-layout md-alignment-center-center" v-if="entry && entry.track">
     <span class="md-caption">{{entry.title}}</span>
   </div>
@@ -15,7 +16,7 @@
       <md-icon>skip_previous</md-icon>
     </md-button>
 
-    <md-button class="md-fab md-mini md-raised md-plain">
+    <md-button class="md-fab md-mini md-raised md-plain" @click="skipRemove">
       <md-icon>replay_10</md-icon>
     </md-button>
 
@@ -27,7 +28,7 @@
       </md-icon>
     </md-button>
 
-    <md-button class="md-fab md-mini md-raised md-plain">
+    <md-button class="md-fab md-mini md-raised md-plain" @click="skipAdd">
       <md-icon>forward_10</md-icon>
     </md-button>
 

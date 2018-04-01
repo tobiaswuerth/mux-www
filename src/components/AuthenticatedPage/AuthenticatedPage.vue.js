@@ -19,7 +19,7 @@ export default {
       let substring = 'script error';
       if (string.indexOf(substring) > -1) {
         Store.dispatch('global/hint',
-          'Script Error: See Browser Console for Detail');
+          'Script Error: See Browser Console for Detail').catch(console.error);
         return false;
       }
       
@@ -27,7 +27,7 @@ export default {
         'Message: ' + msg, 'URL: ' + url, 'Line: ' + lineNo,
         'Column: ' + columnNo, 'Error object: ' + JSON.stringify(error)].join(
         ' - ');
-      Store.dispatch('global/hint', message);
+      Store.dispatch('global/hint', message).catch(console.error);
       return false;
     };
   },

@@ -41,3 +41,12 @@ export const getBestMatchingTrack = function(data) {
     track: scores[bestGuess.id].object.Track, match: bestGuess.mean,
   };
 };
+
+export const getCurrentPlaylistEntryTimeMs = function(entry) {
+  let now = new Date();
+  let pausedAt = entry.pausedAt || now;
+  pausedAt = pausedAt.getTime();
+  let startedAt = entry.startedAt || now;
+  startedAt = startedAt.getTime();
+  return Math.abs(pausedAt - startedAt);
+};
