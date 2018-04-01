@@ -27,15 +27,23 @@ export default {
     
     isLoading: function() {
       let entry = this.entry;
-      return !entry || entry.audioState === audioStates.loading ||
-        entry.audioState === audioStates.defined;
-    }, isReady: function() {
-      return this.entry && this.entry.audioState === audioStates.ready;
-    }, isPlaying: function() {
+      return !entry || entry.audioState === audioStates.loading;
+    },
+  
+    isReady: function() {
+      return this.entry && (this.entry.audioState === audioStates.ready ||
+        this.entry.audioState === audioStates.defined);
+    },
+  
+    isPlaying: function() {
       return this.entry && this.entry.audioState === audioStates.playing;
-    }, currentTimeLabel: function() {
+    },
+  
+    currentTimeLabel: function() {
       return secondsToReadableString(this.currentTime);
-    }, trackDurationLabel: function() {
+    },
+  
+    trackDurationLabel: function() {
       return secondsToReadableString(
         this.entry.track ? this.entry.track.Duration : 0);
     },

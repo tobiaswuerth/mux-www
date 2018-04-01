@@ -18,7 +18,6 @@ export default {
         self.items[e.oldIndex] = self.items[e.newIndex];
         self.items[e.newIndex] = tmp;
         Store.dispatch('audio/setPlaylist', self.items);
-        
       },
     });
   },

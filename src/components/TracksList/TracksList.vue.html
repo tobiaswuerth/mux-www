@@ -4,8 +4,11 @@
       <md-icon>play_arrow</md-icon> <!-- todo pause button -->
     </md-button>
     <span class="md-list-item-text">
-        <span>{{props.item.Path}}</span>
-        <span class="md-caption">Duration: {{toReadable(props.item.Duration)}}</span>
-      </span>
+      <span>{{props.item.Path}}</span>
+      <span class="md-caption">Duration: {{toReadable(props.item.Duration)}}</span>
+    </span>
+    <md-button class="md-list-action" @click="addToPlaylist(props.item, $event)">
+      <md-icon class="md-primary">playlist_add</md-icon>
+    </md-button>
   </template>
 </List>
