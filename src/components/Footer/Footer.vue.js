@@ -2,6 +2,7 @@ import Store from './../../ecosystems/vuex/Store';
 import {states as audioStates} from './../../ecosystems/vuex/modules/AudioModule';
 import {secondsToReadableString} from './../../scripts/Utils';
 import Router, {paths} from './../../ecosystems/vue-router/Router';
+import {getCurrentPlaylistEntryTimeMs} from './../../scripts/DataUtils';
 
 export default {
   name: 'Footer',
@@ -66,16 +67,7 @@ export default {
     updateValues: function() {
       this.entry = this.getEntry();
       if (this.entry && this.entry.track) {
-        let now = new Date();
-        let pausedAt = this.entry.pausedAt || now;
-        pausedAt = pausedAt.getTime();
-        let startedAt = this.entry.startedAt || now;
-        startedAt = startedAt.getTime();
-        if (pausedAt < startedAt) {
-          pausedAt = now;
-          console.log('here');
-        }
-        let timeMs = Math.abs(pausedAt - startedAt);
+        let timeMs = getCurrentPlaylistEntryTimeMs(this.entry);
         this.currentTime = Math.round(timeMs / 1000);
         this.progress = Math.round(timeMs / 10 / this.entry.track.Duration);
       } else {
@@ -102,6 +94,20 @@ export default {
   
     previous: function() {
       Store.dispatch('audio/previous').catch(console.error);
+    },
+  
+    progressClicked: function(e) {
+      let progress = e.x / screen.width;
+      let entry = Store.getters['audio/currentEntry'];
+      if (!entry) {
+        return;
+      }
+    
+      let length = entry.track.Duration;
+      let skipTo = length * progress;
+      let currentTime = getCurrentPlaylistEntryTimeMs(entry) / 1000;
+      let relativeChange = skipTo - currentTime;
+      Store.dispatch('audio/moveTime', relativeChange).catch(console.error);
     },
   },
 };

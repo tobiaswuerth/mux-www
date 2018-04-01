@@ -1,6 +1,7 @@
 import {clone} from './../../../scripts/Utils';
 import {baseUrl, routes} from './RepositoryModule';
 import Store from './../Store';
+import {getCurrentPlaylistEntryTimeMs} from './../../../scripts/DataUtils';
 
 let i = 0;
 export const states = {
@@ -57,7 +58,7 @@ let createEntry = function(getters, payload) {
   return entry;
 };
 
-let loadSource = function(entry, getters) {
+let loadSource = function(entry, getters, dispatch) {
   if (entry.audioState !== states.defined) {
     return;
   }
@@ -83,10 +84,7 @@ let loadSource = function(entry, getters) {
       entry.buffer = buffer;
   
       if (getters.currentEntry.key === entry.key) {
-        entry.pausedAt = null;
-        source.start(0);
-        entry.startedAt = new Date();
-        entry.audioState = states.playing;
+        continueSource(entry, getters, dispatch);
       } else {
         entry.audioState = states.ready;
       }
@@ -157,7 +155,7 @@ export default {
     
       // load & continue
       if (entry.audioState === states.defined) {
-        loadSource(entry, getters);
+        loadSource(entry, getters, dispatch);
       } else if (entry.audioState === states.ready) {
         continueSource(entry, getters, dispatch);
       }
@@ -187,13 +185,23 @@ export default {
       commit('playlistIndex', idx);
     },
   
+    moveTime: async function({getters, dispatch}, payload) {
+      let entry = getters.currentEntry;
+      if (!entry) {
+        return;
+      }
+      let timeMs = getCurrentPlaylistEntryTimeMs(entry) + (payload * 1000);
+      entry.startedAt = new Date(new Date().getTime() - timeMs);
+      await dispatch('play');
+    },
+    
     setPlaylistIndex: async function({commit, dispatch}, payload) {
       await dispatch('pause');
       commit('playlistIndex', payload);
       await dispatch('play');
     },
   
-    addToPlaylist: async function({getters}, payload) {
+    addToPlaylist: async function({getters, dispatch}, payload) {
       // validate
       if (!payload.track) {
         return Promise.reject('undefined track');
@@ -210,7 +218,7 @@ export default {
       playlist.push(entry);
       if (playlist.length - 2 === getters.playlistIndex) {
         // is next -> preload
-        loadSource(entry, getters);
+        loadSource(entry, getters, dispatch);
       }
     },
   
@@ -230,7 +238,7 @@ export default {
       if (playlist.length > nextItemIndex) {
         let nextItem = playlist[nextItemIndex];
         if (nextItem.audioState === states.defined) {
-          loadSource(nextItem, getters);
+          loadSource(nextItem, getters, dispatch);
         }
       }
     },
