@@ -212,7 +212,10 @@ export default {
       if (!entry) {
         return Promise.reject('creation failed');
       }
-    
+      Store.dispatch('global/hint',
+        {message: `Added '${entry.title}' to playlist`}).
+        catch(console.error);
+      
       // finalize
       let playlist = getters.playlist;
       playlist.push(entry);
@@ -234,6 +237,11 @@ export default {
       entry.startedAt = 0;
       entry.pausedAt = 0;
       await dispatch('setPlaylistIndex', index);
+    
+      entry = getters.currentEntry;
+      Store.dispatch('global/hint', {message: `Playing '${entry.title}'`}).
+        catch(console.error);
+      
       let nextItemIndex = index + 1;
       if (playlist.length > nextItemIndex) {
         let nextItem = playlist[nextItemIndex];
@@ -254,6 +262,10 @@ export default {
       entry.startedAt = 0;
       entry.pausedAt = 0;
       await dispatch('setPlaylistIndex', index);
+    
+      entry = getters.currentEntry;
+      Store.dispatch('global/hint', {message: `Playing '${entry.title}'`}).
+        catch(console.error);
     },
   },
 };

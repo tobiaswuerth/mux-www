@@ -22,5 +22,7 @@
 }
 
 .snackbar {
-
+  position: absolute;
+  bottom: 50vh;
+  background-color: rgba(0, 0, 0, .75);
 }
