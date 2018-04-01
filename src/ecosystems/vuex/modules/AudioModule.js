@@ -10,50 +10,50 @@ export const states = {
 const emptyPlaylistEntry = {
   track: null,
   buffer: null,
-  source: null, title: null,
+  source: null,
+  title: null,
   audioState: states.defined,
-  startedAt: null, pausedAt: null, key: null,
+  startedAt: null,
+  pausedAt: null,
+  key: null,
 };
 
-let continueSource = function(entry, getters, commit) {
+let continueSource = function(entry, getters, dispatch) {
   let now = new Date();
   let pausedAt = entry.pausedAt || now;
   let startedAt = entry.startedAt || now;
-  let timeMs = pausedAt.getTime() - startedAt.getTime();
+  let timeMs = Math.abs(pausedAt.getTime() - startedAt.getTime());
   let context = getters.context;
   entry.source = context.createBufferSource();
   let source = entry.source;
   
-  entry.source.onended = function(v) {
-    let playNext = Math.round(v.srcElement.context.currentTime) >
-      Math.round(entry.track.Duration);
-    let index = getters.playlistIndex + 1;
-    if (playNext && getters.playlist.length > index) {
-      console.log('playing next');
-      commit('playlistIndex', index);
+  source.onended = function() {
+    let currentTime = (new Date().getTime() - entry.startedAt.getTime()) / 1000;
+    let playNext = currentTime >= entry.track.Duration;
+    if (!playNext) {
+      return;
     }
+    
+    dispatch('next');
   };
   
   source.connect(context.destination);
   source.buffer = entry.buffer;
+  entry.pausedAt = null;
   source.start(0, timeMs / 1000);
-  let timestamp = now.getTime() - timeMs;
-  console.log(timestamp);
-  entry.startedAt = new Date(timestamp);
+  entry.startedAt = new Date(now - timeMs);
   entry.audioState = states.playing;
 };
 
-let prependNewEntry = function(entry, payload, getters, commit) {
+let createEntry = function(getters, payload) {
   if (!payload.track) {
     return null;
   }
-  entry = clone(emptyPlaylistEntry);
+  let entry = clone(emptyPlaylistEntry);
   entry.track = payload.track;
   entry.source = getters.context.createBufferSource();
   entry.key = Math.random();
   entry.title = payload.title || entry.track.Path;
-  getters.playlist.unshift(entry);
-  commit('playlistIndex', 0);
   return entry;
 };
 
@@ -83,14 +83,21 @@ let loadSource = function(entry, getters) {
       entry.buffer = buffer;
   
       if (getters.currentEntry.key === entry.key) {
+        entry.pausedAt = null;
         source.start(0);
         entry.startedAt = new Date();
         entry.audioState = states.playing;
+      } else {
+        entry.audioState = states.ready;
       }
     }).catch((r) => {
       console.error(r);
       entry.audioState = states.defined;
     });
+  };
+  
+  request.onerror = function() {
+    entry.audioState = states.defined;
   };
   
   // execute
@@ -121,7 +128,7 @@ export default {
   },
   
   actions: {
-    async pause({commit, getters}) {
+    pause: async function({commit, getters}) {
       let entry = getters.currentEntry;
       if (!entry || entry.audioState !== states.playing) {
         // ignore call
@@ -132,26 +139,31 @@ export default {
       entry.pausedAt = new Date();
       entry.audioState = states.ready;
     },
-    
-    async play({commit, getters, dispatch}, payload) {
+  
+    play: async function({commit, getters, dispatch}, payload) {
       await dispatch('pause');
-      console.log('play');
       let entry = getters.currentEntry;
-      if (!entry || (payload && payload.track)) {
-        entry = prependNewEntry(entry, payload, getters, commit);
+    
+      // create new
+      if (payload && payload.track) {
+        await dispatch('addToPlaylist', payload);
+        await dispatch('setPlaylistIndex', getters.playlist.length - 1);
+        return;
       }
+    
       if (!entry) {
         return Promise.resolve();
       }
-      
+    
+      // load & continue
       if (entry.audioState === states.defined) {
         loadSource(entry, getters);
       } else if (entry.audioState === states.ready) {
-        continueSource(entry, getters, commit);
+        continueSource(entry, getters, dispatch);
       }
     },
   
-    async setPlaylist({commit, dispatch, getters}, payload) {
+    setPlaylist: async function({commit, dispatch, getters}, payload) {
       // find current index
       let idx = null;
       let entry = getters.currentEntry;
@@ -175,9 +187,65 @@ export default {
       commit('playlistIndex', idx);
     },
   
-    async setPlaylistIndex({commit, dispatch}, payload) {
+    setPlaylistIndex: async function({commit, dispatch}, payload) {
+      await dispatch('pause');
       commit('playlistIndex', payload);
       await dispatch('play');
+    },
+  
+    addToPlaylist: async function({getters}, payload) {
+      // validate
+      if (!payload.track) {
+        return Promise.reject('undefined track');
+      }
+    
+      // create
+      let entry = createEntry(getters, payload);
+      if (!entry) {
+        return Promise.reject('creation failed');
+      }
+    
+      // finalize
+      let playlist = getters.playlist;
+      playlist.push(entry);
+      if (playlist.length - 2 === getters.playlistIndex) {
+        // is next -> preload
+        loadSource(entry, getters);
+      }
+    },
+  
+    next: async function({dispatch, getters}) {
+      let index = getters.playlistIndex + 1;
+      let playlist = getters.playlist;
+      let threshold = playlist.length;
+      if (index >= threshold) {
+        index = 0; // end of list, start from beginning
+      }
+    
+      let entry = getters.playlist[index];
+      entry.startedAt = 0;
+      entry.pausedAt = 0;
+      await dispatch('setPlaylistIndex', index);
+      let nextItemIndex = index + 1;
+      if (playlist.length > nextItemIndex) {
+        let nextItem = playlist[nextItemIndex];
+        if (nextItem.audioState === states.defined) {
+          loadSource(nextItem, getters);
+        }
+      }
+    },
+  
+    previous: async function({dispatch, getters}) {
+      let index = getters.playlistIndex - 1;
+      if (index < 0) {
+        let threshold = getters.playlist.length;
+        index = threshold > 0 ? threshold - 1 : 0; // beginning of list,
+        // start from the end
+      }
+      let entry = getters.playlist[index];
+      entry.startedAt = 0;
+      entry.pausedAt = 0;
+      await dispatch('setPlaylistIndex', index);
     },
   },
 };

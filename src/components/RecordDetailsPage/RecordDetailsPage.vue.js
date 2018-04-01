@@ -5,6 +5,7 @@ import {prepareRoute} from './../../ecosystems/vue-router/RouterUtils';
 import {onAfterSingle, simplyLoad} from './../../scripts/DataLoaderUtils';
 import Store from './../../ecosystems/vuex/Store';
 import {matchScale, secondsToReadableString} from './../../scripts/Utils';
+import {getBestMatchingTrack} from './../../scripts/DataUtils';
 
 export default Vue.extend({
   name: 'ArtistRecordDetailsPage',
@@ -33,7 +34,9 @@ export default Vue.extend({
       return prepareRoute(paths.private.records.releases, {
         id: this.id,
       });
-    }, uriArtists: function() {
+    },
+  
+    uriArtists: function() {
       return prepareRoute(paths.private.records.artists, {
         id: this.id,
       });
@@ -68,7 +71,9 @@ export default Vue.extend({
     let loadRecord = simplyLoad('records/byId', payload, onAfterSingle).
       then((record) => {
         this.record = record;
-        this.duration = secondsToReadableString(this.record.Length / 1000);
+        if (!!this.record.Length) {
+          this.duration = secondsToReadableString(this.record.Length / 1000);
+        }
       });
   
     let loadTracks = simplyLoad('records/tracksById', payload).then((data) => {
@@ -80,65 +85,36 @@ export default Vue.extend({
         this.aliases = data.map(d => d.Name).join(', ');
       });
   
-    Promise.all([loadRecord, loadTracks, loadAliases]).catch((r) => {
-      console.error(r);
-    });
+    await Promise.all([loadRecord, loadTracks, loadAliases]).
+      catch(console.error);
     
     this.isLoading = false;
   },
   
   methods: {
     initPlayForBestGuess: function(data) {
-      // sum them up
-      let scores = {};
-      for (let d of data) {
-        let score = d.Score;
-        if (score === 1.0) {
-          // perfect match
-          this.track = d.Track;
-          this.match = d.Score;
-          return;
-        }
-        
-        let track = d.Track;
-        let id = track.UniqueId;
-        
-        let entry = scores[id];
-        if (null == entry) {
-          scores[id] = {
-            count: 1, sum: score, object: d,
-          };
-          continue;
-        }
-        
-        entry.count++;
-        entry.sum += score;
-      }
-      
-      if (scores.length === 0) {
+      let result = getBestMatchingTrack(data);
+      if (null == result) {
         this.track = {};
-        return;
+        this.match = 0;
+      } else {
+        this.track = result.track;
+        this.match = result.match;
+        if (!this.duration) {
+          this.duration = secondsToReadableString(this.track.Duration);
+        }
       }
-      
-      // calculate mean for each
-      let means = Object.keys(scores).map(id => {
-        let calcObj = scores[id];
-        return {
-          id: id, mean: (calcObj.sum / calcObj.count).toFixed(6),
-        };
-      });
-      
-      let bestGuess = means.sort((a, b) => a.mean < b.mean ? 1 : -1)[0];
-      
-      let entry = scores[bestGuess.id];
-      this.track = entry.object.Track;
-      this.match = bestGuess.mean;
     },
     
     play: function() {
-      Store.dispatch('audio/play', {track: this.track}).catch((r) => {
-        console.error(r);
-      });
+      Store.dispatch('audio/play',
+        {track: this.track, title: this.record.Title}).catch(console.error);
+    },
+  
+    addToPlaylist: function() {
+      Store.dispatch('audio/addToPlaylist',
+        {track: this.track, title: this.record.Title}).
+        catch(console.error);
     },
     
   },

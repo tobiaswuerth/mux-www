@@ -3,7 +3,7 @@
   <md-progress-bar class="bar" md-mode="determinate" :md-value="progress"></md-progress-bar>
 
   <div class="md-layout md-alignment-center-center" v-if="entry && entry.track">
-    <span class="md-caption">{{entry.track.Path}}</span>
+    <span class="md-caption">{{entry.title}}</span>
   </div>
 
   <div class="md-layout md-gutter md-alignment-center-center">
@@ -11,7 +11,7 @@
       {{currentTimeLabel}}
     </span>
 
-    <md-button class="md-fab md-mini md-raised md-plain">
+    <md-button class="md-fab md-mini md-raised md-plain" @click="previous">
       <md-icon>skip_previous</md-icon>
     </md-button>
 
@@ -31,7 +31,7 @@
       <md-icon>forward_10</md-icon>
     </md-button>
 
-    <md-button class="md-fab md-mini md-raised md-plain">
+    <md-button class="md-fab md-mini md-raised md-plain" @click="next">
       <md-icon>skip_next</md-icon>
     </md-button>
 

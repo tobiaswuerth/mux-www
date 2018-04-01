@@ -24,5 +24,10 @@ export default {
         console.error(r);
       });
     },
+  
+    addToPlaylist: (item, event) => {
+      event.stopPropagation();
+      Store.dispatch('audio/addToPlaylist', {track: item}).catch(console.error);
+    },
   },
 };
