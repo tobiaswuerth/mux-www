@@ -1,24 +1,31 @@
 <SubContentHub>
   <template>
-    <div>
-      <span class="md-title">{{name}}</span>
-      <template v-if="!dataLoader.isLoading">
-        <div class="md-caption">this release got published in <span v-if="countries.length > 0">
+
+    <span class="md-title">{{name}}</span>
+    <template v-if="!dataLoader.isLoading">
+
+      <md-button class="float-right md-primary md-raised md-icon-button" @click="play">
+        <md-icon>play_arrow</md-icon>
+      </md-button>
+      <md-button class="float-right md-raised md-icon-button" @click="addToPlaylist">
+        <md-icon>playlist_add</md-icon>
+      </md-button>
+
+      <div class="md-caption">this release got published in <span v-if="countries.length > 0">
             <b>{{countries.length}}</b>
           countr{{countries.length === 1 ? 'y' : 'ies'}} in
           </span> <b>{{variations}}</b> variation{{variations > 1 ? 's' : ''}}
-        </div>
-        <span v-for="c in countries" :key="c">
+      </div>
+      <span v-for="c in countries" :key="c">
           <img class="md-layout-item country-flag" :src="`/static/countries/${c}.svg`" :alt="c"/>
           <md-tooltip md-direction="bottom">{{c}}</md-tooltip>
         </span>
-      </template>
-      <template v-else>
+    </template>
+    <template v-else>
         <span>
           <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
         </span>
-      </template>
-    </div>
+    </template>
   </template>
 
   <template slot="tabs">

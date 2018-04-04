@@ -1,6 +1,7 @@
 import DataSource from './DataSource';
-import {clone, onceOrMore} from './Utils';
+import {onceOrMore} from './Utils';
 import Store from './../ecosystems/vuex/Store';
+import {clone} from './DataUtils';
 
 function DataLoader(route, parent) {
   this.route = route;

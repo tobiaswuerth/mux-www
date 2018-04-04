@@ -1,12 +1,11 @@
 import Router from './../Router';
 import {prepareRoute} from './../RouterUtils';
 import List from './../../../components/List/List';
-import {clone, makeUnique} from './../../../scripts/Utils';
+import {clone, makeUnique} from '../../../scripts/DataUtils';
 import {
   onAfterFilter,
   onAfterMap,
-  onAfterSort,
-  onAfterUnique,
+  onAfterSort, onAfterUniqueByKey,
   simplyLoad,
   simplyLoadAll,
 } from './../../../scripts/DataLoaderUtils';
@@ -98,8 +97,7 @@ export default [
           id: {},
           name: {},
           toString1: (i) => i.Title,
-          payload: async (p) => p,
-          onAfter: onAfterUnique,
+          payload: async (p) => p, onAfter: onAfterUniqueByKey('Title'),
           onClick: (i, p) => {
             Router.push(prepareRoute(p.generic
               ? paths.recordsLookup.rootFull
@@ -122,7 +120,7 @@ export default [
           route: 'releases/recordsById',
           valueKey: 'Title',
           toString1: (i) => i.Title,
-          onAfter: [onAfterUnique, onAfterSort],
+          onAfter: [onAfterUniqueByKey('Title'), onAfterSort],
           doPreload: true,
           payload: async (p) => await simplyLoad('artists/releasesById',
             {id: p.id}, [
@@ -220,7 +218,9 @@ export default [
             a => a.Name).
             join(', ')}` : '',
           onAfter: [
-            onAfterMap(i => i.Artist), onAfterUnique, onAfterSort],
+            onAfterMap(i => i.Artist),
+            onAfterUniqueByKey('UniqueId'),
+            onAfterSort],
           showAvatar: true,
           doInsetDivider: true,
           payload: async (p) => {

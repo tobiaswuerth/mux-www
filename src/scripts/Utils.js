@@ -39,10 +39,6 @@ export const secondsToReadableString = function(seconds) {
   return result;
 };
 
-export const makeUnique = function(iterable) {
-  return [...new Set(iterable)];
-};
-
 async function asyncInvoke(input, payload) {
   await Promise.resolve(input).then(async (v) => {
     if (isCallable(v)) {
@@ -68,10 +64,6 @@ export async function onceOrMore(prop, payload) {
     }
   }
 }
-
-export const clone = function(obj) {
-  return Object.assign({}, obj);
-};
 
 export const resolve = function(obj, payload) {
   let i = 0;

@@ -2,10 +2,10 @@
   <template>
 
     <div :key="Math.random()" v-if="!dataLoader.isLoading">
-      <md-button class="play-button md-primary md-raised md-icon-button" @click="play">
+      <md-button class="float-right md-primary md-raised md-icon-button" @click="play">
         <md-icon>play_arrow</md-icon>
       </md-button>
-      <md-button class="play-button md-raised md-icon-button" @click="addToPlaylist">
+      <md-button class="float-right md-raised md-icon-button" @click="addToPlaylist">
         <md-icon>playlist_add</md-icon>
       </md-button>
     </div>

@@ -2,9 +2,10 @@ import Router from './../Router';
 import {prepareRoute} from './../RouterUtils';
 import List from './../../../components/List/List';
 import ReleasesListDetailed from './../../../components/ReleasesListDetailed/ReleasesListDetailed';
-import {clone, secondsToReadableString} from './../../../scripts/Utils';
+import {secondsToReadableString} from './../../../scripts/Utils';
 import {onAfterMap, onAfterSort,} from './../../../scripts/DataLoaderUtils';
 import {paths as artistPaths} from './ArtistsRoutes';
+import {clone} from './../../../scripts/DataUtils';
 
 const RecordDetailsPage = () => import('./../../../components/RecordDetailsPage/RecordDetailsPage');
 

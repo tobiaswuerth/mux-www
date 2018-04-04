@@ -1,4 +1,4 @@
-import {clone} from './../../../scripts/Utils';
+import {clone} from '../../../scripts/DataUtils';
 import {baseUrl, routes} from './RepositoryModule';
 import Store from './../Store';
 import {getCurrentPlaylistEntryTimeMs} from './../../../scripts/DataUtils';
