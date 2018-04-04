@@ -3,7 +3,11 @@ import SubContentHub from './../SubContentHub/SubContentHub';
 import {paths} from './../../ecosystems/vue-router/Router';
 
 import DataLoader from '../../scripts/DataLoader';
-import {onAfterFilter} from './../../scripts/DataLoaderUtils';
+import {
+  onAfterFilter, onAfterMap, onAfterUniqueByKey, simplyLoad, simplyLoadAll,
+} from './../../scripts/DataLoaderUtils';
+import {getBestMatchingTrack} from './../../scripts/DataUtils';
+import Store from './../../ecosystems/vuex/Store';
 
 export default Vue.extend({
   name: 'ArtistReleaseDetailsPage',
@@ -60,6 +64,66 @@ export default Vue.extend({
       return route.replace(':id', this.id).
         replace(':name', encodeURIComponent(this.name));
     },
+  
+    addToPlaylist: function() {
+      // get all releases of this artist matching the given name
+      simplyLoad('artists/releasesById', {id: this.id}, [
+        onAfterFilter((i) => i.Title.normalize() === this.name.normalize()),
+        onAfterMap((i) => Object.assign({id: i.UniqueId}))]).
+        then((releaseIds) => {
+          // get all records of those releases
+          simplyLoadAll('releases/recordsById', releaseIds,
+            onAfterUniqueByKey('UniqueId')).
+            then((records) => {
+              // get all tracks of those records
+              records.forEach((s) => {
+                simplyLoad('records/tracksById', {id: s.UniqueId}).
+                  then((tracks) => {
+                    // add best match to playlist
+                    let bestGuess = getBestMatchingTrack(tracks);
+                    Store.dispatch('audio/addToPlaylist',
+                      {track: bestGuess.track, title: s.Title}).
+                      catch(console.error);
+                  }).
+                  catch(console.error);
+              });
+            }).catch(console.error);
+        }).catch(console.error);
+    },
+  
+    play: function() {
+      let performedPlay = false;
     
+      // get all releases of this artist matching the given name
+      simplyLoad('artists/releasesById', {id: this.id}, [
+        onAfterFilter((i) => i.Title.normalize() === this.name.normalize()),
+        onAfterMap((i) => Object.assign({id: i.UniqueId}))]).
+        then((releaseIds) => {
+          // get all records of those releases
+          simplyLoadAll('releases/recordsById', releaseIds,
+            onAfterUniqueByKey('UniqueId')).
+            then((records) => {
+              // get all tracks of those records
+              records.forEach((s) => {
+                simplyLoad('records/tracksById', {id: s.UniqueId}).
+                  then((tracks) => {
+                    // add best match to playlist
+                    let bestGuess = getBestMatchingTrack(tracks);
+                    Store.dispatch('audio/addToPlaylist',
+                      {track: bestGuess.track, title: s.Title}).then(() => {
+                      if (!performedPlay) {
+                        performedPlay = true;
+                        let lastIdx = Store.getters['audio/playlist'].length -
+                          1;
+                        Store.dispatch('audio/setPlaylistIndex', lastIdx).
+                          catch(console.error);
+                      }
+                    }).catch(console.error);
+                  }).
+                  catch(console.error);
+              });
+            }).catch(console.error);
+        }).catch(console.error);
+    },
   },
 });

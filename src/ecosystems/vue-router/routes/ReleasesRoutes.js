@@ -1,7 +1,7 @@
 import Router from './../Router';
 import {prepareRoute} from './../RouterUtils';
 import List from './../../../components/List/List';
-import {clone} from './../../../scripts/Utils';
+import {clone} from '../../../scripts/DataUtils';
 import ReleaseDetailsPage from './../../../components/ReleaseDetailsPage/ReleaseDetailsPage';
 import {
   onAfterMap, onAfterSingle, onAfterSort, simplyLoad,

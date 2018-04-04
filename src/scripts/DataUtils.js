@@ -50,3 +50,17 @@ export const getCurrentPlaylistEntryTimeMs = function(entry) {
   startedAt = startedAt.getTime();
   return Math.abs(pausedAt - startedAt);
 };
+
+export const makeUnique = function(iterable) {
+  return [...new Set(iterable)];
+};
+
+export const makeUniqueByKey = function(iterable, key) {
+  let d = iterable.map(x => [x[key], x]);
+  d = new Map(d).values();
+  return Array.from(d);
+};
+
+export const clone = function(obj) {
+  return Object.assign({}, obj);
+};

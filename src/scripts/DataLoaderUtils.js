@@ -1,16 +1,13 @@
 import {isCallable} from './Utils';
 import DataLoader from './DataLoader';
+import {makeUnique, makeUniqueByKey} from './DataUtils';
+
+export const onAfterUniqueByKey = (key) => (payload) => {
+  payload.dataSource.data = makeUniqueByKey(payload.dataSource.data, key);
+};
 
 export const onAfterUnique = (payload) => {
-  let data = payload.dataSource.data;
-  if (data.length > 0) {
-    // treat data as object array
-    let vk = payload.loader.parent.valueKey;
-    let d = data.map(x => [x[vk].toString().normalize(), x]);
-    d = new Map(d).values();
-    d = Array.from(d);
-    payload.dataSource.data = d;
-  }
+  payload.dataSource.data = makeUnique(payload.dataSource.data);
 };
 
 export const onAfterSingle = (payload) => {
@@ -56,17 +53,12 @@ export const simplyLoad = async (route, payload = {}, onAfter = null) => {
   let loader = new DataLoader(route);
   let config = {doPreload: true};
   loader.onAfter = onAfter;
-  return await loader.load(payload, config).catch((r) => {
-    console.error(r);
-  });
+  return await loader.load(payload, config).catch(console.error);
 };
 
 export const simplyLoadAll = async (route, payloads, onAfter) => {
-  let data = [];
-  let promises = payloads.map((p) => simplyLoad(route, p, onAfter).
-    then((d) => data = data.concat(d)));
-  await Promise.all(promises).catch((r) => {
-    console.error(r);
-  });
-  return Promise.resolve(data);
+  let loader = new DataLoader(route);
+  let config = {doPreload: true};
+  loader.onAfter = onAfter;
+  return await loader.loadAll(payloads, config).catch(console.error);
 };
