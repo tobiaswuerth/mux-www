@@ -21,10 +21,7 @@ export default [
     path: paths.root,
     component: clone(List),
     props: {
-      route: 'records/all',
-      valueKey: 'Title',
-      toString1: (i) => i.Title,
-      onClick: (i) => {
+      route: 'records/all', toString1: (i) => i.Title, onClick: (i) => {
         Router.push(prepareRoute(paths.lookup, {name: i.Title}));
       },
     },
@@ -36,7 +33,6 @@ export default [
       route: 'records/likeName',
       toString1: (i) => i.Title,
       payload: async (p) => p,
-      valueKey: 'Title',
       onClick: (i) => {
         Router.push(prepareRoute(paths.lookup, {name: i.Title}));
       },
@@ -47,7 +43,6 @@ export default [
     component: clone(List),
     props: {
       route: 'records/byName',
-      valueKey: 'UniqueId',
       toString1: (i) => i.Title,
       toString2: (i) => i.Disambiguation,
       toString3: (i) => i.Length ? `Length: ${secondsToReadableString(i.Length /
@@ -74,7 +69,6 @@ export default [
       {
         path: paths.artists, component: clone(List), props: {
           route: 'records/artistsById',
-          valueKey: 'UniqueId',
           toString1: (i) => i.Name,
           toString2: (i) => i.Disambiguation,
           toString3: (i) => i.Aliases.length > 0 ? `a.k.a. ${i.Aliases.map(

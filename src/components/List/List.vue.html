@@ -2,18 +2,34 @@
   <template v-if="dataLoader">
     <md-list class="md-triple-list">
       <template v-for="item in dataLoader.dataSource.data">
-        <md-list-item class="clean-list-item" :key="item[valueKey]" @click="onClick(item, $route.params)">
+        <md-list-item class="clean-list-item" :key="Math.random()" @click="onClick(item, $route.params)">
           <slot :item="item">
             <md-avatar class="md-avatar-icon" v-if="showAvatar"> {{getAvatar(item)}}</md-avatar>
+
+            <template v-for="action in actionsLeft">
+              <md-button :class="getActionStyle(action)" @click="performAction(action, item, $event)">
+                <md-icon>{{action.icon}}</md-icon>
+              </md-button>
+            </template>
 
             <div class="md-list-item-text">
               <span> {{getString1(item)}} </span> <span v-if="toString2"> {{getString2(item)}} </span>
               <p v-if="toString3" class="md-caption"> {{getString3(item)}} </p>
             </div>
 
-            <md-button class="md-icon-button md-list-action">
-              <md-icon class="md-primary">keyboard_arrow_right</md-icon>
-            </md-button>
+            <template v-if="!actionsRight || actionsRight.length === 0">
+              <md-button class="md-icon-button md-list-action">
+                <md-icon class="md-primary">keyboard_arrow_right</md-icon>
+              </md-button>
+            </template>
+            <template v-else>
+              <template v-for="action in actionsRight">
+                <md-button :class="getActionStyle(action) + ` md-list-action`" @click="performAction(action, item, $event)">
+                  <md-icon>{{action.icon}}</md-icon>
+                </md-button>
+              </template>
+            </template>
+
           </slot>
         </md-list-item>
         <md-divider :class="doInsetDivider ? 'md-inset' : ''"></md-divider>

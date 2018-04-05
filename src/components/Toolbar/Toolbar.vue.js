@@ -9,7 +9,9 @@ const specificRoutes = [
   paths.private.releases.root,
   paths.private.artists.search,
   paths.private.records.search,
-  paths.private.releases.search];
+  paths.private.releases.search,
+  paths.private.tracks.root,
+  paths.private.tracks.search];
 
 export default {
   name: 'Toolbar',

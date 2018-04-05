@@ -71,6 +71,8 @@ export const routes = {
     tracks: {
       all: `${config.prefix.authorized}/tracks`,
       byId: (id) => `${config.prefix.authorized}/tracks/${id}`,
+      likeName: (name) => `${config.prefix.authorized}/tracks/search/${encodeURIComponent(
+        name)}`,
     },
     
     files: {
@@ -241,6 +243,9 @@ export default {
     }, async trackById({}, payload) {
       return await performParamDefaultDataRequest(payload,
         {id: routes.get.tracks.byId});
+    }, async tracksLikeName({}, payload) {
+      return await performParamDefaultDataRequest(payload,
+        {name: routes.get.tracks.likeName});
     },
   },
 };
