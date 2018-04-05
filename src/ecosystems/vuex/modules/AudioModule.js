@@ -213,8 +213,7 @@ export default {
         return Promise.reject('creation failed');
       }
       Store.dispatch('global/hint',
-        {message: `Added '${entry.title}' to playlist`}).
-        catch(console.error);
+        {message: `Added '${entry.title}' to playlist`}).catch(console.error);
       
       // finalize
       let playlist = getters.playlist;

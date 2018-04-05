@@ -18,8 +18,7 @@ export default {
     doInsetDivider: {},
     toString1: {},
     toString2: {},
-    toString3: {},
-    onAfter: {}, actionsLeft: {}, actionsRight: {},
+    toString3: {}, onAfter: {}, actionsLeft: {}, actionsRight: {},
     
     // url Router params
     id: {},
@@ -72,9 +71,7 @@ export default {
         // execute action
         this.dataLoader.reset();
         action.call(this.dataLoader, payloads, {doPreload: this.doPreload});
-      }).catch((r) => {
-        console.error(r);
-      });
+      }).catch(console.error);
     },
   
     getActionStyle: function(action) {

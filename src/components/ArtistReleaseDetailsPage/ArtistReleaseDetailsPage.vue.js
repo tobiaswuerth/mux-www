@@ -42,9 +42,7 @@ export default Vue.extend({
     this.dataLoader.onAfter = [
       onAfterFilter((i) => i.Title.normalize() === this.name.normalize()),
       this.postProcessing];
-    this.dataLoader.load({id: this.id}, {doPreload: true}).catch((r) => {
-      console.error(r);
-    });
+    this.dataLoader.load({id: this.id}, {doPreload: true}).catch(console.error);
   },
   
   methods: {

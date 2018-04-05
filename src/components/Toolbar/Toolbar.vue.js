@@ -103,10 +103,9 @@ export default {
       this.loaderRecords.reset();
       
       let payload = {name: searchTerm, pageSize: 5};
-      let logError = (r) => { console.error(r); };
-      this.loaderArtists.load(payload).catch(logError);
-      this.loaderReleases.load(payload).catch(logError);
-      this.loaderRecords.load(payload).catch(logError);
+      this.loaderArtists.load(payload).catch(console.error);
+      this.loaderReleases.load(payload).catch(console.error);
+      this.loaderRecords.load(payload).catch(console.error);
     }, 750),
   },
 };

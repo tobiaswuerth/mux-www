@@ -33,8 +33,6 @@ export default {
   
   mounted: function() {
     this.dataLoader.onAfter = onAfterSingle;
-    this.dataLoader.load({id: this.id}).catch((r) => {
-      console.error(r);
-    });
+    this.dataLoader.load({id: this.id}).catch(console.error);
   },
 };

@@ -36,9 +36,7 @@ export default Vue.extend({
   
   mounted: function() {
     this.dataLoader.onAfter = onAfterSingle;
-    this.dataLoader.load({id: this.id}, true).catch((r) => {
-      console.error(r);
-    });
+    this.dataLoader.load({id: this.id}, true).catch(console.error);
   },
   
   methods: {

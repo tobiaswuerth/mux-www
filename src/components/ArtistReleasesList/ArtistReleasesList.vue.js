@@ -19,10 +19,7 @@ export default {
       then((data) => {
         this.data = data;
         this.isLoading = false;
-      }).
-      catch((r) => {
-        console.error(r);
-      });
+      }).catch(console.error);
   },
   
   methods: {

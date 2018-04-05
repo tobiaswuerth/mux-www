@@ -44,9 +44,7 @@ async function asyncInvoke(input, payload) {
     if (isCallable(v)) {
       await v.call(this, payload);
     }
-  }).catch((r) => {
-    console.error(r);
-  });
+  }).catch(console.error);
 }
 
 export async function onceOrMore(prop, payload) {
@@ -54,13 +52,9 @@ export async function onceOrMore(prop, payload) {
     if (isIterable(prop)) {
       await prop.reduce(
         (a, b) => asyncInvoke(a, payload).then(() => asyncInvoke(b, payload))).
-        catch((r) => {
-          console.error(r);
-        });
+        catch(console.error);
     } else {
-      await asyncInvoke(prop, payload).catch((r) => {
-        console.error(r);
-      });
+      await asyncInvoke(prop, payload).catch(console.error);
     }
   }
 }

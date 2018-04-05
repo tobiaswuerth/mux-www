@@ -78,13 +78,9 @@ export default {
     
     mainAction: function() {
       if (this.isPlaying) {
-        Store.dispatch('audio/pause').catch((r) => {
-          console.error(r);
-        });
+        Store.dispatch('audio/pause').catch(console.error);
       } else if (this.isReady) {
-        Store.dispatch('audio/play', {continue: true}).catch((r) => {
-          console.error(r);
-        });
+        Store.dispatch('audio/play', {continue: true}).catch(console.error);
       }
     },
   

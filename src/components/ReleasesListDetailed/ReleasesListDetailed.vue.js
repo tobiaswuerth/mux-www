@@ -27,9 +27,7 @@ export default {
           ? this.payload.call(this, this.$route.params)
           : Promise.resolve(this.payload)
         : Promise.resolve({});
-      let payloads = await loadPayload.catch((r) => {
-        console.error(r);
-      });
+      let payloads = await loadPayload.catch(console.error);
       
       // prepare action
       let action = isIterable(payloads)
@@ -38,9 +36,7 @@ export default {
       
       // execute action
       await action.call(this.dataLoader, payloads, {doPreload: this.doPreload}).
-        catch((r) => {
-          console.error(r);
-        });
+        catch(console.error);
       
       return Promise.resolve(this.dataLoader);
     },

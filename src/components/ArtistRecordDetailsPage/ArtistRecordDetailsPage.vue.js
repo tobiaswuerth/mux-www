@@ -80,22 +80,15 @@ export default Vue.extend({
             (i) => i.Title.normalize() === this.name.normalize())).
             then((data) => {
               this.processRecords(data);
-            }).
-            catch((r) => {
-              console.error(r);
-            });
-        }).catch((r) => {
-        console.error(r);
-      });
+            }).catch(console.error);
+        }).catch(console.error);
     } else {
       // load direct
       simplyLoad('artists/recordsById', {id: this.id},
         onAfterFilter((i) => i.Title.normalize() === this.name.normalize())).
         then((data) => {
           this.processRecords(data);
-        }).catch((r) => {
-        console.error(r);
-      });
+        }).catch(console.error);
     }
   },
   
@@ -139,9 +132,7 @@ export default Vue.extend({
     
     play: function() {
       Store.dispatch('audio/play', {track: this.track, title: this.name}).
-        catch((r) => {
-          console.error(r);
-        });
+        catch(console.error);
     },
   
     addToPlaylist: function() {

@@ -3,8 +3,7 @@ import {prepareRoute} from './../RouterUtils';
 import List from './../../../components/List/List';
 import {clone, makeUnique} from '../../../scripts/DataUtils';
 import {
-  onAfterFilter,
-  onAfterMap, onAfterSort, onAfterUniqueByKey,
+  onAfterFilter, onAfterMap, onAfterSort, onAfterUniqueByKey,
   simplyLoad,
   simplyLoadAll,
 } from './../../../scripts/DataLoaderUtils';
@@ -153,9 +152,7 @@ export default [
                 onAfterFilter(
                   (i) => i.Title.normalize() === p.name.normalize()),
                 onAfterMap((i) => Object.assign({id: i.UniqueId}))]).
-              catch((r) => {
-                console.error(r);
-              });
+              catch(console.error);
             
             let data = [];
             let append = (d) => data = data.concat(d);
@@ -174,9 +171,7 @@ export default [
               then(append));
             
             // wait for all to be loaded
-            await Promise.all(promises).catch((r) => {
-              console.error(r);
-            });
+            await Promise.all(promises).catch(console.error);
             
             data = makeUnique(data);
             data = data.map(d => Object.assign({id: d}));
@@ -224,21 +219,16 @@ export default [
             if (p.generic1) {
               let payloads = await simplyLoad('artists/releasesById', payload,
                 [onAfterFilter(filterFactory(p.generic1)), keyMapper]).
-                catch((r) => {
-                  console.error(r);
-                });
+                catch(console.error);
               return await simplyLoadAll('releases/recordsById', payloads,
                 [onAfterFilter(filterFactory(p.name)), keyMapper]).
-                catch((r) => {
-                  console.error(r);
-                });
+                catch(console.error);
             }
             
             // load direct
             return await simplyLoad('artists/recordsById', payload,
-              [onAfterFilter(filterFactory(p.name)), keyMapper]).catch((r) => {
-              console.error(r);
-            });
+              [onAfterFilter(filterFactory(p.name)), keyMapper]).
+              catch(console.error);
           },
           onClick: (i) => Router.push(
             prepareRoute(paths.details, {id: i.UniqueId})),
@@ -259,21 +249,16 @@ export default [
             if (p.generic1) {
               let payloads = await simplyLoad('artists/releasesById', payload,
                 [onAfterFilter(filterTitleBy(p.generic1)), keyMapper]).
-                catch((r) => {
-                  console.error(r);
-                });
+                catch(console.error);
               return await simplyLoadAll('releases/recordsById', payloads,
                 [onAfterFilter(filterTitleBy(p.name)), keyMapper]).
-                catch((r) => {
-                  console.error(r);
-                });
+                catch(console.error);
             }
             
             // load direct
             return await simplyLoad('artists/recordsById', payload,
-              [onAfterFilter(filterTitleBy(p.name)), keyMapper]).catch((r) => {
-              console.error(r);
-            });
+              [onAfterFilter(filterTitleBy(p.name)), keyMapper]).
+              catch(console.error);
           }, doPreload: true,
         },
       },],
