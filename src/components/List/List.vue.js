@@ -16,14 +16,9 @@ export default {
     hideEmptyState: {},
     showAvatar: {},
     doInsetDivider: {},
-    valueKey: {},
     toString1: {},
     toString2: {},
-    toString3: {},
-    
-    // manipulation
-    onBefore: {},
-    onAfter: {},
+    toString3: {}, onAfter: {}, actionsLeft: {}, actionsRight: {},
     
     // url Router params
     id: {},
@@ -40,16 +35,26 @@ export default {
   methods: {
     getString1: function(item) {
       return this.getString(this.toString1, item);
-    }, getString2: function(item) {
+    },
+  
+    getString2: function(item) {
       return this.getString(this.toString2, item);
-    }, getString3: function(item) {
+    },
+  
+    getString3: function(item) {
       return this.getString(this.toString3, item);
-    }, getString: function(key, item) {
+    },
+  
+    getString: function(key, item) {
       return isCallable(key) ? key.call(this, item) : item[key];
-    }, getAvatar: function(item) {
+    },
+  
+    getAvatar: function(item) {
       let s = this.getString1(item);
       return s ? s.substr(0, 2) : s;
-    }, load: function() {
+    },
+  
+    load: function() {
       // prepare payload
       let loadPayload = this.payload
         ? isCallable(this.payload)
@@ -66,9 +71,25 @@ export default {
         // execute action
         this.dataLoader.reset();
         action.call(this.dataLoader, payloads, {doPreload: this.doPreload});
-      }).catch((r) => {
-        console.error(r);
-      });
+      }).catch(console.error);
+    },
+  
+    getActionStyle: function(action) {
+      let actionStyle = 'md-primary';
+    
+      if (action.isRound) {
+        actionStyle += ' md-icon-button';
+      }
+      if (action.isRaised) {
+        actionStyle += ' md-raised';
+      }
+    
+      return actionStyle;
+    },
+  
+    performAction: function(action, item, event) {
+      event.stopPropagation();
+      action.onClick.call(this, item);
     },
   },
   
@@ -81,7 +102,6 @@ export default {
   mounted: function() {
     this.dataLoader = new DataLoader(this.route, this);
     this.dataLoader.onAfter = this.onAfter;
-    this.dataLoader.onBefore = this.onBefore;
     
     this.load();
   },

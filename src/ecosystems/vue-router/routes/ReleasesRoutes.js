@@ -24,10 +24,7 @@ export default [
     path: paths.root,
     component: clone(List),
     props: {
-      route: 'releases/all',
-      valueKey: 'Title',
-      toString1: (i) => i.Title,
-      onClick: (i) => {
+      route: 'releases/all', toString1: (i) => i.Title, onClick: (i) => {
         Router.push(prepareRoute(paths.lookup, {name: i.Title}));
       },
     },
@@ -36,7 +33,6 @@ export default [
       route: 'releases/likeName',
       toString1: (i) => i.Title,
       payload: async (p) => p,
-      valueKey: 'Title',
       onClick: (i) => {
         Router.push(prepareRoute(paths.lookup, {name: i.Title}));
       },
@@ -67,7 +63,6 @@ export default [
       {
         path: paths.records, component: clone(List), props: {
           route: 'releases/recordsById',
-          valueKey: 'UniqueId',
           payload: async (p) => p,
           onAfter: onAfterSort,
           toString1: (i) => i.Title,
@@ -77,7 +72,6 @@ export default [
       }, {
         path: paths.artists, component: clone(List), props: {
           route: 'releases/artistsById',
-          valueKey: 'UniqueId',
           showAvatar: true,
           doInsetDivider: true,
           payload: async (p) => p,

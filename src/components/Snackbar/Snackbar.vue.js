@@ -12,7 +12,7 @@ export default {
   watch: {
     data: function(v) {
       this.message = v.message || '';
-      this.duration = v.duration || 2000;
+      this.duration = v.duration || 1500;
       this.isInfinite = v.isInfinite || false;
       this.showSnackbar = true;
     },

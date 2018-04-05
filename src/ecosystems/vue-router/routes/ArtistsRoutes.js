@@ -3,9 +3,7 @@ import {prepareRoute} from './../RouterUtils';
 import List from './../../../components/List/List';
 import {clone, makeUnique} from '../../../scripts/DataUtils';
 import {
-  onAfterFilter,
-  onAfterMap,
-  onAfterSort, onAfterUniqueByKey,
+  onAfterFilter, onAfterMap, onAfterSort, onAfterUniqueByKey,
   simplyLoad,
   simplyLoadAll,
 } from './../../../scripts/DataLoaderUtils';
@@ -42,10 +40,7 @@ export default [
     path: paths.root,
     component: clone(List),
     props: {
-      route: 'artists/all',
-      toString1: (i) => i.Name,
-      valueKey: 'Name',
-      onClick: (i) => {
+      route: 'artists/all', toString1: (i) => i.Name, onClick: (i) => {
         Router.push(prepareRoute(paths.lookup, {name: i.Name}));
       },
     },
@@ -55,7 +50,6 @@ export default [
       route: 'artists/likeName',
       toString1: (i) => i.Name,
       payload: async (p) => p,
-      valueKey: 'Name',
       onClick: (i) => {
         Router.push(prepareRoute(paths.lookup, {name: i.Name}));
       },
@@ -63,7 +57,6 @@ export default [
   }, {
     path: paths.lookup, component: clone(List), props: {
       route: 'artists/byName',
-      valueKey: 'UniqueId',
       toString1: (i) => i.Name,
       toString2: (i) => i.Disambiguation,
       toString3: (i) => i.Aliases.length > 0 ? `a.k.a. ${i.Aliases.map(
@@ -93,11 +86,11 @@ export default [
       }, {
         path: paths.records, component: clone(List), props: {
           route: 'artists/recordsById',
-          valueKey: 'Title',
           id: {},
           name: {},
           toString1: (i) => i.Title,
-          payload: async (p) => p, onAfter: onAfterUniqueByKey('Title'),
+          payload: async (p) => p,
+          onAfter: onAfterUniqueByKey('Title'),
           onClick: (i, p) => {
             Router.push(prepareRoute(p.generic
               ? paths.recordsLookup.rootFull
@@ -118,7 +111,6 @@ export default [
         component: clone(List),
         props: {
           route: 'releases/recordsById',
-          valueKey: 'Title',
           toString1: (i) => i.Title,
           onAfter: [onAfterUniqueByKey('Title'), onAfterSort],
           doPreload: true,
@@ -145,7 +137,6 @@ export default [
         component: clone(List),
         props: {
           route: 'artists/byId',
-          valueKey: 'UniqueId',
           toString1: (i) => i.Name,
           toString2: (i) => i.Disambiguation,
           toString3: (i) => i.Aliases.length > 0 ? `a.k.a. ${i.Aliases.map(
@@ -161,9 +152,7 @@ export default [
                 onAfterFilter(
                   (i) => i.Title.normalize() === p.name.normalize()),
                 onAfterMap((i) => Object.assign({id: i.UniqueId}))]).
-              catch((r) => {
-                console.error(r);
-              });
+              catch(console.error);
             
             let data = [];
             let append = (d) => data = data.concat(d);
@@ -182,9 +171,7 @@ export default [
               then(append));
             
             // wait for all to be loaded
-            await Promise.all(promises).catch((r) => {
-              console.error(r);
-            });
+            await Promise.all(promises).catch(console.error);
             
             data = makeUnique(data);
             data = data.map(d => Object.assign({id: d}));
@@ -211,7 +198,6 @@ export default [
         component: clone(List),
         props: {
           route: 'records/artistsById',
-          valueKey: 'UniqueId',
           toString1: (i) => i.Name,
           toString2: (i) => i.Disambiguation,
           toString3: (i) => i.Aliases.length > 0 ? `a.k.a. ${i.Aliases.map(
@@ -233,21 +219,16 @@ export default [
             if (p.generic1) {
               let payloads = await simplyLoad('artists/releasesById', payload,
                 [onAfterFilter(filterFactory(p.generic1)), keyMapper]).
-                catch((r) => {
-                  console.error(r);
-                });
+                catch(console.error);
               return await simplyLoadAll('releases/recordsById', payloads,
                 [onAfterFilter(filterFactory(p.name)), keyMapper]).
-                catch((r) => {
-                  console.error(r);
-                });
+                catch(console.error);
             }
             
             // load direct
             return await simplyLoad('artists/recordsById', payload,
-              [onAfterFilter(filterFactory(p.name)), keyMapper]).catch((r) => {
-              console.error(r);
-            });
+              [onAfterFilter(filterFactory(p.name)), keyMapper]).
+              catch(console.error);
           },
           onClick: (i) => Router.push(
             prepareRoute(paths.details, {id: i.UniqueId})),
@@ -268,21 +249,16 @@ export default [
             if (p.generic1) {
               let payloads = await simplyLoad('artists/releasesById', payload,
                 [onAfterFilter(filterTitleBy(p.generic1)), keyMapper]).
-                catch((r) => {
-                  console.error(r);
-                });
+                catch(console.error);
               return await simplyLoadAll('releases/recordsById', payloads,
                 [onAfterFilter(filterTitleBy(p.name)), keyMapper]).
-                catch((r) => {
-                  console.error(r);
-                });
+                catch(console.error);
             }
             
             // load direct
             return await simplyLoad('artists/recordsById', payload,
-              [onAfterFilter(filterTitleBy(p.name)), keyMapper]).catch((r) => {
-              console.error(r);
-            });
+              [onAfterFilter(filterTitleBy(p.name)), keyMapper]).
+              catch(console.error);
           }, doPreload: true,
         },
       },],

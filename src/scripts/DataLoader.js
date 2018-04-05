@@ -91,9 +91,7 @@ DataLoader.prototype.loadAll = async function(payloads, config = {}) {
       // events
       if (true !== config.suppressEvents) {
         await onceOrMore(this.onAfter, {loader: this, dataSource: source}).
-          catch((r) => {
-            console.error(r);
-          });
+          catch(console.error);
       }
       
       // finalize
@@ -120,9 +118,7 @@ DataLoader.prototype.loadMore = async function(config = {}) {
   
   let payloads = this._morePayloads;
   this._morePayloads = [];
-  return await this.loadAll(payloads, config).catch((r) => {
-    console.error(r);
-  });
+  return await this.loadAll(payloads, config).catch(console.error);
 };
 
 export default DataLoader;
