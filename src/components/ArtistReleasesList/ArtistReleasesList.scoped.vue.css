@@ -11,15 +11,15 @@
 }
 
 .entry {
-  min-width: 190px;
-  max-width: 300px;
+  min-width: 190px !important;
+  max-width: 300px !important;
   padding: 0 !important;
-  margin: 10px;
+  margin: 10px !important;
 }
 
 .fill {
-  margin: 0;
-  padding: 0 15px;
+  margin: 0 !important;
+  padding: 0 15px !important;
 }
 
 .grow {
