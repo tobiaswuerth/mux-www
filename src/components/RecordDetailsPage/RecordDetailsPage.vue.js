@@ -35,7 +35,7 @@ export default Vue.extend({
         id: this.id,
       });
     },
-  
+    
     uriArtists: function() {
       return prepareRoute(paths.private.records.artists, {
         id: this.id,
@@ -67,7 +67,7 @@ export default Vue.extend({
   
   mounted: async function() {
     let payload = {id: this.id};
-  
+    
     let loadRecord = simplyLoad('records/byId', payload, onAfterSingle).
       then((record) => {
         this.record = record;
@@ -75,16 +75,16 @@ export default Vue.extend({
           this.duration = secondsToReadableString(this.record.Length / 1000);
         }
       });
-  
+    
     let loadTracks = simplyLoad('records/tracksById', payload).then((data) => {
       this.initPlayForBestGuess(data);
     });
-  
+    
     let loadAliases = simplyLoad('records/aliasesById', payload).
       then((data) => {
         this.aliases = data.map(d => d.Name).join(', ');
       });
-  
+    
     await Promise.all([loadRecord, loadTracks, loadAliases]).
       catch(console.error);
     
@@ -110,7 +110,7 @@ export default Vue.extend({
       Store.dispatch('audio/play',
         {track: this.track, title: this.record.Title}).catch(console.error);
     },
-  
+    
     addToPlaylist: function() {
       Store.dispatch('audio/addToPlaylist',
         {track: this.track, title: this.record.Title}).

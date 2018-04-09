@@ -29,7 +29,7 @@ let continueSource = function(entry, getters, dispatch) {
   let source = entry.source;
   
   source.onended = function() {
-    let currentTime = (new Date().getTime() - entry.startedAt.getTime()) / 1000;
+    let currentTime = (getCurrentPlaylistEntryTimeMs(entry) / 1000) + .5;
     let playNext = currentTime >= entry.track.Duration;
     if (!playNext) {
       return;
@@ -82,7 +82,7 @@ let loadSource = function(entry, getters, dispatch) {
       source.connect(getters.context.destination);
       source.buffer = buffer;
       entry.buffer = buffer;
-  
+      
       if (getters.currentEntry.key === entry.key) {
         continueSource(entry, getters, dispatch);
       } else {
@@ -137,22 +137,22 @@ export default {
       entry.pausedAt = new Date();
       entry.audioState = states.ready;
     },
-  
+    
     play: async function({commit, getters, dispatch}, payload) {
       await dispatch('pause');
       let entry = getters.currentEntry;
-    
+      
       // create new
       if (payload && payload.track) {
         await dispatch('addToPlaylist', payload);
         await dispatch('setPlaylistIndex', getters.playlist.length - 1);
-        return;
+        return Promise.resolve();
       }
-    
+      
       if (!entry) {
         return Promise.resolve();
       }
-    
+      
       // load & continue
       if (entry.audioState === states.defined) {
         loadSource(entry, getters, dispatch);
@@ -160,7 +160,7 @@ export default {
         continueSource(entry, getters, dispatch);
       }
     },
-  
+    
     setPlaylist: async function({commit, dispatch, getters}, payload) {
       // find current index
       let idx = null;
@@ -173,18 +173,18 @@ export default {
           }
         }
       }
-    
+      
       if (null === idx) {
         // currently playing item is not in list anymore
         await dispatch('pause');
         idx = 0;
       }
-    
+      
       // update values
       commit('playlist', payload);
       commit('playlistIndex', idx);
     },
-  
+    
     moveTime: async function({getters, dispatch}, payload) {
       let entry = getters.currentEntry;
       if (!entry) {
@@ -200,13 +200,13 @@ export default {
       commit('playlistIndex', payload);
       await dispatch('play');
     },
-  
+    
     addToPlaylist: async function({getters, dispatch}, payload) {
       // validate
       if (!payload.track) {
         return Promise.reject('undefined track');
       }
-    
+      
       // create
       let entry = createEntry(getters, payload);
       if (!entry) {
@@ -218,12 +218,12 @@ export default {
       // finalize
       let playlist = getters.playlist;
       playlist.push(entry);
-      if (playlist.length - 2 === getters.playlistIndex) {
+      if (getters.playlistIndex >= playlist.length - 2) {
         // is next -> preload
         loadSource(entry, getters, dispatch);
       }
     },
-  
+    
     next: async function({dispatch, getters}) {
       let index = getters.playlistIndex + 1;
       let playlist = getters.playlist;
@@ -231,12 +231,12 @@ export default {
       if (index >= threshold) {
         index = 0; // end of list, start from beginning
       }
-    
+      
       let entry = getters.playlist[index];
       entry.startedAt = 0;
       entry.pausedAt = 0;
       await dispatch('setPlaylistIndex', index);
-    
+      
       entry = getters.currentEntry;
       Store.dispatch('global/hint', {message: `Playing '${entry.title}'`}).
         catch(console.error);
@@ -249,7 +249,7 @@ export default {
         }
       }
     },
-  
+    
     previous: async function({dispatch, getters}) {
       let index = getters.playlistIndex - 1;
       if (index < 0) {
@@ -261,7 +261,7 @@ export default {
       entry.startedAt = 0;
       entry.pausedAt = 0;
       await dispatch('setPlaylistIndex', index);
-    
+      
       entry = getters.currentEntry;
       Store.dispatch('global/hint', {message: `Playing '${entry.title}'`}).
         catch(console.error);

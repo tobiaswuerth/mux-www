@@ -23,7 +23,7 @@ export default {
     async recordsById({}, payload) {
       return await Store.dispatch('repo/artistRecordsById', payload);
     },
-  
+    
     async likeName({}, payload) {
       return await Store.dispatch('repo/artistsLikeName', payload);
     },

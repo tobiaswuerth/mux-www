@@ -12,7 +12,9 @@ import {paths as artistsPaths} from './ArtistsRoutes';
 import ReleasesListDetailed from '../../../components/ReleasesListDetailed/ReleasesListDetailed';
 
 export const paths = {
-  root: '/r', lookup: '/r/l/:name', search: '/r/s/:name',
+  root: '/r',
+  lookup: '/r/l/:name',
+  search: '/r/s/:name',
   details: '/r/:id',
   artists: '/r/:id/a',
   records: '/r/:id/s',
@@ -28,8 +30,11 @@ export default [
         Router.push(prepareRoute(paths.lookup, {name: i.Title}));
       },
     },
-  }, {
-    path: paths.search, component: clone(List), props: {
+  },
+  {
+    path: paths.search,
+    component: clone(List),
+    props: {
       route: 'releases/likeName',
       toString1: (i) => i.Title,
       payload: async (p) => p,

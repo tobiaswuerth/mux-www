@@ -27,7 +27,7 @@ export default {
     async aliasesById({}, payload) {
       return await Store.dispatch('repo/releasesAliasesById', payload);
     },
-  
+    
     async likeName({}, payload) {
       return await Store.dispatch('repo/releasesLikeName', payload);
     },

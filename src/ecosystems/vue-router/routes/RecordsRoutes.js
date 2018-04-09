@@ -10,7 +10,9 @@ import {clone} from './../../../scripts/DataUtils';
 const RecordDetailsPage = () => import('./../../../components/RecordDetailsPage/RecordDetailsPage');
 
 export const paths = {
-  root: '/s', lookup: '/s/l/:name', search: '/s/s/:name',
+  root: '/s',
+  lookup: '/s/l/:name',
+  search: '/s/s/:name',
   details: '/s/:id',
   artists: '/s/:id/a',
   releases: '/s/:id/r',
@@ -88,6 +90,6 @@ export default [
           payload: async (p) => p,
           doPreload: true,
         },
-    
+        
       },],
   }];

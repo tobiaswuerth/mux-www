@@ -76,7 +76,7 @@ export default {
       }
       return match;
     },
-  
+    
     displayResults: function() {
       return !this.currentRoute && this.query.trim();
     },
