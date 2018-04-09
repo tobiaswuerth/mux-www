@@ -30,20 +30,20 @@ export default {
       let entry = this.entry;
       return !entry || entry.audioState === audioStates.loading;
     },
-  
+    
     isReady: function() {
       return this.entry && (this.entry.audioState === audioStates.ready ||
         this.entry.audioState === audioStates.defined);
     },
-  
+    
     isPlaying: function() {
       return this.entry && this.entry.audioState === audioStates.playing;
     },
-  
+    
     currentTimeLabel: function() {
       return secondsToReadableString(this.currentTime);
     },
-  
+    
     trackDurationLabel: function() {
       return secondsToReadableString(
         this.entry.track ? this.entry.track.Duration : 0);
@@ -63,7 +63,7 @@ export default {
       return Store.getters['audio/currentEntry'] ||
         {audioState: audioStates.ready};
     },
-  
+    
     updateValues: function() {
       this.entry = this.getEntry();
       if (this.entry && this.entry.track) {
@@ -83,29 +83,29 @@ export default {
         Store.dispatch('audio/play', {continue: true}).catch(console.error);
       }
     },
-  
+    
     next: function() {
       Store.dispatch('audio/next').catch(console.error);
     },
-  
+    
     previous: function() {
       Store.dispatch('audio/previous').catch(console.error);
     },
-  
+    
     progressClicked: function(e) {
       let progress = e.x / screen.width;
       let entry = Store.getters['audio/currentEntry'];
       if (!entry) {
         return;
       }
-    
+      
       let length = entry.track.Duration;
       let skipTo = length * progress;
       let currentTime = getCurrentPlaylistEntryTimeMs(entry) / 1000;
       let relativeChange = skipTo - currentTime;
       Store.dispatch('audio/moveTime', relativeChange).catch(console.error);
     },
-  
+    
     skipRemove: function() {
       let entry = Store.getters['audio/currentEntry'];
       if (!entry) {
@@ -120,7 +120,7 @@ export default {
       Store.dispatch('audio/moveTime', relativeChangeMs / 1000).
         catch(console.error);
     },
-  
+    
     skipAdd: function() {
       let entry = Store.getters['audio/currentEntry'];
       if (!entry) {

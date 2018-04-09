@@ -93,7 +93,7 @@ export default Vue.extend({
   },
   
   methods: {
-  
+    
     processRecords: async function(records) {
       this.disambiguation = [
         ...new Set(records.map(r => r.Disambiguation))].join(', ');
@@ -110,9 +110,9 @@ export default Vue.extend({
         then((data) => {
           this.aliases = data.map(d => d.Name).join(', ');
         });
-    
+      
       await Promise.all([loadTracks, loadAliases]).catch(console.error);
-    
+      
       this.isLoading = false;
     },
     
@@ -134,7 +134,7 @@ export default Vue.extend({
       Store.dispatch('audio/play', {track: this.track, title: this.name}).
         catch(console.error);
     },
-  
+    
     addToPlaylist: function() {
       Store.dispatch('audio/addToPlaylist',
         {track: this.track, title: this.name}).

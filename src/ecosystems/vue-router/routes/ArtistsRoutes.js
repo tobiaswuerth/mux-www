@@ -3,7 +3,10 @@ import {prepareRoute} from './../RouterUtils';
 import List from './../../../components/List/List';
 import {clone, makeUnique} from '../../../scripts/DataUtils';
 import {
-  onAfterFilter, onAfterMap, onAfterSort, onAfterUniqueByKey,
+  onAfterFilter,
+  onAfterMap,
+  onAfterSort,
+  onAfterUniqueByKey,
   simplyLoad,
   simplyLoadAll,
 } from './../../../scripts/DataLoaderUtils';
@@ -15,7 +18,9 @@ const ArtistReleaseDetailsPage = () => import('./../../../components/ArtistRelea
 const ArtistRecordDetailsPage = () => import('./../../../components/ArtistRecordDetailsPage/ArtistRecordDetailsPage');
 
 export const paths = {
-  root: '/a', lookup: '/a/l/:name', search: '/a/s/:name',
+  root: '/a',
+  lookup: '/a/l/:name',
+  search: '/a/s/:name',
   details: '/a/:id',
   releases: '/a/:id/r',
   releasesLookup: {
@@ -46,7 +51,9 @@ export default [
     },
   },
   {
-    path: paths.search, component: clone(List), props: {
+    path: paths.search,
+    component: clone(List),
+    props: {
       route: 'artists/likeName',
       toString1: (i) => i.Name,
       payload: async (p) => p,
@@ -54,8 +61,11 @@ export default [
         Router.push(prepareRoute(paths.lookup, {name: i.Name}));
       },
     },
-  }, {
-    path: paths.lookup, component: clone(List), props: {
+  },
+  {
+    path: paths.lookup,
+    component: clone(List),
+    props: {
       route: 'artists/byName',
       toString1: (i) => i.Name,
       toString2: (i) => i.Disambiguation,

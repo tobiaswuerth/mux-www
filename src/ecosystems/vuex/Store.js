@@ -26,7 +26,8 @@ const store = new Vuex.Store({
     artists: ArtistsModule,
     releases: ReleasesModule,
     records: RecordsModule,
-    tracks: TracksModule, global: GlobalModule,
+    tracks: TracksModule,
+    global: GlobalModule,
     audio: AudioModule,
   },
   

@@ -46,7 +46,7 @@ export default Vue.extend({
   },
   
   methods: {
-  
+    
     postProcessing: function(p) {
       p.dataSource.data.filter(x => x.Country).
         map(x => x.Country).
@@ -62,7 +62,7 @@ export default Vue.extend({
       return route.replace(':id', this.id).
         replace(':name', encodeURIComponent(this.name));
     },
-  
+    
     addToPlaylist: function() {
       // get all releases of this artist matching the given name
       simplyLoad('artists/releasesById', {id: this.id}, [
@@ -88,10 +88,10 @@ export default Vue.extend({
             }).catch(console.error);
         }).catch(console.error);
     },
-  
+    
     play: function() {
       let performedPlay = false;
-    
+      
       // get all releases of this artist matching the given name
       simplyLoad('artists/releasesById', {id: this.id}, [
         onAfterFilter((i) => i.Title.normalize() === this.name.normalize()),

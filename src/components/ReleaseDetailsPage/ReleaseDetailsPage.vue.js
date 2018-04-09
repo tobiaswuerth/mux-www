@@ -44,7 +44,7 @@ export default Vue.extend({
     prepRoute: function(route) {
       return route.replace(':id', this.id);
     },
-  
+    
     addToPlaylist: function() {
       simplyLoad('releases/recordsById', {id: this.id}).then((d) => {
         d.forEach((r) => {
@@ -56,7 +56,7 @@ export default Vue.extend({
         });
       }).catch(console.error);
     },
-  
+    
     play: function() {
       let performedPlay = false;
       simplyLoad('releases/recordsById', {id: this.id}).then((d) => {

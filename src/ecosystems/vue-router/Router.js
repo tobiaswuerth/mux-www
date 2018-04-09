@@ -17,7 +17,8 @@ const PlaylistPage = () => import('../../components/PlaylistPage/PlaylistPage');
 
 const paths = {
   private: {
-    root: '/', playlist: '/p',
+    root: '/',
+    playlist: '/p',
     artists: artistsPaths,
     tracks: tracksPaths,
     records: recordsPaths,

@@ -11,7 +11,7 @@ export default {
     async byId({}, payload) {
       return await Store.dispatch('repo/trackById', payload);
     },
-  
+    
     async likeName({}, payload) {
       return await Store.dispatch('repo/tracksLikeName', payload);
     },
