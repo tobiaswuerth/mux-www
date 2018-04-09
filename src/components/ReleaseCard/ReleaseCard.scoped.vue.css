@@ -8,7 +8,12 @@
   min-width: 190px;
   max-width: 300px;
   padding: 0 !important;
-  margin: 10px;
+  margin: 10px !important;
+}
+
+.md-title {
+  word-break: break-word;
+  margin-top: 0 !important;
 }
 
 .small-badge {
