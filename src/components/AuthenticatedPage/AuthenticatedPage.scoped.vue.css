@@ -20,9 +20,3 @@
   width: 20%;
   min-width: 250px;
 }
-
-.snackbar {
-  position: absolute;
-  bottom: 50vh;
-  background-color: rgba(0, 0, 0, .75);
-}

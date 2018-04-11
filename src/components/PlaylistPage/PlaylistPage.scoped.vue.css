@@ -11,3 +11,10 @@
 .sortable-chosen {
   background-color: rgba(68, 138, 255, .17);
 }
+
+.float-right {
+  float: right;
+}
+
+.draggable {
+}

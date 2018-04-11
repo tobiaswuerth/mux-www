@@ -11,8 +11,7 @@ export default {
     let list = document.getElementById('list');
     Sortable.create(list, {
       group: 'list',
-      animation: 150,
-      chosenClass: 'sortable-chosen',
+      animation: 150, chosenClass: 'sortable-chosen', handle: '.draggable',
       onUpdate: function(e) {
         let tmp = self.items[e.oldIndex];
         self.items[e.oldIndex] = self.items[e.newIndex];
@@ -26,12 +25,16 @@ export default {
     readableTime: function(seconds) {
       return secondsToReadableString(seconds);
     },
+  
+    clearList: function() {
+      Store.dispatch('audio/setPlaylist', []).catch(console.error);
+    },
   },
   
-  data: () => {
-    return {
-      items: Store.getters['audio/playlist'],
-    };
+  computed: {
+    items: function() {
+      return Store.getters['audio/playlist'];
+    },
   },
   
 };
