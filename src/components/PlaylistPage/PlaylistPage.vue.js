@@ -11,8 +11,7 @@ export default {
     let list = document.getElementById('list');
     Sortable.create(list, {
       group: 'list',
-      animation: 150,
-      chosenClass: 'sortable-chosen', handle: '.draggable',
+      animation: 150, chosenClass: 'sortable-chosen', handle: '.draggable',
       onUpdate: function(e) {
         let tmp = self.items[e.oldIndex];
         self.items[e.oldIndex] = self.items[e.newIndex];
