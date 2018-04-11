@@ -4,8 +4,20 @@
   background: rgba(0, 0, 0, .17);
   position: absolute;
   bottom: 0;
-  left: 68px;
+  left: 77px;
   right: 0;
+}
+
+.checkbox {
+  margin-right: 41px !important;
+}
+
+.md-list-item-text {
+  word-break: break-word !important;
+}
+
+.play-button {
+  margin-right: 15px;
 }
 
 .sortable-chosen {
@@ -17,4 +29,10 @@
 }
 
 .draggable {
+  margin-right: 9px !important;
+  margin-bottom: 2px !important;
+}
+
+.header-space {
+  margin-bottom: 20px;
 }
