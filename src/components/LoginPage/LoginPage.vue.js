@@ -1,18 +1,11 @@
 import LoginForm from '../LoginForm/LoginForm.vue';
-import Snackbar from '../Snackbar/Snackbar';
 import Store from './../../ecosystems/vuex/Store';
 
 export default {
   name: 'LoginPage',
   
   components: {
-    LoginForm, Snackbar,
-  },
-  
-  data: () => {
-    return {
-      hints: {},
-    };
+    LoginForm,
   },
   
   methods: {
