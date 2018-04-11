@@ -1,5 +1,6 @@
 import LoginForm from '../LoginForm/LoginForm.vue';
 import Snackbar from '../Snackbar/Snackbar';
+import Store from './../../ecosystems/vuex/Store';
 
 export default {
   name: 'LoginPage',
@@ -16,22 +17,11 @@ export default {
   
   methods: {
     onLogin: function(credentials) {
-      this.$store.dispatch('auth/login', credentials).then(v => {
-        // successful request
-        this.hints = {
-          message: 'Successful login',
-        };
-      }).catch(v => {
-        if (v.response.status === 401) {
-          this.hints = {
-            message: 'Invalid username/password combination',
-          };
-        } else {
-          this.hints = {
-            message: v.message || v,
-          };
-        }
-      });
+      this.$store.dispatch('auth/login', credentials).
+        then(() => Store.dispatch('global/hint', 'Successful login').
+          catch(console.error)).
+        catch(() => Store.dispatch('global/hint', 'Login failed').
+          catch(console.error));
     },
   },
 };
