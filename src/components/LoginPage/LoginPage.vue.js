@@ -13,7 +13,7 @@ export default {
       this.$store.dispatch('auth/login', credentials).
         then(() => Store.dispatch('global/hint', 'Successful login').
           catch(console.error)).
-        catch(() => Store.dispatch('global/hint', 'Login failed').
+        catch((r) => Store.dispatch('global/hint', `Login failed | ${r}`).
           catch(console.error));
     },
   },
