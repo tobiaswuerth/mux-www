@@ -26,12 +26,16 @@ export default {
     readableTime: function(seconds) {
       return secondsToReadableString(seconds);
     },
+  
+    clearList: function() {
+      Store.dispatch('audio/setPlaylist', []).catch(console.error);
+    },
   },
   
-  data: () => {
-    return {
-      items: Store.getters['audio/playlist'],
-    };
+  computed: {
+    items: function() {
+      return Store.getters['audio/playlist'];
+    },
   },
   
 };

@@ -1,5 +1,9 @@
 <div>
-  <div class="md-title">Playlist</div>
+  <span class="md-title">Playlist</span> <span class="float-right">
+     <md-button class="md-raised md-icon-button" @click="clearList">
+       <md-icon>delete_sweep</md-icon>
+     </md-button>
+  </span>
   <md-list id="list">
     <template v-for="i in items">
       <md-list-item class="playlist-item">
