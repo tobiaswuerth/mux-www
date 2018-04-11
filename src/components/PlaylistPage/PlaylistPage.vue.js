@@ -12,7 +12,7 @@ export default {
     Sortable.create(list, {
       group: 'list',
       animation: 150,
-      chosenClass: 'sortable-chosen',
+      chosenClass: 'sortable-chosen', handle: '.draggable',
       onUpdate: function(e) {
         let tmp = self.items[e.oldIndex];
         self.items[e.oldIndex] = self.items[e.newIndex];
