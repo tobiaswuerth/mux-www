@@ -1,21 +1,58 @@
 <div>
-  <span class="md-title">Playlist</span> <span class="float-right">
-     <md-button class="md-raised md-icon-button" @click="clearList">
-       <md-icon>delete_sweep</md-icon>
-     </md-button>
-  </span>
-  <md-list id="list">
-    <template v-for="i in items">
-      <md-list-item class="playlist-item">
-        <md-button class="play-button md-primary md-raised md-icon-button">
-          <md-icon>play_arrow</md-icon>
+  <div class="header-space">
+    <span class="md-title">Playlist</span>
+
+    <span class="float-right">
+      <template v-if="isEditMode">
+        <md-button class="md-raised md-icon-button" @click="deleteSelected">
+          <md-icon>delete</md-icon>
+          <md-tooltip>Delete selected items</md-tooltip>
         </md-button>
+        <md-button class="md-raised md-icon-button" @click="clearList">
+          <md-icon>delete_sweep</md-icon>
+          <md-tooltip>Delete all items</md-tooltip>
+        </md-button>
+        <md-button class="md-primary md-raised md-icon-button" @click="stopEditMode">
+          <md-icon>done</md-icon>
+          <md-tooltip>Exit edit mode</md-tooltip>
+        </md-button>
+      </template>
+      <template v-else>
+        <md-button class="md-primary md-raised md-icon-button" @click="startEditMode">
+          <md-icon>mode_edit</md-icon>
+          <md-tooltip>Enter edit mode</md-tooltip>
+        </md-button>
+      </template>
+    </span>
+  </div>
+
+  <md-list id="list">
+    <template v-for="i,k in items">
+      <md-list-item class="playlist-item">
+        <template v-if="isEditMode">
+          <md-checkbox class="checkbox" v-model="selectedItems" :value="k"></md-checkbox>
+        </template>
+        <template v-else>
+          <md-button class="play-button md-primary md-raised md-icon-button" @click="play(k, $event)">
+            <md-icon>play_arrow</md-icon>
+          </md-button>
+        </template>
 
         <div class="md-list-item-text">
           <span>{{i.title}}</span> <span class="">{{readableTime(i.track.Duration)}}</span>
         </div>
 
-        <md-icon class="md-icon-button md-list-action draggable">reorder</md-icon>
+        <div class="md-list-action">
+          <template v-if="isEditMode">
+            <md-button class="md-icon-button" @click="removeItem(k, $event)">
+              <md-icon>delete</md-icon>
+            </md-button>
+          </template>
+          <template v-else>
+            <md-icon class="md-list-action draggable">reorder</md-icon>
+          </template>
+        </div>
+
       </md-list-item>
     </template>
   </md-list>
