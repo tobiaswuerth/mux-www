@@ -1,18 +1,18 @@
-'use strict'
-const utils = require('./utils')
-const webpack = require('webpack')
-const config = require('../config')
-const merge = require('webpack-merge')
-const path = require('path')
-const baseWebpackConfig = require('./webpack.base.conf')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
-const portfinder = require('portfinder')
+'use strict';
+const utils = require('./utils');
+const webpack = require('webpack');
+const config = require('../config');
+const merge = require('webpack-merge');
+const path = require('path');
+const baseWebpackConfig = require('./webpack.base.conf');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
+const portfinder = require('portfinder');
 
-const HOST = process.env.HOST
-const PORT = process.env.PORT && Number(process.env.PORT)
-const VueBuilder = require('vue-builder-webpack-plugin')
+const HOST = process.env.HOST;
+const PORT = process.env.PORT && Number(process.env.PORT);
+const VueBuilder = require('vue-builder-webpack-plugin');
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -70,18 +70,18 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       path: 'src/components/', folder: false,
     })],
   
-})
+});
 
 module.exports = new Promise((resolve, reject) => {
-  portfinder.basePort = process.env.PORT || config.dev.port
+  portfinder.basePort = process.env.PORT || config.dev.port;
   portfinder.getPort((err, port) => {
     if (err) {
-      reject(err)
+      reject(err);
     } else {
       // publish the new Port, necessary for e2e tests
-      process.env.PORT = port
+      process.env.PORT = port;
       // add port to devServer config
-      devWebpackConfig.devServer.port = port
+      devWebpackConfig.devServer.port = port;
       
       // Add FriendlyErrorsPlugin
       devWebpackConfig.plugins.push(new FriendlyErrorsPlugin({
@@ -91,9 +91,9 @@ module.exports = new Promise((resolve, reject) => {
         onErrors: config.dev.notifyOnErrors
           ? utils.createNotifierCallback()
           : undefined,
-      }))
-      
-      resolve(devWebpackConfig)
+      }));
+  
+      resolve(devWebpackConfig);
     }
-  })
-})
+  });
+});
