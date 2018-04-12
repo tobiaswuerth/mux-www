@@ -4,23 +4,19 @@
 
     <span class="float-right">
       <template v-if="isEditMode">
-        <md-button class="md-raised md-icon-button" @click="deleteSelected">
+        <md-button :key="Math.random()" class="md-raised md-icon-button" @click="deleteSelected">
           <md-icon>delete</md-icon>
-          <md-tooltip>Delete selected items</md-tooltip>
         </md-button>
-        <md-button class="md-raised md-icon-button" @click="clearList">
+        <md-button :key="Math.random()" class="md-raised md-icon-button" @click="clearList">
           <md-icon>delete_sweep</md-icon>
-          <md-tooltip>Delete all items</md-tooltip>
         </md-button>
-        <md-button class="md-primary md-raised md-icon-button" @click="stopEditMode">
+        <md-button :key="Math.random()" class="md-primary md-raised md-icon-button" @click="stopEditMode">
           <md-icon>done</md-icon>
-          <md-tooltip>Exit edit mode</md-tooltip>
         </md-button>
       </template>
       <template v-else>
-        <md-button class="md-primary md-raised md-icon-button" @click="startEditMode">
+        <md-button :key="Math.random()" class="md-primary md-raised md-icon-button" @click="startEditMode">
           <md-icon>mode_edit</md-icon>
-          <md-tooltip>Enter edit mode</md-tooltip>
         </md-button>
       </template>
     </span>

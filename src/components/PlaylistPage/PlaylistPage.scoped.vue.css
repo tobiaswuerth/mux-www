@@ -9,7 +9,8 @@
 }
 
 .checkbox {
-  margin-right: 41px !important;
+  margin-right: 26px !important;
+  margin-left: 15px !important;
 }
 
 .md-list-item-text {
@@ -29,7 +30,7 @@
 }
 
 .draggable {
-  margin-right: 9px !important;
+  margin-right: 15px !important;
   margin-bottom: 2px !important;
 }
 
