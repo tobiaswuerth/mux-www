@@ -32,40 +32,40 @@ export default {
     readableTime: function(seconds) {
       return secondsToReadableString(seconds);
     },
-  
+    
     clearList: function() {
       Store.dispatch('audio/setPlaylist', []).catch(console.error);
     },
-  
+    
     startEditMode: function() {
       this.state = states.edit;
     },
-  
+    
     stopEditMode: function() {
       this.state = states.normal;
       this.selectedItems = [];
     },
-  
+    
     deleteSelected: function() {
       let items = this.items;
       let indexes = this.selectedItems.sort((a, b) => a < b ? 1 : -1);
       indexes.forEach((i) => {
         items.splice(i, 1);
       });
-    
+      
       Store.dispatch('audio/setPlaylist', items).catch(console.error);
       this.selectedItems = [];
     },
-  
+    
     removeItem: function(i, event) {
       event.stopPropagation();
-    
+      
       let items = this.items;
       items.splice(i, 1);
       Store.dispatch('audio/setPlaylist', items).catch(console.error);
       this.selectedItems = [];
     },
-  
+    
     play: function(i, event) {
       event.stopPropagation();
       Store.dispatch('audio/setPlaylistIndex', i).catch(console.error);
@@ -82,7 +82,7 @@ export default {
     items: function() {
       return Store.getters['audio/playlist'];
     },
-  
+    
     isEditMode: function() {
       return this.state === states.edit;
     },
