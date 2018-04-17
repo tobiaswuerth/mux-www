@@ -6,6 +6,7 @@ import {secondsToReadableString} from './../../../scripts/Utils';
 import {onAfterMap, onAfterSort,} from './../../../scripts/DataLoaderUtils';
 import {paths as artistPaths} from './ArtistsRoutes';
 import {clone} from './../../../scripts/DataUtils';
+import Store from './../../vuex/Store';
 
 const RecordDetailsPage = () => import('./../../../components/RecordDetailsPage/RecordDetailsPage');
 
@@ -15,7 +16,7 @@ export const paths = {
   search: '/s/s/:name',
   details: '/s/:id',
   artists: '/s/:id/a',
-  releases: '/s/:id/r',
+  releases: '/s/:id/r', tracks: '/s/:id/t',
 };
 
 export default [
@@ -90,6 +91,34 @@ export default [
           payload: async (p) => p,
           doPreload: true,
         },
-        
-      },],
+      }, {
+        path: paths.tracks, component: clone(List), props: {
+          route: 'records/tracksById',
+          doPreload: true,
+          payload: async (p) => p,
+          onClick: () => {},
+          toString1: (i) => i.Track.Path,
+          toString2: (i) => secondsToReadableString(i.Track.Duration),
+          toString3: (i) => `Match: ${i.Score}`,
+          actionsLeft: [
+            {
+              icon: 'play_arrow',
+              onClick: (i) => Store.dispatch('audio/play', {track: i.Track}).
+                catch(console.error),
+              isRaised: true,
+              isRound: true,
+            }],
+          actionsRight: [
+            {
+              icon: 'playlist_add',
+              onClick: (i) => Store.dispatch('audio/addToPlaylist',
+                {track: i.Track}).
+                catch(console.error),
+              isRaised: false,
+              isRound: false,
+            }],
+        },
+      },
+
+    ],
   }];

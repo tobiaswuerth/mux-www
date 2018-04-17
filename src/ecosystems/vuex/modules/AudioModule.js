@@ -8,6 +8,8 @@ export const states = {
   defined: 1 << i++, ready: 1 << i++, loading: 1 << i++, playing: 1 << i++,
 };
 
+const maxLoadRetry = 3;
+
 const emptyPlaylistEntry = {
   track: null,
   buffer: null,
@@ -15,8 +17,7 @@ const emptyPlaylistEntry = {
   title: null,
   audioState: states.defined,
   startedAt: null,
-  pausedAt: null,
-  key: null,
+  pausedAt: null, key: null, loadRetryCount: 0,
 };
 
 let continueSource = function(entry, getters, dispatch) {
@@ -96,6 +97,16 @@ let loadSource = function(entry, getters, dispatch) {
   
   request.onerror = function() {
     entry.audioState = states.defined;
+    entry.loadRetryCount++;
+    let hint = `Loading '${entry.title}' failed. Try ${entry.loadRetryCount}/${maxLoadRetry}.`;
+    let loadAgain = entry.loadRetryCount < maxLoadRetry;
+    if (loadAgain) {
+      hint += ' Retrying...';
+      Store.dispatch('global/hint', hint).catch(console.error);
+      loadSource(entry, getters, dispatch);
+    } else {
+      Store.dispatch('global/hint', hint).catch(console.error);
+    }
   };
   
   // execute
@@ -143,9 +154,10 @@ export default {
       let entry = getters.currentEntry;
       
       // create new
+      let playlist = getters.playlist;
       if (payload && payload.track) {
         await dispatch('addToPlaylist', payload);
-        await dispatch('setPlaylistIndex', getters.playlist.length - 1);
+        await dispatch('setPlaylistIndex', playlist.length - 1);
         return Promise.resolve();
       }
       
@@ -158,6 +170,15 @@ export default {
         loadSource(entry, getters, dispatch);
       } else if (entry.audioState === states.ready) {
         continueSource(entry, getters, dispatch);
+      }
+  
+      // preload
+      let nextItemIndex = getters.playlistIndex + 1;
+      if (playlist.length > nextItemIndex) {
+        let nextItem = playlist[nextItemIndex];
+        if (nextItem.audioState === states.defined) {
+          loadSource(nextItem, getters, dispatch);
+        }
       }
     },
     
@@ -240,14 +261,6 @@ export default {
       entry = getters.currentEntry;
       Store.dispatch('global/hint', {message: `Playing '${entry.title}'`}).
         catch(console.error);
-      
-      let nextItemIndex = index + 1;
-      if (playlist.length > nextItemIndex) {
-        let nextItem = playlist[nextItemIndex];
-        if (nextItem.audioState === states.defined) {
-          loadSource(nextItem, getters, dispatch);
-        }
-      }
     },
     
     previous: async function({dispatch, getters}) {
