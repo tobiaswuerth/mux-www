@@ -11,6 +11,8 @@ import {
   simplyLoadAll,
 } from './../../../scripts/DataLoaderUtils';
 import ReleasesListDetailed from '../../../components/ReleasesListDetailed/ReleasesListDetailed';
+import {secondsToReadableString} from './../../../scripts/Utils';
+import Store from './../../vuex/Store';
 
 const ArtistDetailsPage = () => import('./../../../components/ArtistDetailsPage/ArtistDetailsPage');
 const ArtistReleasesList = () => import('./../../../components/ArtistReleasesList/ArtistReleasesList');
@@ -37,6 +39,8 @@ export const paths = {
     artistsShort: '/a/:id/s/:name/a',
     releasesFull: '/a/:id/r/:generic1?/s/:name/r',
     releasesShort: '/a/:id/s/:name/r',
+    tracksFull: '/a/:id/r/:generic1?/s/:name/t',
+    tracksShort: '/a/:id/s/:name/t',
   },
 };
 
@@ -270,6 +274,57 @@ export default [
               [onAfterFilter(filterTitleBy(p.name)), keyMapper]).
               catch(console.error);
           }, doPreload: true,
+        },
+      },
+      {
+        path: paths.recordsLookup.tracksFull,
+        alias: paths.recordsLookup.tracksShort,
+        component: clone(List),
+        props: {
+          route: 'records/tracksById',
+          payload: async (p) => {
+            let filterTitleBy = (x) => (i) => i.Title.normalize() ===
+              x.normalize();
+            let keyMapper = onAfterMap((i) => Object.assign({id: i.UniqueId}));
+            let payload = {id: p.id};
+        
+            // load via release
+            if (p.generic1) {
+              let payloads = await simplyLoad('artists/releasesById', payload,
+                [onAfterFilter(filterTitleBy(p.generic1)), keyMapper]).
+                catch(console.error);
+              return await simplyLoadAll('releases/recordsById', payloads,
+                [onAfterFilter(filterTitleBy(p.name)), keyMapper]).
+                catch(console.error);
+            }
+        
+            // load direct
+            return await simplyLoad('artists/recordsById', payload,
+              [onAfterFilter(filterTitleBy(p.name)), keyMapper]).
+              catch(console.error);
+          },
+          doPreload: true,
+          onClick: () => {},
+          toString1: (i) => i.Track.Path,
+          toString2: (i) => secondsToReadableString(i.Track.Duration),
+          toString3: (i) => `Match: ${i.Score}`,
+          actionsLeft: [
+            {
+              icon: 'play_arrow',
+              onClick: (i) => Store.dispatch('audio/play', {track: i.Track}).
+                catch(console.error),
+              isRaised: true,
+              isRound: true,
+            }],
+          actionsRight: [
+            {
+              icon: 'playlist_add',
+              onClick: (i) => Store.dispatch('audio/addToPlaylist',
+                {track: i.Track}).
+                catch(console.error),
+              isRaised: false,
+              isRound: false,
+            }],
         },
       },],
   }];
