@@ -143,9 +143,10 @@ export default {
       let entry = getters.currentEntry;
       
       // create new
+      let playlist = getters.playlist;
       if (payload && payload.track) {
         await dispatch('addToPlaylist', payload);
-        await dispatch('setPlaylistIndex', getters.playlist.length - 1);
+        await dispatch('setPlaylistIndex', playlist.length - 1);
         return Promise.resolve();
       }
       
@@ -158,6 +159,16 @@ export default {
         loadSource(entry, getters, dispatch);
       } else if (entry.audioState === states.ready) {
         continueSource(entry, getters, dispatch);
+      }
+  
+      // preload
+      let nextItemIndex = getters.playlistIndex + 1;
+      if (playlist.length > nextItemIndex) {
+        let nextItem = playlist[nextItemIndex];
+        if (nextItem.audioState === states.defined) {
+          console.log('preload');
+          loadSource(nextItem, getters, dispatch);
+        }
       }
     },
     
@@ -240,14 +251,6 @@ export default {
       entry = getters.currentEntry;
       Store.dispatch('global/hint', {message: `Playing '${entry.title}'`}).
         catch(console.error);
-      
-      let nextItemIndex = index + 1;
-      if (playlist.length > nextItemIndex) {
-        let nextItem = playlist[nextItemIndex];
-        if (nextItem.audioState === states.defined) {
-          loadSource(nextItem, getters, dispatch);
-        }
-      }
     },
     
     previous: async function({dispatch, getters}) {
