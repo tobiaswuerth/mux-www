@@ -17,8 +17,7 @@ const emptyPlaylistEntry = {
   title: null,
   audioState: states.defined,
   startedAt: null,
-  pausedAt: null,
-  key: null, loadRetryCount: 0,
+  pausedAt: null, key: null, loadRetryCount: 0,
 };
 
 let continueSource = function(entry, getters, dispatch) {
