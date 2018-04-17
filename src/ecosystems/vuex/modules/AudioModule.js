@@ -8,6 +8,8 @@ export const states = {
   defined: 1 << i++, ready: 1 << i++, loading: 1 << i++, playing: 1 << i++,
 };
 
+const maxLoadRetry = 3;
+
 const emptyPlaylistEntry = {
   track: null,
   buffer: null,
@@ -16,7 +18,7 @@ const emptyPlaylistEntry = {
   audioState: states.defined,
   startedAt: null,
   pausedAt: null,
-  key: null,
+  key: null, loadRetryCount: 0,
 };
 
 let continueSource = function(entry, getters, dispatch) {
@@ -96,6 +98,16 @@ let loadSource = function(entry, getters, dispatch) {
   
   request.onerror = function() {
     entry.audioState = states.defined;
+    entry.loadRetryCount++;
+    let hint = `Loading '${entry.title}' failed. Try ${entry.loadRetryCount}/${maxLoadRetry}.`;
+    let loadAgain = entry.loadRetryCount < maxLoadRetry;
+    if (loadAgain) {
+      hint += ' Retrying...';
+      Store.dispatch('global/hint', hint).catch(console.error);
+      loadSource(entry, getters, dispatch);
+    } else {
+      Store.dispatch('global/hint', hint).catch(console.error);
+    }
   };
   
   // execute
@@ -166,7 +178,6 @@ export default {
       if (playlist.length > nextItemIndex) {
         let nextItem = playlist[nextItemIndex];
         if (nextItem.audioState === states.defined) {
-          console.log('preload');
           loadSource(nextItem, getters, dispatch);
         }
       }
