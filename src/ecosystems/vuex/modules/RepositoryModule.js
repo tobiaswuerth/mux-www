@@ -142,6 +142,10 @@ async function performDefaultDataRequest(route, payload) {
     }
   });
   
+  if (!response) {
+    return Promise.reject('loading failed');
+  }
+  
   // prepare return
   let data = response.data;
   let count = data.length;
