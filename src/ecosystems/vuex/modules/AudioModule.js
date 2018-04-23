@@ -16,8 +16,7 @@ const emptyPlaylistEntry = {
   source: null,
   title: null,
   audioState: states.defined,
-  startedAt: null,
-  pausedAt: null, key: null, loadRetryCount: 0,
+  startedAt: null, pausedAt: null, key: null, loadRetryCount: 0,
 };
 
 let continueSource = function(entry, getters, dispatch) {
@@ -59,7 +58,7 @@ let createEntry = function(getters, payload) {
   return entry;
 };
 
-let loadSource = function(entry, getters, dispatch) {
+async function loadSource(entry, getters, dispatch) {
   if (entry.audioState !== states.defined) {
     return;
   }
@@ -70,7 +69,8 @@ let loadSource = function(entry, getters, dispatch) {
   let url = `${baseUrl}${routes.get.files.byId(entry.track.UniqueId)}`;
   request.open('GET', url, true);
   request.responseType = 'arraybuffer';
-  let headers = Store.getters['auth/authHeader'];
+  let headers = await Store.getters('auth/getAuthenticationHeaders').
+    catch(console.error);
   Object.keys(headers).forEach(h => {
     request.setRequestHeader(h, headers[h]);
   });
@@ -111,8 +111,7 @@ let loadSource = function(entry, getters, dispatch) {
   
   // execute
   request.send();
-};
-
+}
 export default {
   namespaced: true,
   

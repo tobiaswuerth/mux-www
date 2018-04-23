@@ -29,7 +29,7 @@ export const routes = {
   
   get: {
     login: {
-      refreshToken: `${config.prefix.authorized}/login`,
+      refresh: `${config.prefix.authorized}/login`,
     },
     
     artists: {
@@ -107,7 +107,7 @@ async function performParamDefaultDataRequest(payload, props) {
 }
 
 const cache = {};
-const cacheInvalidationInterval = 1000 * 60 * 5; // 5min;
+const cacheInvalidationInterval = 1000 * 60 * 10; // 10 min;
 
 setInterval(() => {
   let now = new Date();
@@ -125,7 +125,8 @@ async function performDefaultDataRequest(route, payload) {
   let pageIndex = payload.pageIndex || 0;
   let pageSize = payload.pageSize || DEFAULT_PAGE_SIZE;
   let url = `${route}?p=${pageIndex}&ps=${pageSize}`;
-  let options = Store.getters['auth/authDefaultOptions'];
+  let options = await Store.dispatch('auth/getAuthenticationHeaders').
+    catch(console.error);
   
   // check loaderCache
   let entry = cache[url];
@@ -137,8 +138,9 @@ async function performDefaultDataRequest(route, payload) {
   let response = await axios.get(url, options).catch((e) => {
     if (e.response && e.response.status === 401) {
       // auth exception
-      localStorage.clear();
-      Router.push('/');
+      Store.dispatch('auth/updateAuthentication', null).then(() => {
+        Router.push('/');
+      }).catch(console.error);
     }
   });
   
@@ -170,6 +172,9 @@ export default {
         },
       });
       return Promise.resolve({data: response.data});
+    }, async loginRefresh() {
+      console.log('refresh login');
+      return await performDefaultDataRequest(routes.get.login.refresh, {});
     },
     
     // artists

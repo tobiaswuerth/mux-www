@@ -1,16 +1,15 @@
 import Store from './../../ecosystems/vuex/Store';
 import {paths} from './../../ecosystems/vue-router/Router';
 
-export const assertAuthenticated = (to, from, next) => {
-  if (!Store.getters['auth/isAuthenticated']) {
+export const assertAuthenticated = async function(to, from, next) {
+  if (!await Store.dispatch('auth/isAuthenticated').catch(console.error)) {
     next(paths.public.login);
   } else {
     next();
   }
 };
-
-export const assertNotAuthenticated = (to, from, next) => {
-  if (Store.getters['auth/isAuthenticated']) {
+export const assertNotAuthenticated = async function(to, from, next) {
+  if (await Store.dispatch('auth/isAuthenticated').catch(console.error)) {
     next(paths.private.root);
   } else {
     next();
