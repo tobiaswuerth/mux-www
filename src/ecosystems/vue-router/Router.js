@@ -14,11 +14,12 @@ const LoginPage = () => import('../../components/LoginPage/LoginPage');
 const AuthenticatedPage = () => import('../../components/AuthenticatedPage/AuthenticatedPage');
 const WelcomeScreen = () => import('../../components/WelcomeScreen/WelcomeScreen');
 const PlaylistPage = () => import('../../components/PlaylistPage/PlaylistPage');
+const InvitePage = () => import('../../components/InvitePage/InvitePage');
 
 const paths = {
   private: {
     root: '/',
-    playlist: '/p',
+    playlist: '/p', invite: '/i',
     artists: artistsPaths,
     tracks: tracksPaths,
     records: recordsPaths,
@@ -37,6 +38,8 @@ const routes = ArtistsRoutes.concat(TracksRoutes).
       path: paths.private.root, component: WelcomeScreen,
     }, {
       path: paths.private.playlist, component: PlaylistPage,
+    }, {
+      path: paths.private.invite, component: InvitePage,
     }]);
 
 const router = new Router({

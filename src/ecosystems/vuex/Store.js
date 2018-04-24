@@ -9,6 +9,7 @@ import RecordsModule from './modules/RecordsModule';
 import TracksModule from './modules/TracksModule';
 import GlobalModule from './modules/GlobalModule';
 import AudioModule from './modules/AudioModule';
+import InvitesModule from './modules/InvitesModule';
 
 Vue.use(Vuex);
 
@@ -21,7 +22,7 @@ const store = new Vuex.Store({
     records: RecordsModule,
     tracks: TracksModule,
     global: GlobalModule,
-    audio: AudioModule,
+    audio: AudioModule, invites: InvitesModule,
   },
 });
 

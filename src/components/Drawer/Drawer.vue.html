@@ -1,6 +1,6 @@
 <div class="clean">
   <md-toolbar class="md-transparent" md-elevation="0">
-    Navigation
+    Music
   </md-toolbar>
 
   <md-list-item :to="routes.private.artists.root">
@@ -22,5 +22,15 @@
     <md-icon>view_headline</md-icon>
     <span class="md-list-item-text">Tracks</span>
   </md-list-item>
+
+  <template v-if="userCanInvite">
+    <md-toolbar class="md-transparent" md-elevation="0">
+      Other
+    </md-toolbar>
+    <md-list-item :to="routes.private.invite">
+      <md-icon>person_add</md-icon>
+      <span class="md-list-item-text">Invites</span>
+    </md-list-item>
+  </template>
 
 </div>

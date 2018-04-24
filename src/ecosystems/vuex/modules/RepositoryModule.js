@@ -3,11 +3,13 @@ import Store from '../Store';
 import Router from './../../vue-router/Router';
 
 const DEFAULT_PAGE_SIZE = 50;
-export const baseUrl = 'https://mux.fooo.ooo/api/v1';
+
+export const urlBase = 'https://mux.fooo.ooo';
+export const apiBase = `${urlBase}/api/v1`;
 
 // init
 const axios = Axios.create({
-  baseURL: baseUrl,
+  baseURL: apiBase,
 });
 
 // config
@@ -24,6 +26,10 @@ export const routes = {
   post: {
     login: {
       performLogin: `${config.prefix.unauthorized}/login`,
+    },
+  
+    invites: {
+      byToken: (token) => `${config.prefix.unauthorized}/invites/${token}`,
     },
   },
   
@@ -78,33 +84,24 @@ export const routes = {
     files: {
       byId: (id) => `${config.prefix.authorized}/files/${id}`,
     },
+  
+    invites: {
+      all: `${config.prefix.authorized}/invites`,
+    },
+  },
+  
+  put: {
+    invites: {
+      create: `${config.prefix.authorized}/invites`,
+    },
+  },
+  
+  delete: {
+    invites: {
+      byId: (id) => `${config.prefix.authorized}/invites/${id}`,
+    },
   },
 };
-
-async function performParamDefaultDataRequest(payload, props) {
-  // get key
-  let keys = Object.keys(props);
-  if (keys.length !== 1) {
-    return Promise.reject(`invalid amount of required keys '${keys.length}'`);
-  }
-  
-  // get value
-  let key = keys[0];
-  let val = payload[key];
-  if (!val) {
-    return Promise.reject(`value for key '${key}' undefined`);
-  }
-  
-  // build route
-  let route = props[key](val);
-  if (!route) {
-    return Promise.reject(
-      `building route failed for key '${key}' and value '${val}'`);
-  }
-  
-  // perform request
-  return performDefaultDataRequest(route, payload);
-}
 
 const cache = {};
 const cacheInvalidationInterval = 1000 * 60 * 10; // 10 min;
@@ -120,22 +117,45 @@ setInterval(() => {
   keysToDelete.forEach(x => delete cache[x]);
 }, cacheInvalidationInterval);
 
-async function performDefaultDataRequest(route, payload) {
+const authConfig = {
+  doPaginate: true, doCache: true, doAuthenticate: true, method: axios.get,
+};
+const publicConfig = {
+  doPaginate: false, doCache: false, doAuthenticate: false, method: axios.post,
+};
+const noCacheAction = (action) => Object.assign({
+  doPaginate: false, doCache: false, doAuthenticate: true, method: action,
+});
+
+async function performRequest(route, payload = {}, config = {}) {
   // prepare
+  config = Object.assign(authConfig, config);
+  let url = route;
   let pageIndex = payload.pageIndex || 0;
   let pageSize = payload.pageSize || DEFAULT_PAGE_SIZE;
-  let url = `${route}?p=${pageIndex}&ps=${pageSize}`;
-  let options = await Store.dispatch('auth/getAuthenticationHeaders').
-    catch(console.error);
+  if (config.doPaginate) {
+    url = `${route}?p=${pageIndex}&ps=${pageSize}`;
+  }
   
-  // check loaderCache
-  let entry = cache[url];
-  if (entry) {
-    return Promise.resolve(entry);
+  let options = config.doAuthenticate ? await Store.dispatch(
+    'auth/getAuthenticationHeaders').catch(console.error) : Object.assign(
+    {headers: {'Content-Type': 'application/json'}});
+  
+  // check cache
+  if (config.doCache) {
+    let entry = cache[url];
+    if (entry) {
+      return Promise.resolve(entry);
+    }
   }
   
   // perform request
-  let response = await axios.get(url, options).catch((e) => {
+  let method = config.method;
+  let requestHasBody = method === axios.put || method === axios.post ||
+    method === axios.patch;
+  let promise = requestHasBody ? method(url, payload, options) : method(url,
+    options);
+  let response = await promise.catch((e) => {
     if (e.response && e.response.status === 401) {
       // auth exception
       Store.dispatch('auth/updateAuthentication', null).then(() => {
@@ -145,17 +165,20 @@ async function performDefaultDataRequest(route, payload) {
   });
   
   if (!response) {
-    return Promise.reject('loading failed');
+    return Promise.reject('invalid response');
   }
   
   // prepare return
   let data = response.data;
   let count = data.length;
-  let hasMore = count === pageSize;
+  let hasMore = config.doPaginate ? count === pageSize : false;
   let resolvedData = {
     data, count, hasMore, pageIndex, pageSize, date: new Date(),
   };
-  cache[url] = resolvedData;
+  
+  if (config.doCache) {
+    cache[url] = resolvedData;
+  }
   
   return Promise.resolve(resolvedData);
 }
@@ -165,96 +188,78 @@ export default {
   
   actions: {
     // login
-    async login({}, payload) {
-      let response = await axios.post(routes.post.login.performLogin, payload, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      return Promise.resolve({data: response.data});
-    }, async loginRefresh() {
-      console.log('refresh login');
-      return await performDefaultDataRequest(routes.get.login.refresh, {});
+    login: async ({}, payload) => performRequest(routes.post.login.performLogin,
+      payload, publicConfig),
+  
+    loginRefresh: async () => {
+      return await performRequest(routes.get.login.refresh, {});
     },
+  
+    // invites
+    invites: async () => await performRequest(routes.get.invites.all, {},
+      noCacheAction(axios.get)),
+    invitesCreate: async ({}, payload) => await performRequest(
+      routes.put.invites.create, payload, noCacheAction(axios.put)),
+    invitesDelete: async ({}, payload) => await performRequest(
+      routes.delete.invites.byId(payload.id), payload,
+      noCacheAction(axios.delete)),
+    invitesUse: async ({}, payload) => await performRequest(
+      routes.post.invites.byToken(payload.token), payload, publicConfig),
     
     // artists
-    async artists({}, payload) {
-      return await performDefaultDataRequest(routes.get.artists.all, payload);
-    }, async artistsByName({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {name: routes.get.artists.byName});
-    }, async artistById({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {id: routes.get.artists.byId});
-    }, async artistReleasesById({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {id: routes.get.artists.releasesById});
-    }, async artistRecordsById({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {id: routes.get.artists.recordsById});
-    }, async artistsLikeName({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {name: routes.get.artists.likeName});
-    },
+    artists: async ({}, payload) => await performRequest(routes.get.artists.all,
+      payload),
+    artistsByName: async ({}, payload) => await performRequest(
+      routes.get.artists.byName(payload.name), payload),
+    artistById: async ({}, payload) => await performRequest(
+      routes.get.artists.byId(payload.id), payload),
+    artistReleasesById: async ({}, payload) => await performRequest(
+      routes.get.artists.releasesById(payload.id), payload),
+    artistRecordsById: async ({}, payload) => await performRequest(
+      routes.get.artists.recordsById(payload.id), payload),
+    artistsLikeName: async ({}, payload) => await performRequest(
+      routes.get.artists.likeName(payload.name), payload),
     
     // releases
-    async releases({}, payload) {
-      return await performDefaultDataRequest(routes.get.releases.all, payload);
-    }, async releasesByName({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {name: routes.get.releases.byName});
-    }, async releaseById({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {id: routes.get.releases.byId});
-    }, async releaseArtistsById({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {id: routes.get.releases.artistsById});
-    }, async releaseRecordsById({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {id: routes.get.releases.recordsById});
-    }, async releasesAliasesById({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {id: routes.get.releases.aliasesById});
-    }, async releasesLikeName({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {name: routes.get.releases.likeName});
-    },
+    releases: async ({}, payload) => await performRequest(
+      routes.get.releases.all, payload),
+    releasesByName: async ({}, payload) => await performRequest(
+      routes.get.releases.byName(payload.name), payload),
+    releaseById: async ({}, payload) => await performRequest(
+      routes.get.releases.byId(payload.id), payload),
+    releaseArtistsById: async ({}, payload) => await performRequest(
+      routes.get.releases.artistsById(payload.id), payload),
+    releaseRecordsById: async ({}, payload) => await performRequest(
+      routes.get.releases.recordsById(payload.id), payload),
+    releasesAliasesById: async ({}, payload) => await performRequest(
+      routes.get.releases.aliasesById(payload.id), payload),
+    releasesLikeName: async ({}, payload) => await performRequest(
+      routes.get.releases.likeName(payload.name), payload),
     
     // records
-    async records({}, payload) {
-      return await performDefaultDataRequest(routes.get.records.all, payload);
-    }, async recordsByName({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {name: routes.get.records.byName});
-    }, async recordById({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {id: routes.get.records.byId});
-    }, async recordTracksById({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {id: routes.get.records.tracksById});
-    }, async recordReleasesById({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {id: routes.get.records.releasesById});
-    }, async recordArtistsById({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {id: routes.get.records.artistsById});
-    }, async recordAliasesById({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {id: routes.get.records.aliasesById});
-    }, async recordsLikeName({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {name: routes.get.records.likeName});
-    },
+    records: async ({}, payload) => await performRequest(routes.get.records.all,
+      payload),
+    recordsByName: async ({}, payload) => await performRequest(
+      routes.get.records.byName(payload.name), payload),
+    recordById: async ({}, payload) => await performRequest(
+      routes.get.records.byId(payload.id), payload),
+    recordTracksById: async ({}, payload) => await performRequest(
+      routes.get.records.tracksById(payload.id), payload),
+    recordReleasesById: async ({}, payload) => await performRequest(
+      routes.get.records.releasesById(payload.id), payload),
+    recordArtistsById: async ({}, payload) => await performRequest(
+      routes.get.records.artistsById(payload.id), payload),
+    recordAliasesById: async ({}, payload) => await performRequest(
+      routes.get.records.aliasesById(payload.id), payload),
+    recordsLikeName: async ({}, payload) => await performRequest(
+      routes.get.records.likeName(payload.name), payload),
     
     // tracks
-    async tracks({}, payload) {
-      return await performDefaultDataRequest(routes.get.tracks.all, payload);
-    }, async trackById({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {id: routes.get.tracks.byId});
-    }, async tracksLikeName({}, payload) {
-      return await performParamDefaultDataRequest(payload,
-        {name: routes.get.tracks.likeName});
-    },
+    tracks: async ({}, payload) => await performRequest(routes.get.tracks.all,
+      payload),
+    trackById: async ({}, payload) => await performRequest(
+      routes.get.tracks.byId(payload.id), payload),
+    tracksLikeName: async ({}, payload) => await performRequest(
+      routes.get.tracks.likeName(payload.name), payload),
   },
 };

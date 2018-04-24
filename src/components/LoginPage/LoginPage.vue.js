@@ -1,5 +1,6 @@
 import Store from './../../ecosystems/vuex/Store';
 import Router from './../../ecosystems/vue-router/Router';
+import {clone} from './../../scripts/DataUtils';
 
 let i = 0;
 const states = {
@@ -30,12 +31,16 @@ export default {
       // check
       this.updateValidationUsername();
       this.updateValidationPassword();
-      if (!this.validation.isUsernameValid || !this.validation.isPasswordValid) {
+      if (!this.validation.isUsernameValid ||
+        !this.validation.isPasswordValid) {
         this.state = states.ready;
         return Promise.reject('one or more inputs are invalid. aborting.');
       }
-      
-      await Store.dispatch('repo/login', this.credentials).then(v => {
+  
+      let creds = clone(this.credentials);
+      creds.password = btoa(creds.password);
+  
+      await Store.dispatch('repo/login', creds).then(v => {
         // successful login
         Store.dispatch('auth/updateAuthentication', v.data.token).then(() => {
           Store.dispatch('global/hint', 'Login successful.').then(() => {
@@ -47,7 +52,7 @@ export default {
         return Promise.resolve();
       }).catch(v => {
         // login failed
-        Store.dispatch('global/hint', `Login failed. ${v.message}`).
+        Store.dispatch('global/hint', `Login failed. ${v}`).
           catch(console.error);
         this.state = states.ready;
         return Promise.reject(v);

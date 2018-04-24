@@ -19,7 +19,7 @@ export default {
       // build
       return {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, 'Content-Type': 'application/json',
         },
       };
     },
@@ -29,9 +29,13 @@ export default {
     },
     
     updateAuthentication: function({}, token) {
-      Cookies.set('auth-token', token, {
-        secure: location.protocol === 'https:', expires: 14,
-      });
+      if (token) {
+        Cookies.set('auth-token', token, {
+          secure: location.protocol === 'https:', expires: 14,
+        });
+      } else {
+        Cookies.remove('auth-token');
+      }
     },
   },
 };

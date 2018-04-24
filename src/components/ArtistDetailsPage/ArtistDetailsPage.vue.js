@@ -17,7 +17,7 @@ export default {
   
   data: () => {
     return {
-      dataLoader: new DataLoader('artists/byId'),
+      dataLoader: new DataLoader('artists/byId', this),
     };
   },
   

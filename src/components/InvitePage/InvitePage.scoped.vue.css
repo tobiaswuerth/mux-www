@@ -1,0 +1,15 @@
+.float-right {
+  float: right;
+}
+
+.item-expired {
+  background-color: rgba(255, 0, 0, .15);
+}
+
+.item-used {
+  background-color: rgba(0, 255, 0, .15);
+}
+
+.copy-item {
+
+}
