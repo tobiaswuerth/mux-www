@@ -1,6 +1,5 @@
 import Store from './../../ecosystems/vuex/Store';
 import DataLoader from './../../scripts/DataLoader';
-import {urlBase} from './../../ecosystems/vuex/modules/RepositoryModule';
 import Clipboard from 'clipboard';
 
 export default {
@@ -16,7 +15,7 @@ export default {
     this.load();
     
     let clipboard = new Clipboard('.copy-item');
-    clipboard.on('success', function(e) {
+    clipboard.on('success', function() {
       Store.dispatch('global/hint', 'Copied to clipboard').catch(console.error);
     });
   },
@@ -42,7 +41,7 @@ export default {
     },
     
     getLink: function(item) {
-      return `${urlBase}/register/${item.Token}`;
+      return `${window.location.origin}/register/${item.Token}`;
     },
     
     showActions: function(item) {
