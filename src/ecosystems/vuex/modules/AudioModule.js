@@ -1,5 +1,5 @@
 import {clone} from '../../../scripts/DataUtils';
-import {baseUrl, routes} from './RepositoryModule';
+import {apiBase, routes} from './RepositoryModule';
 import Store from './../Store';
 import {getCurrentPlaylistEntryTimeMs} from './../../../scripts/DataUtils';
 
@@ -17,7 +17,9 @@ const emptyPlaylistEntry = {
   title: null,
   audioState: states.defined,
   startedAt: null,
-  pausedAt: null, key: null, loadRetryCount: 0,
+  pausedAt: null,
+  key: null,
+  loadRetryCount: 0,
 };
 
 let continueSource = function(entry, getters, dispatch) {
@@ -59,21 +61,21 @@ let createEntry = function(getters, payload) {
   return entry;
 };
 
-let loadSource = function(entry, getters, dispatch) {
+async function loadSource(entry, getters, dispatch) {
   if (entry.audioState !== states.defined) {
-    return;
+    return Promise.resolve();
   }
   
   // prepare request
   entry.audioState = states.loading;
   let request = new XMLHttpRequest();
-  let url = `${baseUrl}${routes.get.files.byId(entry.track.UniqueId)}`;
+  let url = `${apiBase}${routes.get.files.byId(entry.track.UniqueId)}`;
   request.open('GET', url, true);
   request.responseType = 'arraybuffer';
-  let headers = Store.getters['auth/authHeader'];
-  Object.keys(headers).forEach(h => {
-    request.setRequestHeader(h, headers[h]);
-  });
+  let options = await Store.dispatch('auth/getAuthenticationHeaders').
+    catch(console.error);
+  let headers = options.headers;
+  Object.keys(headers).forEach(h => request.setRequestHeader(h, headers[h]));
   
   // setup callback
   request.onload = function() {
@@ -103,7 +105,7 @@ let loadSource = function(entry, getters, dispatch) {
     if (loadAgain) {
       hint += ' Retrying...';
       Store.dispatch('global/hint', hint).catch(console.error);
-      loadSource(entry, getters, dispatch);
+      loadSource(entry, getters, dispatch).catch(console.error);
     } else {
       Store.dispatch('global/hint', hint).catch(console.error);
     }
@@ -111,7 +113,7 @@ let loadSource = function(entry, getters, dispatch) {
   
   // execute
   request.send();
-};
+}
 
 export default {
   namespaced: true,
@@ -167,7 +169,7 @@ export default {
       
       // load & continue
       if (entry.audioState === states.defined) {
-        loadSource(entry, getters, dispatch);
+        loadSource(entry, getters, dispatch).catch(console.error);
       } else if (entry.audioState === states.ready) {
         continueSource(entry, getters, dispatch);
       }
@@ -177,7 +179,7 @@ export default {
       if (playlist.length > nextItemIndex) {
         let nextItem = playlist[nextItemIndex];
         if (nextItem.audioState === states.defined) {
-          loadSource(nextItem, getters, dispatch);
+          loadSource(nextItem, getters, dispatch).catch(console.error);
         }
       }
     },
@@ -241,7 +243,7 @@ export default {
       playlist.push(entry);
       if (getters.playlistIndex >= playlist.length - 2) {
         // is next -> preload
-        loadSource(entry, getters, dispatch);
+        loadSource(entry, getters, dispatch).catch(console.error);
       }
     },
     

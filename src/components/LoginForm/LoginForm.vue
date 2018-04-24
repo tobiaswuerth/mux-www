@@ -1,3 +1,0 @@
-<script src=".\LoginForm.vue.js" lang="js"></script>
-<style src=".\LoginForm.scoped.vue.css" lang="css" scoped></style>
-<template src=".\LoginForm.vue.html" lang="html"></template>

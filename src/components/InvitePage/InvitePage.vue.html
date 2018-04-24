@@ -1,0 +1,32 @@
+<div>
+  <div class="header-space">
+    <span class="md-title">Invites</span>
+
+    <span class="float-right">
+      <md-button class="md-primary md-raised md-icon-button" @click="addNew">
+        <md-icon>add</md-icon>
+      </md-button>
+    </span>
+
+    <md-table v-model="items" md-sort="name" md-sort-order="asc">
+      <md-table-row :key="item.UniqueId" slot="md-table-row" slot-scope="{ item }" :class="getStyle(item)">
+        <md-table-cell md-label="Create Date" md-sort-by="CreateDate">{{ normalizeDate(item.CreateDate) }}</md-table-cell>
+        <md-table-cell md-label="Expire Date" md-sort-by="ExpirationDate">{{ normalizeDate(item.ExpirationDate) }}
+        </md-table-cell>
+        <md-table-cell md-label="Token" md-sort-by="Token">{{ item.Token }}</md-table-cell>
+        <md-table-cell md-label="Registred User" md-sort-by="RegisteredUser">{{ item.RegisteredUser }}</md-table-cell>
+        <md-table-cell>
+          <template v-if="showActions(item)">
+            <md-button class="float-right md-icon-button" @click="deleteSelected(item.UniqueId)">
+              <md-icon>delete</md-icon>
+            </md-button>
+            <md-button class="float-right md-icon-button copy-item" :data-clipboard-text="getLink(item)">
+              <md-icon>link</md-icon>
+            </md-button>
+          </template>
+        </md-table-cell>
+      </md-table-row>
+    </md-table>
+
+  </div>
+</div>

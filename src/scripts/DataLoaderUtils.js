@@ -50,14 +50,14 @@ export const onAfterFilter = (condition) => (payload) => {
 };
 
 export const simplyLoad = async (route, payload = {}, onAfter = null) => {
-  let loader = new DataLoader(route);
-  let config = {doPreload: true};
+  let loader = new DataLoader(route, this);
+  let config = Object.assign({doPreload: true}, payload.config || {});
   loader.onAfter = onAfter;
   return await loader.load(payload, config).catch(console.error);
 };
 
 export const simplyLoadAll = async (route, payloads, onAfter) => {
-  let loader = new DataLoader(route);
+  let loader = new DataLoader(route, this);
   let config = {doPreload: true};
   loader.onAfter = onAfter;
   return await loader.loadAll(payloads, config).catch(console.error);

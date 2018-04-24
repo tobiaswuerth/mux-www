@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import VuexPersistence from 'vuex-persist';
 // modules
 import RepositoryModule from './modules/RepositoryModule';
 import AuthenticationModule from './modules/AuthenticationModule';
@@ -10,14 +9,9 @@ import RecordsModule from './modules/RecordsModule';
 import TracksModule from './modules/TracksModule';
 import GlobalModule from './modules/GlobalModule';
 import AudioModule from './modules/AudioModule';
+import InvitesModule from './modules/InvitesModule';
 
 Vue.use(Vuex);
-
-const persistenceModule = new VuexPersistence({
-  storage: window.localStorage, modules: [
-    'auth' //todo
-  ],
-});
 
 const store = new Vuex.Store({
   modules: {
@@ -28,11 +22,8 @@ const store = new Vuex.Store({
     records: RecordsModule,
     tracks: TracksModule,
     global: GlobalModule,
-    audio: AudioModule,
+    audio: AudioModule, invites: InvitesModule,
   },
-  
-  plugins: [
-    persistenceModule.plugin],
 });
 
 export default store;

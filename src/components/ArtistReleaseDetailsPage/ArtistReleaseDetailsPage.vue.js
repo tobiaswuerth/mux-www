@@ -18,7 +18,7 @@ export default Vue.extend({
   
   data: () => {
     return {
-      dataLoader: new DataLoader('artists/releasesById'),
+      dataLoader: new DataLoader('artists/releasesById', this),
       countries: [],
       variations: 0,
     };

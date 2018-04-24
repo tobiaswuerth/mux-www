@@ -14,11 +14,12 @@ const LoginPage = () => import('../../components/LoginPage/LoginPage');
 const AuthenticatedPage = () => import('../../components/AuthenticatedPage/AuthenticatedPage');
 const WelcomeScreen = () => import('../../components/WelcomeScreen/WelcomeScreen');
 const PlaylistPage = () => import('../../components/PlaylistPage/PlaylistPage');
+const InvitePage = () => import('../../components/InvitePage/InvitePage');
+const RegisterPage = () => import('../../components/RegisterPage/RegisterPage');
 
 const paths = {
   private: {
-    root: '/',
-    playlist: '/p',
+    root: '/', playlist: '/p', invite: '/i',
     artists: artistsPaths,
     tracks: tracksPaths,
     records: recordsPaths,
@@ -26,7 +27,7 @@ const paths = {
   },
   
   public: {
-    login: '/login',
+    login: '/login', register: '/register/:token',
   },
 };
 export {paths};
@@ -37,7 +38,9 @@ const routes = ArtistsRoutes.concat(TracksRoutes).
       path: paths.private.root, component: WelcomeScreen,
     }, {
       path: paths.private.playlist, component: PlaylistPage,
-    }]);
+    }, {
+      path: paths.private.invite, component: InvitePage,
+    },]);
 
 const router = new Router({
   mode: 'history',
@@ -52,6 +55,12 @@ const router = new Router({
     {
       path: paths.public.login,
       component: LoginPage,
+      beforeEnter: assertNotAuthenticated,
+    },
+    {
+      path: paths.public.register,
+      props: true,
+      component: RegisterPage,
       beforeEnter: assertNotAuthenticated,
     }],
 });

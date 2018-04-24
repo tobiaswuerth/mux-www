@@ -1,100 +1,48 @@
+import Cookies from 'js-cookie';
 import Store from '../Store';
-import Router from '../../vue-router/Router';
-
-let i = 0;
-const loginStates = {
-  LOGIN_READY: 1 << i++, LOGIN_EXECUTING: 1 << i++,
-};
 
 export default {
   namespaced: true,
   
-  state: {
-    loginStates: loginStates, loginState: {
-      state: loginStates.LOGIN_READY, lastResponse: null,
-    }, isAuthenticated: false, data: null,
-  },
-  
-  getters: {
-    isAuthenticated: s => s.isAuthenticated,
-    data: s => s.data,
-    loginState: s => s.loginState,
-    loginStates: s => s.loginStates,
+  actions: {
+    getToken: function() {
+      return Cookies.get('auth-token');
+    },
     
-    authHeader: s => {
+    getAuthenticationHeaders: async function({getters, dispatch}) {
       // validate
-      if (!s.isAuthenticated) {
-        return {};
-      }
-      
-      let token = s.data.token;
+      let token = await dispatch('getToken').catch(console.error);
       if (!token) {
-        return {};
+        return Promise.resolve({});
       }
       
       // build
       return {
-        Authorization: `Bearer ${token}`,
+        headers: {
+          Authorization: `Bearer ${token}`, 'Content-Type': 'application/json',
+        },
       };
     },
     
-    authDefaultOptions: (s, g) => {
-      return {
-        headers: g.authHeader,
-      };
+    isAuthenticated: async function({dispatch}) {
+      return !!await dispatch('getToken').catch(console.error);
     },
-  },
-  
-  mutations: {
-    isAuthenticated: (s, payload) => {
-      s.isAuthenticated = payload;
-      Router.push('/');
-    },
-    data: (s, payload) => s.data = payload,
-    loginState: (s, payload) => s.loginState = payload,
-  },
-  
-  actions: {
-    async login({commit, dispatch, getters}, credentials) {
-      // validate
-      if (getters.loginState.state !== getters.loginStates.LOGIN_READY) {
-        return Promise.reject('aborting. already running');
-      }
-      
-      if (getters.isAuthenticated) {
-        // nothing to do here
-        commit('loginState', {state: loginStates.LOGIN_READY});
-        return Promise.resolve();
-      }
-      
-      if (!credentials) {
-        return Promise.reject('credentials null');
-      }
-      
-      if (!credentials.username || !credentials.password) {
-        return Promise.reject('invalid credentials');
-      }
-      
-      // execute
-      commit('loginState', {state: loginStates.LOGIN_EXECUTING});
-      
-      await Store.dispatch('repo/login', credentials).then(v => {
-        // successful login
-        commit('data', v.data);
-        commit('loginState', {
-          state: loginStates.LOGIN_READY, lastResponse: v,
+    
+    updateAuthentication: function({}, token) {
+      if (token) {
+        Cookies.set('auth-token', token, {
+          secure: location.protocol === 'https:', expires: 14,
         });
-        commit('isAuthenticated', true);
-        return Promise.resolve();
-      }).catch(v => {
-        // login failed
-        commit('data', null);
-        commit('loginState', {
-          state: loginStates.LOGIN_READY, lastResponse: v,
-        });
-        commit('isAuthenticated', false);
-        return Promise.reject(v);
-      });
+      } else {
+        Cookies.remove('auth-token');
+      }
     },
   },
 };
+
+setInterval(async () => {
+  if (await Store.dispatch('auth/isAuthenticated').catch(console.error)) {
+    // refresh login
+    await Store.dispatch('repo/loginRefresh').catch(console.error);
+  }
+}, 1000 * 60 * 60);

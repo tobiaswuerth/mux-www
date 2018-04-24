@@ -15,7 +15,7 @@ export default Vue.extend({
   
   data: () => {
     return {
-      dataLoader: new DataLoader('releases/byId'),
+      dataLoader: new DataLoader('releases/byId', this),
     };
   },
   
