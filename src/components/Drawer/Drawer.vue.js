@@ -5,22 +5,24 @@ export default {
   name: 'LayoutDrawer',
   
   data: () => ({
-    routes: paths,
+    routes: paths, canInvite: false,
   }),
   
-  computed: {
-    userCanInvite: async function() {
-      let token = await Store.dispatch('auth/getToken').catch(console.error);
+  mounted: function() {
+    Store.dispatch('auth/getToken').then((token) => {
       if (!token) {
+        console.log('false');
         return false;
       }
       let parts = token.split('.');
       if (parts.length < 3) {
+        console.log('false');
         return false;
       }
       let sJsonClaims = atob(parts[1]);
       let claims = JSON.parse(sJsonClaims);
-      return claims.CanInvite;
-    },
+      console.log(claims.CanInvite);
+      this.canInvite = claims.CanInvite;
+    }).catch(console.error);
   },
 };
