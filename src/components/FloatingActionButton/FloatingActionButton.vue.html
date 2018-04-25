@@ -5,6 +5,14 @@
   </md-speed-dial-target>
 
   <md-speed-dial-content>
+
+    <template v-if="canInvite">
+      <md-button class="md-icon-button md-raised" :to="routes.private.invite">
+        <md-icon>person_add</md-icon>
+        <md-tooltip md-direction="left">Invites</md-tooltip>
+      </md-button>
+    </template>
+
     <md-button class="md-icon-button md-raised" :to="routes.private.tracks.root">
       <md-icon>view_headline</md-icon>
       <md-tooltip md-direction="left">Tracks</md-tooltip>
@@ -24,5 +32,6 @@
       <md-icon>people</md-icon>
       <md-tooltip md-direction="left">Artists</md-tooltip>
     </md-button>
+
   </md-speed-dial-content>
 </md-speed-dial>
