@@ -85,15 +85,16 @@ export default {
   watch: {
     query: _.debounce(function(searchTerm) {
       searchTerm = searchTerm.trim();
+  
+      if (!searchTerm) {
+        return;
+      }
+      
       if (this.currentRoute) {
         // context search
         let match = this.currentRoute.replace(':name',
           encodeURIComponent(searchTerm));
         Router.push(match);
-        return;
-      }
-      
-      if (!searchTerm) {
         return;
       }
       
