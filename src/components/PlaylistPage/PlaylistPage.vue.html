@@ -4,11 +4,11 @@
 
     <span class="float-right">
       <template v-if="isEditMode">
+        <md-button :key="Math.random()" class="md-raised md-icon-button" @click="selectAll">
+          <md-icon>select_all</md-icon>
+        </md-button>
         <md-button :key="Math.random()" class="md-raised md-icon-button" @click="deleteSelected">
           <md-icon>delete</md-icon>
-        </md-button>
-        <md-button :key="Math.random()" class="md-raised md-icon-button" @click="clearList">
-          <md-icon>delete_sweep</md-icon>
         </md-button>
         <md-button :key="Math.random()" class="md-primary md-raised md-icon-button" @click="stopEditMode">
           <md-icon>done</md-icon>
