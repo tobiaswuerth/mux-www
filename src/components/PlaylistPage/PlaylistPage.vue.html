@@ -22,40 +22,37 @@
     </span>
   </div>
 
-  <template v-if="items.length > 0">
+  <md-list id="list">
+    <template v-for="i,k in items">
+      <md-list-item class="playlist-item">
+        <template v-if="isEditMode">
+          <md-checkbox class="checkbox" v-model="selectedItems" :value="k"></md-checkbox>
+        </template>
+        <template v-else>
+          <md-button class="play-button md-primary md-raised md-icon-button" @click="play(k, $event)">
+            <md-icon>play_arrow</md-icon>
+          </md-button>
+        </template>
 
-    <md-list id="list">
-      <template v-for="i,k in items">
-        <md-list-item class="playlist-item">
+        <div class="md-list-item-text">
+          <span>{{i.title}}</span> <span class="">{{readableTime(i.track.Duration)}}</span>
+        </div>
+
+        <div class="md-list-action">
           <template v-if="isEditMode">
-            <md-checkbox class="checkbox" v-model="selectedItems" :value="k"></md-checkbox>
-          </template>
-          <template v-else>
-            <md-button class="play-button md-primary md-raised md-icon-button" @click="play(k, $event)">
-              <md-icon>play_arrow</md-icon>
+            <md-button class="md-icon-button" @click="removeItem(k, $event)">
+              <md-icon>delete</md-icon>
             </md-button>
           </template>
+          <template v-else>
+            <md-icon class="md-list-action draggable">reorder</md-icon>
+          </template>
+        </div>
 
-          <div class="md-list-item-text">
-            <span>{{i.title}}</span> <span class="">{{readableTime(i.track.Duration)}}</span>
-          </div>
-
-          <div class="md-list-action">
-            <template v-if="isEditMode">
-              <md-button class="md-icon-button" @click="removeItem(k, $event)">
-                <md-icon>delete</md-icon>
-              </md-button>
-            </template>
-            <template v-else>
-              <md-icon class="md-list-action draggable">reorder</md-icon>
-            </template>
-          </div>
-
-        </md-list-item>
-      </template>
-    </md-list>
-  </template>
-  <template v-else>
+      </md-list-item>
+    </template>
+  </md-list>
+  <template v-if="items.length === 0">
     <md-empty-state md-icon="playlist_play"
                     md-label="Nothing to display"
                     md-description="Your selected playlist is empty"></md-empty-state>

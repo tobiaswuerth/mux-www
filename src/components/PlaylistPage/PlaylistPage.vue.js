@@ -23,7 +23,7 @@ export default {
         let tmp = self.items[e.oldIndex];
         self.items[e.oldIndex] = self.items[e.newIndex];
         self.items[e.newIndex] = tmp;
-        Store.dispatch('audio/setPlaylist', self.items);
+        Store.dispatch('audio/setPlaylist', self.items).catch(console.error);
       },
     });
   },
