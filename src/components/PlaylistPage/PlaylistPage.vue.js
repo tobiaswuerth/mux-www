@@ -23,7 +23,7 @@ export default {
         let tmp = self.items[e.oldIndex];
         self.items[e.oldIndex] = self.items[e.newIndex];
         self.items[e.newIndex] = tmp;
-        Store.dispatch('audio/setPlaylist', self.items);
+        Store.dispatch('audio/setPlaylist', self.items).catch(console.error);
       },
     });
   },
@@ -32,9 +32,16 @@ export default {
     readableTime: function(seconds) {
       return secondsToReadableString(seconds);
     },
-    
-    clearList: function() {
-      Store.dispatch('audio/setPlaylist', []).catch(console.error);
+  
+    selectAll: function() {
+      let checkboxes = Array.from(document.getElementsByClassName('checkbox '));
+      let unchecked = checkboxes.filter(
+        x => !x.className.includes('md-checked'));
+      if (unchecked.length === 0) {
+        checkboxes.forEach(x => x.click());
+      } else {
+        unchecked.forEach(x => x.click());
+      }
     },
     
     startEditMode: function() {

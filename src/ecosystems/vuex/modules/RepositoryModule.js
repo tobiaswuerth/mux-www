@@ -117,19 +117,16 @@ setInterval(() => {
   keysToDelete.forEach(x => delete cache[x]);
 }, cacheInvalidationInterval);
 
-const authConfig = {
-  doPaginate: true, doCache: true, doAuthenticate: true, method: axios.get,
-};
-const publicConfig = {
-  doPaginate: false, doCache: false, doAuthenticate: false, method: axios.post,
-};
-const noCacheAction = (action) => Object.assign({
-  doPaginate: false, doCache: false, doAuthenticate: true, method: action,
+const getConfig = (method = axios.get, doAuthenticate = true, doCache = true,
+                   doPaginate = true) => Object.assign({
+  doPaginate: doPaginate,
+  doCache: doCache,
+  doAuthenticate: doAuthenticate,
+  method: method,
 });
 
-async function performRequest(route, payload = {}, config = {}) {
+async function performRequest(route, payload = {}, config = getConfig()) {
   // prepare
-  config = Object.assign(authConfig, config);
   let url = route;
   let pageIndex = payload.pageIndex || 0;
   let pageSize = payload.pageSize || DEFAULT_PAGE_SIZE;
@@ -189,22 +186,25 @@ export default {
   actions: {
     // login
     login: async ({}, payload) => performRequest(routes.post.login.performLogin,
-      payload, publicConfig),
-  
+      payload, getConfig(axios.post, false, false, false)),
+    
     loginRefresh: async () => {
-      return await performRequest(routes.get.login.refresh, {});
+      return await performRequest(routes.get.login.refresh, {},
+        getConfig(axios.get, true, false, false));
     },
   
     // invites
     invites: async () => await performRequest(routes.get.invites.all, {},
-      noCacheAction(axios.get)),
+      getConfig(axios.get, true, false, true)),
     invitesCreate: async ({}, payload) => await performRequest(
-      routes.put.invites.create, payload, noCacheAction(axios.put)),
+      routes.put.invites.create, payload,
+      getConfig(axios.put, true, false, false)),
     invitesDelete: async ({}, payload) => await performRequest(
       routes.delete.invites.byId(payload.id), payload,
-      noCacheAction(axios.delete)),
+      getConfig(axios.delete, true, false, false)),
     invitesUse: async ({}, payload) => await performRequest(
-      routes.post.invites.byToken(payload.token), payload, publicConfig),
+      routes.post.invites.byToken(payload.token), payload,
+      getConfig(axios.post, false, false, false)),
     
     // artists
     artists: async ({}, payload) => await performRequest(routes.get.artists.all,

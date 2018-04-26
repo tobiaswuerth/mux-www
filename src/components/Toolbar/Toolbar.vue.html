@@ -6,25 +6,32 @@
     <md-input class="search-field" v-model="query"></md-input>
     <span class="result-span">
     <md-content class="results md-elevation-15 md-scrollbar md-layout" :style="{ display: displayResults ? 'flex' : 'none' }">
-      <template v-for="loader in [loaderArtists, loaderReleases, loaderRecords]">
+      <template v-for="entry in loaders">
         <div :key="Math.random()"
              class="result-list md-xsmall-size-100 md-small-size-100 md-medium-size-33 md-size-33 md-large-size-33 md-xlarge-size-33">
           <md-list>
-            <template v-if="loader.isLoading">
+            <template v-if="entry.loader.isLoading">
               <span>
                 <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
               </span>
             </template>
             <template v-else>
-              <template v-for="item in loader.dataSource.data">
+              <template v-for="item in entry.loader.dataSource.data">
                 <md-list-item :to="item.value" :key="item.value">
                   <md-icon>{{item.icon}}</md-icon>
                   <span class="md-list-item-text">{{item.label}}</span>
                 </md-list-item>
               </template>
-              <template v-if="loader.dataSource.data.length === 0">
+              <template v-if="entry.loader.dataSource.data.length === 0">
                 <md-list-item :key="Math.random()">
                   <span class="md-list-item-text">-</span>
+                </md-list-item>
+              </template>
+              <template v-else-if="entry.loader.dataSource.data.length === maxResults">
+                <md-divider></md-divider>
+                <md-list-item :to="entry.moreUri" :key="entry.moreUri">
+                  <md-icon>fullscreen</md-icon>
+                  <span class="md-list-item-text">More...</span>
                 </md-list-item>
               </template>
             </template>

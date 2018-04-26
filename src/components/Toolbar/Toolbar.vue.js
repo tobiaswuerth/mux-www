@@ -46,11 +46,30 @@ export default {
       loaderArtists: new DataLoader('artists/likeName', this),
       loaderReleases: new DataLoader('releases/likeName', this),
       loaderRecords: new DataLoader('records/likeName', this),
-      query: '',
+      query: '', lastSearch: '', maxResults: 5,
     };
   },
   
   computed: {
+    loaders: function() {
+      return [
+        {
+          loader: this.loaderArtists,
+          moreUri: paths.private.artists.search.replace(':name',
+            encodeURIComponent(this.query)),
+        },
+        {
+          loader: this.loaderReleases,
+          moreUri: paths.private.releases.search.replace(':name',
+            encodeURIComponent(this.query)),
+        },
+        {
+          loader: this.loaderRecords,
+          moreUri: paths.private.records.search.replace(':name',
+            encodeURIComponent(this.query)),
+        }];
+    },
+    
     currentRoute: function() {
       let name = encodeURIComponent(this.$route.params.name);
       let fullPath = this.$route.fullPath;
@@ -85,6 +104,13 @@ export default {
   watch: {
     query: _.debounce(function(searchTerm) {
       searchTerm = searchTerm.trim();
+  
+      if (!searchTerm) {
+        return;
+      }
+  
+      this.lastSearch = searchTerm;
+      
       if (this.currentRoute) {
         // context search
         let match = this.currentRoute.replace(':name',
@@ -93,16 +119,12 @@ export default {
         return;
       }
       
-      if (!searchTerm) {
-        return;
-      }
-      
       // search globally
       this.loaderArtists.reset();
       this.loaderReleases.reset();
       this.loaderRecords.reset();
-      
-      let payload = {name: searchTerm, pageSize: 5};
+  
+      let payload = {name: searchTerm, pageSize: this.maxResults};
       this.loaderArtists.load(payload).catch(console.error);
       this.loaderReleases.load(payload).catch(console.error);
       this.loaderRecords.load(payload).catch(console.error);

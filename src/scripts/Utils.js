@@ -32,10 +32,11 @@ export const secondsToReadableString = function(seconds) {
     result += 0;
   }
   result += minutes + ':';
+  seconds = seconds.toFixed(0);
   if (seconds < 10) {
     result += 0;
   }
-  result += seconds.toFixed(0);
+  result += seconds;
   return result;
 };
 
