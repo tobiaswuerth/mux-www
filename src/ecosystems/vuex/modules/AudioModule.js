@@ -49,7 +49,7 @@ let continueSource = function(entry, getters, dispatch) {
     source.start(0, timeMs / 1000);
     entry.startedAt = new Date(now - timeMs);
     entry.audioState = states.playing;
-  });
+  }).catch(console.error);
 };
 
 let createEntry = function(getters, payload) {
