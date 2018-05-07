@@ -28,25 +28,28 @@ let continueSource = function(entry, getters, dispatch) {
   let startedAt = entry.startedAt || now;
   let timeMs = Math.abs(pausedAt.getTime() - startedAt.getTime());
   let context = getters.context;
-  entry.source = context.createBufferSource();
-  let source = entry.source;
   
-  source.onended = function() {
-    let currentTime = (getCurrentPlaylistEntryTimeMs(entry) / 1000) + .5;
-    let playNext = currentTime >= entry.track.Duration;
-    if (!playNext) {
-      return;
-    }
+  context.resume().then(() => {
+    entry.source = context.createBufferSource();
+    let source = entry.source;
     
-    dispatch('next');
-  };
-  
-  source.connect(context.destination);
-  source.buffer = entry.buffer;
-  entry.pausedAt = null;
-  source.start(0, timeMs / 1000);
-  entry.startedAt = new Date(now - timeMs);
-  entry.audioState = states.playing;
+    source.onended = function() {
+      let currentTime = (getCurrentPlaylistEntryTimeMs(entry) / 1000) + .5;
+      let playNext = currentTime >= entry.track.Duration;
+      if (!playNext) {
+        return;
+      }
+      
+      dispatch('next');
+    };
+    
+    source.connect(context.destination);
+    source.buffer = entry.buffer;
+    entry.pausedAt = null;
+    source.start(0, timeMs / 1000);
+    entry.startedAt = new Date(now - timeMs);
+    entry.audioState = states.playing;
+  }).catch(console.error);
 };
 
 let createEntry = function(getters, payload) {
@@ -149,6 +152,7 @@ export default {
       entry.source.stop(0);
       entry.pausedAt = new Date();
       entry.audioState = states.ready;
+      return getters.context.suspend();
     },
     
     play: async function({commit, getters, dispatch}, payload) {
