@@ -16,7 +16,8 @@ export const paths = {
   search: '/s/s/:name',
   details: '/s/:id',
   artists: '/s/:id/a',
-  releases: '/s/:id/r', tracks: '/s/:id/t',
+  releases: '/s/:id/r',
+  tracks: '/s/:id/t',
 };
 
 export default [
@@ -119,6 +120,6 @@ export default [
             }],
         },
       },
-
+    
     ],
   }];

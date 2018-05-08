@@ -19,7 +19,7 @@ export default {
       }
       let sJsonClaims = atob(parts[1]);
       let claims = JSON.parse(sJsonClaims);
-  
+      
       this.canInvite = claims.CanInvite;
     }).catch(console.error);
   },

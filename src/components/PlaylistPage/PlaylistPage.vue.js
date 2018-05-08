@@ -32,7 +32,7 @@ export default {
     readableTime: function(seconds) {
       return secondsToReadableString(seconds);
     },
-  
+    
     selectAll: function() {
       let checkboxes = Array.from(document.getElementsByClassName('checkbox '));
       let unchecked = checkboxes.filter(
