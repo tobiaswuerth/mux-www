@@ -27,7 +27,7 @@ export const routes = {
     login: {
       performLogin: `${config.prefix.unauthorized}/login`,
     },
-  
+    
     invites: {
       byToken: (token) => `${config.prefix.unauthorized}/invites/${token}`,
     },
@@ -84,7 +84,7 @@ export const routes = {
     files: {
       byId: (id) => `${config.prefix.authorized}/files/${id}`,
     },
-  
+    
     invites: {
       all: `${config.prefix.authorized}/invites`,
     },
@@ -192,7 +192,7 @@ export default {
       return await performRequest(routes.get.login.refresh, {},
         getConfig(axios.get, true, false, false));
     },
-  
+    
     // invites
     invites: async () => await performRequest(routes.get.invites.all, {},
       getConfig(axios.get, true, false, true)),

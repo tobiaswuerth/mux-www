@@ -22,7 +22,8 @@ const store = new Vuex.Store({
     records: RecordsModule,
     tracks: TracksModule,
     global: GlobalModule,
-    audio: AudioModule, invites: InvitesModule,
+    audio: AudioModule,
+    invites: InvitesModule,
   },
 });
 

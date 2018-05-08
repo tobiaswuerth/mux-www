@@ -36,10 +36,10 @@ export default {
         this.state = states.ready;
         return Promise.reject('one or more inputs are invalid. aborting.');
       }
-  
+      
       let creds = clone(this.credentials);
       creds.password = btoa(creds.password);
-  
+      
       await Store.dispatch('repo/login', creds).then(v => {
         // successful login
         Store.dispatch('auth/updateAuthentication', v.data.token).then(() => {

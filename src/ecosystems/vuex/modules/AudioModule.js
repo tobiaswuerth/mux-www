@@ -22,43 +22,44 @@ const emptyPlaylistEntry = {
   loadRetryCount: 0,
 };
 
-let continueSource = function(entry, getters, dispatch) {
+let continueSource = async function(entry, getters, dispatch) {
   let now = new Date();
   let pausedAt = entry.pausedAt || now;
   let startedAt = entry.startedAt || now;
   let timeMs = Math.abs(pausedAt.getTime() - startedAt.getTime());
-  let context = getters.context;
+  let context = await dispatch('getContext').catch(console.error);
   
-  context.resume().then(() => {
-    entry.source = context.createBufferSource();
-    let source = entry.source;
+  await context.resume().catch(console.error);
+  
+  entry.source = context.createBufferSource();
+  let source = entry.source;
+  
+  source.onended = function() {
+    let currentTime = (getCurrentPlaylistEntryTimeMs(entry) / 1000) + .5;
+    let playNext = currentTime >= entry.track.Duration;
+    if (!playNext) {
+      return;
+    }
     
-    source.onended = function() {
-      let currentTime = (getCurrentPlaylistEntryTimeMs(entry) / 1000) + .5;
-      let playNext = currentTime >= entry.track.Duration;
-      if (!playNext) {
-        return;
-      }
-      
-      dispatch('next');
-    };
-    
-    source.connect(context.destination);
-    source.buffer = entry.buffer;
-    entry.pausedAt = null;
-    source.start(0, timeMs / 1000);
-    entry.startedAt = new Date(now - timeMs);
-    entry.audioState = states.playing;
-  }).catch(console.error);
+    dispatch('next').catch(console.error);
+  };
+  
+  source.connect(context.destination);
+  source.buffer = entry.buffer;
+  entry.pausedAt = null;
+  source.start(0, timeMs / 1000);
+  entry.startedAt = new Date(now - timeMs);
+  entry.audioState = states.playing;
 };
 
-let createEntry = function(getters, payload) {
+let createEntry = async function(getters, dispatch, payload) {
   if (!payload.track) {
     return null;
   }
   let entry = clone(emptyPlaylistEntry);
   entry.track = payload.track;
-  entry.source = getters.context.createBufferSource();
+  let context = await dispatch('getContext').catch(console.error);
+  entry.source = context.createBufferSource();
   entry.key = Math.random();
   entry.title = payload.title || entry.track.Path;
   return entry;
@@ -83,21 +84,25 @@ async function loadSource(entry, getters, dispatch) {
   // setup callback
   request.onload = function() {
     let audioData = request.response;
-    getters.context.decodeAudioData(audioData).then((buffer) => {
-      let source = entry.source;
-      source.connect(getters.context.destination);
-      source.buffer = buffer;
-      entry.buffer = buffer;
-      
-      if (getters.currentEntry.key === entry.key) {
-        continueSource(entry, getters, dispatch);
-      } else {
-        entry.audioState = states.ready;
-      }
-    }).catch((r) => {
+    let onError = (r) => {
       console.error(r);
       entry.audioState = states.defined;
-    });
+    };
+    
+    dispatch('getContext').then((context) => {
+      context.decodeAudioData(audioData).then((buffer) => {
+        let source = entry.source;
+        source.connect(context.destination);
+        source.buffer = buffer;
+        entry.buffer = buffer;
+        
+        if (getters.currentEntry.key === entry.key) {
+          continueSource(entry, getters, dispatch).catch(console.error);
+        } else {
+          entry.audioState = states.ready;
+        }
+      }).catch(onError);
+    }).catch(onError);
   };
   
   request.onerror = function() {
@@ -115,16 +120,14 @@ async function loadSource(entry, getters, dispatch) {
   };
   
   // execute
-  request.send();
+  return request.send();
 }
 
 export default {
   namespaced: true,
   
   state: {
-    playlist: [],
-    playlistIndex: 0,
-    context: new (window.AudioContext || window.webkitAudioContext)(),
+    playlist: [], playlistIndex: 0, context: null,
   },
   
   getters: {
@@ -139,10 +142,25 @@ export default {
   mutations: {
     playlist: (s, payload) => s.playlist = payload,
     playlistIndex: (s, payload) => s.playlistIndex = payload,
+    context: (s, payload) => s.context = payload,
   },
   
   actions: {
-    pause: async function({commit, getters}) {
+    initialize: function({commit, getters}) {
+      if (!getters.context) {
+        let context = new (window.AudioContext || window.webkitAudioContext)();
+        commit('context', context);
+      }
+    },
+    
+    getContext: async function({dispatch, getters}) {
+      if (!getters.context) {
+        await dispatch('initialize').catch(console.error);
+      }
+      return getters.context;
+    },
+    
+    pause: async function({commit, getters, dispatch}) {
       let entry = getters.currentEntry;
       if (!entry || entry.audioState !== states.playing) {
         // ignore call
@@ -152,18 +170,20 @@ export default {
       entry.source.stop(0);
       entry.pausedAt = new Date();
       entry.audioState = states.ready;
-      return getters.context.suspend();
+      let context = await dispatch('getContext').catch(console.error);
+      return context.suspend();
     },
     
     play: async function({commit, getters, dispatch}, payload) {
-      await dispatch('pause');
+      await dispatch('pause').catch(console.error);
       let entry = getters.currentEntry;
       
       // create new
       let playlist = getters.playlist;
       if (payload && payload.track) {
-        await dispatch('addToPlaylist', payload);
-        await dispatch('setPlaylistIndex', playlist.length - 1);
+        await dispatch('addToPlaylist', payload).catch(console.error);
+        await dispatch('setPlaylistIndex', playlist.length - 1).
+          catch(console.error);
         return Promise.resolve();
       }
       
@@ -175,9 +195,9 @@ export default {
       if (entry.audioState === states.defined) {
         loadSource(entry, getters, dispatch).catch(console.error);
       } else if (entry.audioState === states.ready) {
-        continueSource(entry, getters, dispatch);
+        await continueSource(entry, getters, dispatch).catch(console.error);
       }
-  
+      
       // preload
       let nextItemIndex = getters.playlistIndex + 1;
       if (playlist.length > nextItemIndex) {
@@ -203,7 +223,7 @@ export default {
       
       if (null === idx) {
         // currently playing item is not in list anymore
-        await dispatch('pause');
+        await dispatch('pause').catch(console.error);
         idx = 0;
       }
       
@@ -219,13 +239,13 @@ export default {
       }
       let timeMs = getCurrentPlaylistEntryTimeMs(entry) + (payload * 1000);
       entry.startedAt = new Date(new Date().getTime() - timeMs);
-      await dispatch('play');
+      await dispatch('play').catch(console.error);
     },
     
     setPlaylistIndex: async function({commit, dispatch}, payload) {
-      await dispatch('pause');
+      await dispatch('pause').catch(console.error);
       commit('playlistIndex', payload);
-      await dispatch('play');
+      await dispatch('play').catch(console.error);
     },
     
     addToPlaylist: async function({getters, dispatch}, payload) {
@@ -235,7 +255,8 @@ export default {
       }
       
       // create
-      let entry = createEntry(getters, payload);
+      let entry = await createEntry(getters, dispatch, payload).
+        catch(console.error);
       if (!entry) {
         return Promise.reject('creation failed');
       }
@@ -262,7 +283,7 @@ export default {
       let entry = getters.playlist[index];
       entry.startedAt = 0;
       entry.pausedAt = 0;
-      await dispatch('setPlaylistIndex', index);
+      await dispatch('setPlaylistIndex', index).catch(console.error);
       
       entry = getters.currentEntry;
       Store.dispatch('global/hint', {message: `Playing '${entry.title}'`}).
@@ -279,7 +300,7 @@ export default {
       let entry = getters.playlist[index];
       entry.startedAt = 0;
       entry.pausedAt = 0;
-      await dispatch('setPlaylistIndex', index);
+      await dispatch('setPlaylistIndex', index).catch(console.error);
       
       entry = getters.currentEntry;
       Store.dispatch('global/hint', {message: `Playing '${entry.title}'`}).

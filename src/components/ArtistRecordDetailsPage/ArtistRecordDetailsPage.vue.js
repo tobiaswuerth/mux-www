@@ -39,7 +39,7 @@ export default Vue.extend({
         id: this.id, name: this.name, 'generic1?': this.generic1,
       });
     },
-  
+    
     uriArtists: function() {
       return prepareRoute(this.generic1
         ? paths.private.artists.recordsLookup.artistsFull
@@ -47,7 +47,7 @@ export default Vue.extend({
         id: this.id, name: this.name, 'generic1?': this.generic1,
       });
     },
-  
+    
     uriTracks: function() {
       return prepareRoute(this.generic1
         ? paths.private.artists.recordsLookup.tracksFull

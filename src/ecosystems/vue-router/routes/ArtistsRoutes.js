@@ -287,7 +287,7 @@ export default [
               x.normalize();
             let keyMapper = onAfterMap((i) => Object.assign({id: i.UniqueId}));
             let payload = {id: p.id};
-        
+            
             // load via release
             if (p.generic1) {
               let payloads = await simplyLoad('artists/releasesById', payload,
@@ -297,7 +297,7 @@ export default [
                 [onAfterFilter(filterTitleBy(p.name)), keyMapper]).
                 catch(console.error);
             }
-        
+            
             // load direct
             return await simplyLoad('artists/recordsById', payload,
               [onAfterFilter(filterTitleBy(p.name)), keyMapper]).

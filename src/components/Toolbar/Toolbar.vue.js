@@ -46,7 +46,9 @@ export default {
       loaderArtists: new DataLoader('artists/likeName', this),
       loaderReleases: new DataLoader('releases/likeName', this),
       loaderRecords: new DataLoader('records/likeName', this),
-      query: '', lastSearch: '', maxResults: 5,
+      query: '',
+      lastSearch: '',
+      maxResults: 5,
     };
   },
   
@@ -104,11 +106,11 @@ export default {
   watch: {
     query: _.debounce(function(searchTerm) {
       searchTerm = searchTerm.trim();
-  
+      
       if (!searchTerm) {
         return;
       }
-  
+      
       this.lastSearch = searchTerm;
       
       if (this.currentRoute) {
@@ -123,7 +125,7 @@ export default {
       this.loaderArtists.reset();
       this.loaderReleases.reset();
       this.loaderRecords.reset();
-  
+      
       let payload = {name: searchTerm, pageSize: this.maxResults};
       this.loaderArtists.load(payload).catch(console.error);
       this.loaderReleases.load(payload).catch(console.error);

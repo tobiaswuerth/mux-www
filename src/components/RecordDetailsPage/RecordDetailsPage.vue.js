@@ -41,7 +41,7 @@ export default Vue.extend({
         id: this.id,
       });
     },
-  
+    
     uriTracks: function() {
       return prepareRoute(paths.private.records.tracks, {
         id: this.id,
