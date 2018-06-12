@@ -7,21 +7,20 @@ import ArtistsRoutes, {paths as artistsPaths} from './routes/ArtistsRoutes';
 import TracksRoutes, {paths as tracksPaths} from './routes/TracksRoutes';
 import RecordsRoutes, {paths as recordsPaths} from './routes/RecordsRoutes';
 import ReleasesRoutes, {paths as releasePaths} from './routes/ReleasesRoutes';
+import PlaylistsRoutes, {paths as playlistsPaths} from './routes/PlaylistsRoutes';
 
 Vue.use(Router);
 
 const LoginPage = () => import('../../components/LoginPage/LoginPage');
 const AuthenticatedPage = () => import('../../components/AuthenticatedPage/AuthenticatedPage');
 const WelcomeScreen = () => import('../../components/WelcomeScreen/WelcomeScreen');
-const PlaylistPage = () => import('../../components/PlaylistPage/PlaylistPage');
 const InvitePage = () => import('../../components/InvitePage/InvitePage');
 const RegisterPage = () => import('../../components/RegisterPage/RegisterPage');
 
 const paths = {
   private: {
     root: '/',
-    playlist: '/p',
-    invite: '/i',
+    invite: '/i', playlists: playlistsPaths,
     artists: artistsPaths,
     tracks: tracksPaths,
     records: recordsPaths,
@@ -35,11 +34,9 @@ const paths = {
 export {paths};
 
 const routes = ArtistsRoutes.concat(TracksRoutes).
-  concat(RecordsRoutes).concat(ReleasesRoutes).concat([
+  concat(RecordsRoutes).concat(ReleasesRoutes).concat(PlaylistsRoutes).concat([
     {
       path: paths.private.root, component: WelcomeScreen,
-    }, {
-      path: paths.private.playlist, component: PlaylistPage,
     }, {
       path: paths.private.invite, component: InvitePage,
     },]);

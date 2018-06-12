@@ -8,7 +8,7 @@ const states = {
 };
 
 export default {
-  name: 'PlaylistPage',
+  name: 'CurrentPlaylistPage',
   
   mounted: function() {
     let self = this;
