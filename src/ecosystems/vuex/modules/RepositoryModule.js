@@ -88,17 +88,37 @@ export const routes = {
     invites: {
       all: `${config.prefix.authorized}/invites`,
     },
+  
+    playlists: {
+      all: `${config.prefix.authorized}/playlists`,
+      byId: (id) => `${config.prefix.authorized}/playlists/${id}`,
+    },
   },
   
   put: {
     invites: {
       create: `${config.prefix.authorized}/invites`,
     },
+  
+    playlists: {
+      create: `${config.prefix.authorized}/playlists`,
+      createEntry: (id) => `${config.prefix.authorized}/playlists/${id}/entries`,
+      createPermission: (id) => `${config.prefix.authorized}/playlists/${id}/permissions`,
+    },
   },
   
   delete: {
     invites: {
       byId: (id) => `${config.prefix.authorized}/invites/${id}`,
+    },
+  
+    playlists: {
+      byId: (id) => `${config.prefix.authorized}/playlists/${id}`,
+      entryById: (playlistId,
+                  entryId) => `${config.prefix.authorized}/playlists/${playlistId}/entries/${entryId}`,
+      permissionById: (
+        playlistId,
+        permissionId) => `${config.prefix.authorized}/playlists/${playlistId}/permissions/${permissionId}`,
     },
   },
 };
@@ -261,5 +281,32 @@ export default {
       routes.get.tracks.byId(payload.id), payload),
     tracksLikeName: async ({}, payload) => await performRequest(
       routes.get.tracks.likeName(payload.name), payload),
+  
+    // playlists
+    playlists: async ({}, payload) => await performRequest(
+      routes.get.playlists.all, payload,
+      getConfig(axios.get, true, false, true)),
+    playlistById: async ({}, payload) => await performRequest(
+      routes.get.playlists.byId(payload.id), payload,
+      getConfig(axios.get, true, false, false)),
+    playlistsCreate: async ({}, payload) => await performRequest(
+      routes.put.playlists.create, payload,
+      getConfig(axios.put, true, false, false)),
+    playlistsCreateEntry: async ({}, payload) => await performRequest(
+      routes.put.playlists.createEntry(payload.id), payload,
+      getConfig(axios.put, true, false, false)),
+    playlistsCreatePermission: async ({}, payload) => await performRequest(
+      routes.put.playlists.createPermission(payload.id), payload,
+      getConfig(axios.put, true, false, false)),
+    playlistsDelete: async ({}, payload) => await performRequest(
+      routes.delete.playlists.byId(payload.id), payload,
+      getConfig(axios.delete, true, false, false)),
+    playlistsDeleteEntry: async ({}, payload) => await performRequest(
+      routes.delete.playlists.entryById(payload.playlistId, payload.entryId),
+      payload, getConfig(axios.delete, true, false, false)),
+    playlistsDeletePermission: async ({}, payload) => await performRequest(
+      routes.delete.playlists.permissionById(payload.playlistId,
+        payload.permissionId), payload,
+      getConfig(axios.delete, true, false, false)),
   },
 };
