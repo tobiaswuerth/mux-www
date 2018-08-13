@@ -32,7 +32,7 @@ export default {
     },
     
     getStyle: function(item) {
-      if (item.IsExpired) {
+      if (!item.RegisteredUser && item.IsExpired) {
         return 'item-expired';
       } else if (null != item.RegisteredUser) {
         return 'item-used';
