@@ -2,15 +2,16 @@ export default {
   namespaced: true,
   
   state: {
-    hints: [],
+    hints: [], loadingScreenData: {},
   },
   
   getters: {
-    hints: s => s.hints,
+    hints: s => s.hints, loadingScreenData: s => s.loadingScreenData,
   },
   
   mutations: {
     hints: (s, payload) => s.hints = payload,
+    loadingScreenData: (s, payload) => s.loadingScreenData = payload,
   },
   
   actions: {
@@ -18,6 +19,10 @@ export default {
       commit('hints', {
         message: payload.message || payload,
       });
+    },
+  
+    async displayLoadingScreen({commit}, payload) {
+      commit('loadingScreenData', payload);
     },
   },
 };
