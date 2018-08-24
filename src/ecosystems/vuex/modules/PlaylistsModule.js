@@ -15,6 +15,10 @@ export default {
     async create({}, payload) {
       return await Store.dispatch('repo/playlistsCreate', payload);
     },
+  
+    async update({}, payload) {
+      return await Store.dispatch('repo/playlistsUpdate', payload);
+    },
     
     async createEntry({}, payload) {
       return await Store.dispatch('repo/playlistsCreateEntry', payload);
