@@ -1,0 +1,81 @@
+<div>
+  <template v-if="loading">
+    <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+  </template>
+  <template v-else>
+
+    <div class="header-space">
+      <span class="md-title">Edit playlist {{titleSuffix}}</span>
+
+      <span class="float-right">
+        <template v-if="!isNew">
+         <md-button :key="Math.random()" class="md-accent md-raised md-icon-button" @click="deletePlaylist">
+           <md-icon>delete</md-icon>
+         </md-button>
+        </template>
+       <md-button :key="Math.random()" class="md-primary md-raised md-icon-button" @click="savePlaylist">
+         <md-icon>check</md-icon>
+       </md-button>
+    </span>
+    </div>
+
+    <md-field md-inline>
+      <label>Name</label>
+      <md-input v-model="item.Name"></md-input>
+    </md-field>
+
+    <md-table>
+      <md-table-toolbar>
+        <h3 class="md-heading">Grant permissions</h3>
+
+        <md-autocomplete v-model="selectedUser"
+                         :md-options="users"
+                         :md-open-on-focus="false"
+                         @md-selected="userSelected"
+                         md-dense>
+          <label>Add user</label>
+
+          <template slot="md-autocomplete-item" slot-scope="{ item, term }">
+            <md-highlight-text :md-term="term">
+              {{ item.Username }}
+            </md-highlight-text>
+          </template>
+
+          <template slot="md-autocomplete-empty" slot-scope="{ term }">
+            No matching user found
+          </template>
+        </md-autocomplete>
+      </md-table-toolbar>
+
+      <md-table-row>
+        <md-table-head>
+          <md-icon>people</md-icon>
+          User
+        </md-table-head>
+        <md-table-head>
+          <md-icon>edit</md-icon>
+          Can modify
+        </md-table-head>
+        <md-table-head>
+          <md-icon>delete</md-icon>
+          Revoke
+        </md-table-head>
+      </md-table-row>
+
+      <template v-for="perm in item.Permissions">
+        <md-table-row>
+          <md-table-cell>{{perm.User.Username}}</md-table-cell>
+          <md-table-cell>
+            <md-switch v-model="modifies" :value="perm.User.UniqueId"/>
+          </md-table-cell>
+          <md-table-cell>
+            <md-button class="md-icon-button md-accent md-raised md-mini md-dense" @click="revoke(perm)">
+              <md-icon>clear</md-icon>
+            </md-button>
+          </md-table-cell>
+        </md-table-row>
+      </template>
+
+    </md-table>
+  </template>
+</div>

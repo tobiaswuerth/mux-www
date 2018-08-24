@@ -93,6 +93,10 @@ export const routes = {
       all: `${config.prefix.authorized}/playlists`,
       byId: (id) => `${config.prefix.authorized}/playlists/${id}`,
     },
+  
+    users: {
+      all: `${config.prefix.authorized}/users`,
+    },
   },
   
   put: {
@@ -102,6 +106,7 @@ export const routes = {
   
     playlists: {
       create: `${config.prefix.authorized}/playlists`,
+      update: (id) => `${config.prefix.authorized}/playlists/${id}`,
       createEntry: (id) => `${config.prefix.authorized}/playlists/${id}/entries`,
       createPermission: (id) => `${config.prefix.authorized}/playlists/${id}/permissions`,
     },
@@ -207,11 +212,8 @@ export default {
     // login
     login: async ({}, payload) => performRequest(routes.post.login.performLogin,
       payload, getConfig(axios.post, false, false, false)),
-    
-    loginRefresh: async () => {
-      return await performRequest(routes.get.login.refresh, {},
-        getConfig(axios.get, true, false, false));
-    },
+    loginRefresh: async () => await performRequest(routes.get.login.refresh, {},
+      getConfig(axios.get, true, false, false)),
     
     // invites
     invites: async () => await performRequest(routes.get.invites.all, {},
@@ -292,6 +294,9 @@ export default {
     playlistsCreate: async ({}, payload) => await performRequest(
       routes.put.playlists.create, payload,
       getConfig(axios.put, true, false, false)),
+    playlistsUpdate: async ({}, payload) => await performRequest(
+      routes.put.playlists.update(payload.id), payload,
+      getConfig(axios.put, true, false, false)),
     playlistsCreateEntry: async ({}, payload) => await performRequest(
       routes.put.playlists.createEntry(payload.id), payload,
       getConfig(axios.put, true, false, false)),
@@ -308,5 +313,9 @@ export default {
       routes.delete.playlists.permissionById(payload.playlistId,
         payload.permissionId), payload,
       getConfig(axios.delete, true, false, false)),
+  
+    // users
+    users: async ({}, payload) => await performRequest(routes.get.users.all,
+      payload),
   },
 };
