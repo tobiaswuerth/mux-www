@@ -21,7 +21,7 @@ export default {
       });
     },
   
-    async displayLoadingScreen({commit}, payload) {
+    async displayLoadingScreen({getters, commit}, payload) {
       commit('loadingScreenData', payload);
     },
   },
