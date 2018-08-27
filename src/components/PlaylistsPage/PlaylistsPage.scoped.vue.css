@@ -1,0 +1,11 @@
+.md-list-item-text {
+  word-break: break-word !important;
+}
+
+.float-right {
+  float: right;
+}
+
+.header-space {
+  margin-bottom: 20px;
+}
