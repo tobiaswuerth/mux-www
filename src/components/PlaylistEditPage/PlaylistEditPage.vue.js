@@ -77,10 +77,33 @@ export default {
     revoke: function(item) {
       let user = item.User;
       let userId = user.UniqueId;
-      this.item.Permissions = this.item.Permissions.filter(
-        p => p.User.UniqueId !== userId);
-      this.users.push(user);
-      this.modifies = this.modifies.filter(p => p !== userId);
+  
+      Store.dispatch('global/displayInputScreen', {
+          display: true,
+          text: `Are you sure you want to revoke the permissions for the user '${user.Username}'`,
+          buttons: [
+            {
+              type: '',
+              text: 'No, do not revoke',
+              icon: 'clear',
+              onClick: () => Store.dispatch('global/displayInputScreen',
+                {display: false}).catch(console.error),
+            },
+            {
+              type: 'accent',
+              text: 'Yes, revoke permission',
+              icon: 'delete',
+              onClick: () => {
+                this.item.Permissions = this.item.Permissions.filter(
+                  p => p.User.UniqueId !== userId);
+                this.users.push(user);
+                this.modifies = this.modifies.filter(p => p !== userId);
+                Store.dispatch('global/displayInputScreen', {display: false}).
+                  catch(console.error);
+              },
+            }],
+        }).
+        catch(console.error);
     },
     
     userSelected: function() {

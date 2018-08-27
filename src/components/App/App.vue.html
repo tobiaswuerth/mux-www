@@ -1,5 +1,8 @@
 <div class="page-container">
   <router-view/>
+
+  <!-- Overlay components -->
   <Snackbar :data="dataSnackbar" class="snackbar"/>
-  <LoadingScreen :data="loadingScreenData"></LoadingScreen>
+  <LoadingScreen :data="loadingScreenData"/>
+  <InputScreen :data="inputScreenData"/>
 </div>

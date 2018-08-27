@@ -1,0 +1,17 @@
+<div>
+  <template v-if="data.display">
+    <div class="content">
+      <div class="details">
+        <span class="md-subheading">{{data.text}}</span> <br/><br/>
+        <template v-for="btn in data.buttons">
+          <md-button :class="getStyle(btn)" @click="btn.onClick">
+            <template v-if="btn.icon">
+              <md-icon>{{btn.icon}}</md-icon>
+            </template>
+            {{btn.text}}
+          </md-button>
+        </template>
+      </div>
+    </div>
+  </template>
+</div>

@@ -2,10 +2,11 @@ import Router from '../../ecosystems/vue-router/Router';
 import Snackbar from '../Snackbar/Snackbar';
 import Store from './../../ecosystems/vuex/Store';
 import LoadingScreen from './../LoadingScreen/LoadingScreen';
+import InputScreen from './../InputScreen/InputScreen';
 
 export default {
   name: 'App', components: {
-    Router, Snackbar, LoadingScreen,
+    Router, Snackbar, LoadingScreen, InputScreen,
   },
   
   mounted: function() {
@@ -38,6 +39,10 @@ export default {
   
     loadingScreenData: function() {
       return Store.getters['global/loadingScreenData'];
+    },
+  
+    inputScreenData: function() {
+      return Store.getters['global/inputScreenData'];
     },
   },
 };
