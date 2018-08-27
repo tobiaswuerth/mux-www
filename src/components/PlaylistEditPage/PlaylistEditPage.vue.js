@@ -71,7 +71,44 @@ export default {
   
   methods: {
     deletePlaylist: function() {
-      console.log(this);
+      Store.dispatch('global/displayInputScreen', {
+          display: true,
+          text: 'Are you sure you want to delete this playlist?',
+          buttons: [
+            {
+              type: '',
+              text: 'No, do not delete',
+              icon: 'clear',
+              onClick: () => Store.dispatch('global/displayInputScreen',
+                {display: false}).catch(console.error),
+            },
+            {
+              type: 'accent',
+              text: 'Yes, do delete playlist',
+              icon: 'delete',
+              onClick: () => {
+                Store.dispatch('global/displayInputScreen', {display: false}).
+                  catch(console.error);
+                Store.dispatch('global/displayLoadingScreen',
+                  {display: true, text: 'Deleting playlist...'}).
+                  catch(console.error);
+                Store.dispatch('playlists/delete', {id: this.item.UniqueId}).
+                  then(() => Router.push(paths.private.playlists.root)).
+                  catch((e) => {
+                    console.error(e);
+                    Store.dispatch('global/hint',
+                      `Something went wrong. Could not delete playlist. Error: ${e}`).
+                      catch(console.error);
+                  }).
+                  finally(() => {
+                    Store.dispatch('global/displayLoadingScreen',
+                      {display: false}).
+                      catch(console.error);
+                  });
+              },
+            }],
+        }).
+        catch(console.error);
     },
     
     revoke: function(item) {
