@@ -9,7 +9,7 @@ export default {
     // data loader
     route: {},
     payload: {},
-    doPreload: {},
+    doPreload: {}, onAfter: {},
     
     // ui
     onClick: {},
@@ -19,7 +19,6 @@ export default {
     toString1: {},
     toString2: {},
     toString3: {},
-    onAfter: {},
     actionsLeft: {},
     actionsRight: {},
     
@@ -91,8 +90,10 @@ export default {
     },
     
     performAction: function(action, item, event) {
-      event.stopPropagation();
-      action.onClick.call(this, item);
+      if (isCallable(action.onClick)) {
+        event.stopPropagation();
+        action.onClick.call(this, item);
+      }
     },
   },
   
