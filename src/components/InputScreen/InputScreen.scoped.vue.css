@@ -14,11 +14,28 @@
   background-color: rgba(0, 0, 0, .35);
 }
 
+@media (min-width: 960px) {
+  .details {
+    min-width: 500px;
+  }
+}
+
+.buttons {
+  margin-top: 10px;
+}
+
+.md-scrollbar {
+  min-height: 200px;
+  max-height: 350px;
+  overflow: auto;
+  margin-top: 20px;
+}
+
 .details {
-  max-width: 360px;
+  max-width: calc(100% - 50px);
+  max-height: calc(100% - 50px);
   padding: 20px;
   width: auto;
-  max-height: 450px;
   height: auto;
   background-color: rgba(245, 245, 245, 1);
   border: 1px solid rgba(150, 150, 150, .2);

@@ -1,16 +1,38 @@
 <div>
   <template v-if="data.display">
     <div class="content">
-      <div class="details">
-        <span class="md-subheading">{{data.text}}</span> <br/><br/>
-        <template v-for="btn in data.buttons">
-          <md-button :class="getStyle(btn)" @click="btn.onClick">
-            <template v-if="btn.icon">
-              <md-icon>{{btn.icon}}</md-icon>
-            </template>
-            {{btn.text}}
-          </md-button>
+      <div class="details md-content">
+        <span class="md-subheading">{{data.text}}</span> <br/>
+
+        <template v-if="data.type === inputTypes.list">
+          <md-content class="md-scrollbar">
+            <List :route="data.config.route"
+                  :payload="data.config.payload"
+                  :doPreload="data.config.doPreload"
+                  :onClick="data.config.onClick"
+                  :hideEmptyState="data.config.hideEmptyState"
+                  :showAvatar="data.config.showAvatar"
+                  :doInsetDivider="data.config.doInsetDivider"
+                  :toString1="data.config.toString1"
+                  :toString2="data.config.toString2"
+                  :toString3="data.config.toString3"
+                  :onAfter="data.config.onAfter"
+                  :actionsLeft="data.config.actionsLeft"
+                  :actionsRight="data.config.actionsRight"></List>
+          </md-content>
         </template>
+
+        <div class="buttons">
+          <template v-for="btn in data.buttons">
+            <md-button :class="getStyle(btn)" @click="btn.onClick">
+              <template v-if="btn.icon">
+                <md-icon>{{btn.icon}}</md-icon>
+              </template>
+              {{btn.text}}
+            </md-button>
+          </template>
+        </div>
+
       </div>
     </div>
   </template>
