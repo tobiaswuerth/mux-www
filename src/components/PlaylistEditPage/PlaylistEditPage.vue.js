@@ -3,6 +3,7 @@ import {simplyLoad} from '../../scripts/DataLoaderUtils';
 import Store from '../../ecosystems/vuex/Store';
 import {clone} from './../../scripts/DataUtils';
 import Router, {paths} from './../../ecosystems/vue-router/Router';
+import {prepareRoute} from './../../ecosystems/vue-router/RouterUtils';
 
 export default {
   name: 'PlaylistEditPage',
@@ -50,7 +51,7 @@ export default {
       Store.dispatch('auth/getClaims').then((c) => {
         // exclude current user from displayed list (owner has always
         // permissions to modify playlist)
-        this.users = this.users.filter((u) => u.Username !== c.Name);
+        this.users = this.users.filter((u) => u.UniqueId !== c.ClientId);
       }).catch(console.error);
     }).catch(console.error);
     loadings.push(userLoader);
@@ -222,30 +223,19 @@ export default {
       
       // wait for all updates to be executed
       Promise.all(requests).then(() => {
-        // get fresh data from database
-        simplyLoad('playlists/byId', {id: this.id}).then(d => {
-          this.dbItem = d[0];
-          this.item = clone(this.dbItem);
-          
-          // finalize
-          Store.dispatch('global/displayLoadingScreen', {
-            display: false,
-          }).catch(console.error);
-          Store.dispatch('global/hint', 'Successfully saved playlist').
-            catch(console.error);
-          if (this.isNew) {
-            Router.push(
-              paths.private.playlists.edit.replace(':id', playlistId));
-          }
-        }).catch(console.error);
+        Store.dispatch('global/hint', 'Successfully saved playlist').
+          catch(console.error);
+        Router.push(
+          prepareRoute(paths.private.playlists.details, {id: playlistId}));
       }).catch(r => {
-        Store.dispatch('global/displayLoadingScreen', {
-          display: false,
-        }).catch(console.error);
         Store.dispatch('global/hint',
           `Something went wrong while updating the permissions. Error: ${r}`).
           catch(console.error);
         console.error(r);
+      }).finally(() => {
+        Store.dispatch('global/displayLoadingScreen', {
+          display: false,
+        }).catch(console.error);
       });
     },
   },
