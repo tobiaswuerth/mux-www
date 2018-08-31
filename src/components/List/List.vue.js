@@ -9,8 +9,7 @@ export default {
   
   props: {
     // data loader
-    data: {},
-    route: {}, payload: {}, doPreload: {}, onAfter: {},
+    data: {}, route: {}, payload: {}, doPreload: {}, onAfter: {},
     
     // ui
     onClick: {},
@@ -140,7 +139,8 @@ export default {
     },
     
     visibleActionsRight: function() {
-      return isSmallDevice()
+      return isSmallDevice() &&
+      (this.actionsRight && this.actionsRight.length > 1)
         ? [
           {
             icon: 'more_vert',
