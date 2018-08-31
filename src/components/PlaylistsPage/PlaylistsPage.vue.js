@@ -16,8 +16,12 @@ export default {
     return {
       loadRoute: 'playlists/all', playlistShowAvatar: true, listActions: [
         {
-          icon: 'play_arrow', isRaised: true,
-          isRound: true, onClick: async (i) => {
+          icon: 'play_arrow',
+          isRaised: true,
+          isRound: true,
+          type: 'primary',
+          text: 'Play',
+          onClick: async (i) => {
             Store.dispatch('global/displayOverlay', {
               type: overlayTypes.spinner,
               display: true,
@@ -25,7 +29,7 @@ export default {
             }).catch(console.error);
             simplyLoad('playlists/byId', {id: i.UniqueId}).then(async (d) => {
               let playlist = d[0];
-      
+  
               if (playlist.Entries.length > 0) {
                 await Store.dispatch('audio/pause').catch(console.error);
                 await Store.dispatch('audio/setPlaylist', []).
