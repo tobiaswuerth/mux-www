@@ -286,7 +286,8 @@ export default {
   
     // playlists
     playlists: async ({}, payload) => await performRequest(
-      routes.get.playlists.all, payload),
+      routes.get.playlists.all, payload,
+      getConfig(axios.get, true, false, true)),
     playlistById: async ({}, payload) => await performRequest(
       routes.get.playlists.byId(payload.id), payload,
       getConfig(axios.get, true, false, false)),
