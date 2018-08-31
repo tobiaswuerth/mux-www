@@ -1,6 +1,12 @@
 <md-snackbar md-position="center"
-             :md-duration="isInfinite ? Infinity : duration"
-             :md-active.sync="showSnackbar"
-             class="position">
-  <span>{{message}}</span>
+             :md-duration="isInfinite ? Infinity : duration" :md-active.sync="showSnackbar" class="snackbar">
+
+  <span class="message-wrapper md-scrollbar">{{message}}</span>
+
+  <span class="closeable">
+    <md-button @click="hide" class="md-accent md-button close-button">
+      <md-icon>clear</md-icon>
+    </md-button>
+  </span>
+
 </md-snackbar>
