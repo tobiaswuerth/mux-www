@@ -34,8 +34,8 @@ export default {
     },
     
     entryToString1: (i) => i.Name,
-    
-    entryToString3: (i) => `Created by: ${i.CreateUser}`,
+  
+    entryToString3: (i) => `Created by: ${i.CreateUser.Username}`,
     
     onEntryClick: function(item) {
       Router.push(
