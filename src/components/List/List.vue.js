@@ -8,8 +8,7 @@ export default {
   props: {
     // data loader
     route: {},
-    payload: {},
-    doPreload: {}, onAfter: {},
+    payload: {}, doPreload: {}, onAfter: {},
     
     // ui
     onClick: {},
@@ -35,6 +34,13 @@ export default {
   },
   
   methods: {
+  
+    clickItem: function(i, p) {
+      if (isCallable(this.onClick)) {
+        this.onClick(i, p);
+      }
+    },
+    
     getString1: function(item) {
       return this.getString(this.toString1, item);
     },

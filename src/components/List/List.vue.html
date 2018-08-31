@@ -2,7 +2,7 @@
   <template v-if="dataLoader">
     <md-list class="md-triple-list">
       <template v-for="item in dataLoader.dataSource.data">
-        <md-list-item class="clean-list-item" :key="Math.random()" @click="onClick(item, $route.params)">
+        <md-list-item class="clean-list-item" :key="Math.random()" @click="clickItem(item, $route.params)">
           <slot :item="item">
             <md-avatar class="md-avatar-icon" v-if="showAvatar"> {{getAvatar(item)}}</md-avatar>
 
