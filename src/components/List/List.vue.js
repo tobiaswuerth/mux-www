@@ -1,15 +1,16 @@
 import DataLoaderWrapper from '../DataLoaderWrapper/DataLoaderWrapper';
+import {types as overlayTypes} from '../Overlay/Overlay.vue';
 import DataLoader from '../../scripts/DataLoader';
-import {isCallable, isIterable} from './../../scripts/Utils';
+import {isCallable, isIterable, isSmallDevice} from './../../scripts/Utils';
+import Store from './../../ecosystems/vuex/Store';
 
 export default {
   name: 'List',
   
   props: {
     // data loader
-    route: {},
-    payload: {},
-    doPreload: {},
+    data: {},
+    route: {}, payload: {}, doPreload: {}, onAfter: {},
     
     // ui
     onClick: {},
@@ -19,7 +20,6 @@ export default {
     toString1: {},
     toString2: {},
     toString3: {},
-    onAfter: {},
     actionsLeft: {},
     actionsRight: {},
     
@@ -36,6 +36,15 @@ export default {
   },
   
   methods: {
+  
+    clickItem: function(a, i) {
+      if (isCallable(this.onClick)) {
+        this.onClick(a, i);
+      } else if (isSmallDevice()) {
+        this.displayHiddenActions(a, i);
+      }
+    },
+    
     getString1: function(item) {
       return this.getString(this.toString1, item);
     },
@@ -58,6 +67,14 @@ export default {
     },
     
     load: function() {
+      if (this.data) {
+        // no need to load, data already provided
+        this.dataLoader.reset();
+        this.dataLoader.isLoading = false;
+        this.dataLoader.dataSource.data = this.data;
+        return;
+      }
+      
       // prepare payload
       let loadPayload = this.payload
         ? isCallable(this.payload)
@@ -78,7 +95,7 @@ export default {
     },
     
     getActionStyle: function(action) {
-      let actionStyle = 'md-primary';
+      let actionStyle = action.type ? `md-${action.type}` : 'md-primary';
       
       if (action.isRound) {
         actionStyle += ' md-icon-button';
@@ -91,8 +108,47 @@ export default {
     },
     
     performAction: function(action, item, event) {
-      event.stopPropagation();
-      action.onClick.call(this, item);
+      if (isCallable(action.onClick)) {
+        event.stopPropagation();
+        action.onClick.call(this, item);
+      }
+    },
+  
+    displayHiddenActions: function(a, i) {
+      Store.dispatch('global/displayOverlay', {
+        type: overlayTypes.none,
+        display: true,
+        text: 'Actions',
+        closeable: true,
+        buttons: this.actionsRight.map((e) => {
+          // create proxy with parameter injection for click event
+          let action = e.onClick;
+          e.onClick = () => action.call(this, a, i);
+          return e;
+        }),
+      }).catch(console.error);
+    },
+  },
+  
+  computed: {
+    visibleActionsLeft: function() {
+      return isSmallDevice() ? (this.actionsLeft
+        ? this.actionsLeft
+        : []).concat((this.actionsRight
+        ? this.actionsRight.filter((i) => i.alwaysVisible)
+        : [])) : this.actionsLeft;
+    },
+    
+    visibleActionsRight: function() {
+      return isSmallDevice()
+        ? [
+          {
+            icon: 'more_vert',
+            isRaised: false,
+            isRound: true,
+            onClick: this.displayHiddenActions,
+          }]
+        : this.actionsRight;
     },
   },
   

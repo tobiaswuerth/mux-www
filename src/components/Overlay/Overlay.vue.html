@@ -1,0 +1,52 @@
+<div>
+  <template v-if="data.display">
+    <div class="content">
+      <div class="details md-content">
+        <span class="md-subheading">{{data.text}}</span> <br/> <br/>
+
+        <template v-if="data.type === types.list">
+          <md-content class="md-scrollbar">
+            <List :route="data.config.route"
+                  :payload="data.config.payload"
+                  :doPreload="data.config.doPreload"
+                  :onClick="data.config.onClick"
+                  :hideEmptyState="data.config.hideEmptyState"
+                  :showAvatar="data.config.showAvatar"
+                  :doInsetDivider="data.config.doInsetDivider"
+                  :toString1="data.config.toString1"
+                  :toString2="data.config.toString2"
+                  :toString3="data.config.toString3"
+                  :onAfter="data.config.onAfter"
+                  :actionsLeft="data.config.actionsLeft"
+                  :actionsRight="data.config.actionsRight"></List>
+          </md-content>
+        </template>
+        <template v-else-if="data.type === types.spinner">
+          <md-progress-spinner :md-diameter="40" :md-stroke="4" md-mode="indeterminate"></md-progress-spinner>
+        </template>
+
+        <div class="buttons">
+          <template v-for="btn in data.buttons">
+            <md-button :class="getStyle(btn) + ` md-raised action-button`"
+                       @click="btn.onClick(data, $event)"
+                       :key="Math.random()">
+              <template v-if="btn.icon">
+                <md-icon>{{btn.icon}}</md-icon>
+              </template>
+              {{btn.text}}
+            </md-button>
+          </template>
+        </div>
+
+        <template v-if="data.closeable">
+          <br/>
+          <md-button class="md-primary md-button" @click="close">
+            <md-icon>clear</md-icon>
+            Close
+          </md-button>
+        </template>
+
+      </div>
+    </div>
+  </template>
+</div>

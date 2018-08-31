@@ -1,0 +1,37 @@
+<div>
+  <div class="header-space">
+      <span>
+        <template v-if="!item">
+          <md-progress-spinner :md-diameter="20" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+        </template>
+        <template v-else>
+          <span class="md-title">
+            <span class="md-subheading">Playlist: </span>{{item.Name}}
+          </span>
+          <br/>
+          <span class="md-caption">Created by: <b>{{item.CreateUser.Username}}</b></span>
+        </template>
+      </span>
+
+    <span class="float-right">
+        <template v-if="isOwner">
+         <md-button :key="Math.random()" class="md-accent md-raised md-icon-button" @click="edit">
+           <md-icon>edit</md-icon>
+         </md-button>
+        </template>
+         <md-button :key="Math.random()" class="md-primary md-raised md-icon-button" @click="play">
+           <md-icon>play_arrow</md-icon>
+         </md-button>
+    </span>
+  </div>
+
+  <List :route="loadRoute"
+        :payload="payload"
+        :onAfter="onAfter"
+        :onClick="onItemClicked"
+        :showAvatar="playlistShowAvatar"
+        :actionsRight="listActions"
+        :toString1="entryToString1"
+        :toString2="entryToString2"
+        :toString3="entryToString3"></List>
+</div>

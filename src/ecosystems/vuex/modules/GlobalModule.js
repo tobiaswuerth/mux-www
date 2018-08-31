@@ -2,15 +2,16 @@ export default {
   namespaced: true,
   
   state: {
-    hints: [],
+    hints: [], overlayData: {},
   },
   
   getters: {
-    hints: s => s.hints,
+    hints: s => s.hints, overlayData: s => s.overlayData,
   },
   
   mutations: {
     hints: (s, payload) => s.hints = payload,
+    overlayData: (s, payload) => s.overlayData = payload,
   },
   
   actions: {
@@ -18,6 +19,10 @@ export default {
       commit('hints', {
         message: payload.message || payload,
       });
+    },
+  
+    async displayOverlay({dispatch, getters, commit}, payload) {
+      commit('overlayData', payload);
     },
   },
 };

@@ -9,10 +9,16 @@ export default {
     data: {},
   },
   
+  methods: {
+    hide: function() {
+      this.showSnackbar = false;
+    },
+  },
+  
   watch: {
     data: function(v) {
       this.message = v.message || '';
-      this.duration = v.duration || 1500;
+      this.duration = v.duration || 3500;
       this.isInfinite = v.isInfinite || false;
       this.showSnackbar = true;
     },

@@ -9,18 +9,8 @@ export default {
   }),
   
   mounted: function() {
-    Store.dispatch('auth/getToken').then((token) => {
-      if (!token) {
-        return false;
-      }
-      let parts = token.split('.');
-      if (parts.length < 3) {
-        return false;
-      }
-      let sJsonClaims = atob(parts[1]);
-      let claims = JSON.parse(sJsonClaims);
-      
-      this.canInvite = claims.CanInvite;
-    }).catch(console.error);
+    Store.dispatch('auth/getClaims').
+      then(c => this.canInvite = c.CanInvite).
+      catch(console.error);
   },
 };

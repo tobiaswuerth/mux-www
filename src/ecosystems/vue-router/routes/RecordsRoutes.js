@@ -97,26 +97,38 @@ export default [
           route: 'records/tracksById',
           doPreload: true,
           payload: async (p) => p,
-          onClick: () => {},
           toString1: (i) => i.Track.Path,
           toString2: (i) => secondsToReadableString(i.Track.Duration),
           toString3: (i) => `Match: ${i.Score}`,
-          actionsLeft: [
+          actionsRight: [
+            {
+              icon: 'playlist_add',
+              type: '',
+              text: 'Add to a playlist',
+              onClick: (i) => Store.dispatch('audio/addToPlaylist',
+                {trackId: i.Track.UniqueId, title: i.Track.Path}).
+                catch(console.error),
+              isRaised: false,
+              isRound: true,
+            },
+            {
+              icon: 'playlist_play',
+              type: '',
+              text: 'Add to currently playing list',
+              onClick: (i) => Store.dispatch('audio/addToCurrentPlaylist', {track: i.Track}).
+                catch(console.error),
+              isRaised: false,
+              isRound: true,
+            },
             {
               icon: 'play_arrow',
+              type: 'primary',
+              text: 'Play track',
               onClick: (i) => Store.dispatch('audio/play', {track: i.Track}).
                 catch(console.error),
               isRaised: true,
               isRound: true,
-            }],
-          actionsRight: [
-            {
-              icon: 'playlist_add',
-              onClick: (i) => Store.dispatch('audio/addToPlaylist',
-                {track: i.Track}).
-                catch(console.error),
-              isRaised: false,
-              isRound: false,
+              alwaysVisible: true,
             }],
         },
       },

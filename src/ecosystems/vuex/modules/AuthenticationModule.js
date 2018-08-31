@@ -27,6 +27,22 @@ export default {
     isAuthenticated: async function({dispatch}) {
       return !!await dispatch('getToken').catch(console.error);
     },
+  
+    getClaims: async function({dispatch}) {
+      let token = await dispatch('getToken').catch(console.error);
+    
+      if (!token) {
+        return {};
+      }
+    
+      let parts = token.split('.');
+      if (parts.length < 3) {
+        return {};
+      }
+    
+      let sJsonClaims = atob(parts[1]);
+      return JSON.parse(sJsonClaims);
+    },
     
     updateAuthentication: function({}, token) {
       if (token) {
@@ -42,7 +58,9 @@ export default {
 
 setInterval(async () => {
   if (await Store.dispatch('auth/isAuthenticated').catch(console.error)) {
-    // refresh login
-    await Store.dispatch('repo/loginRefresh').catch(console.error);
+    await Store.dispatch('repo/loginRefresh').then((d) => {
+      Store.dispatch('auth/updateAuthentication', d.data.token).
+        catch(console.error);
+    }).catch(console.error);
   }
-}, 1000 * 60 * 60);
+}, 1000 * 60 * 10);

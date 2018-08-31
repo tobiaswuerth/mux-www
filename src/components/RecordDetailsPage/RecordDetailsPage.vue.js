@@ -116,10 +116,16 @@ export default Vue.extend({
       Store.dispatch('audio/play',
         {track: this.track, title: this.record.Title}).catch(console.error);
     },
+  
+    addToCurrentPlaylist: function() {
+      Store.dispatch('audio/addToCurrentPlaylist',
+        {track: this.track, title: this.record.Title}).
+        catch(console.error);
+    },
     
     addToPlaylist: function() {
       Store.dispatch('audio/addToPlaylist',
-        {track: this.track, title: this.record.Title}).
+        {trackId: this.track.UniqueId, title: this.record.Title}).
         catch(console.error);
     },
     

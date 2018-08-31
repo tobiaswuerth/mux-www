@@ -1,10 +1,11 @@
 import Router from '../../ecosystems/vue-router/Router';
-import Snackbar from '../Snackbar/Snackbar.vue';
+import Snackbar from '../Snackbar/Snackbar';
 import Store from './../../ecosystems/vuex/Store';
+import Overlay from './../Overlay/Overlay';
 
 export default {
   name: 'App', components: {
-    Router, Snackbar,
+    Router, Snackbar, Overlay,
   },
   
   mounted: function() {
@@ -33,6 +34,10 @@ export default {
   computed: {
     dataSnackbar: function() {
       return Store.getters['global/hints'];
+    },
+  
+    overlayData: function() {
+      return Store.getters['global/overlayData'];
     },
   },
 };

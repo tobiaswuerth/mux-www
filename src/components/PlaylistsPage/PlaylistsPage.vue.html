@@ -1,0 +1,18 @@
+<div>
+  <div class="header-space">
+    <span class="md-title">Playlists</span>
+
+    <span class="float-right">
+       <md-button :key="Math.random()" class="md-accent md-raised md-icon-button" @click="add">
+         <md-icon>add</md-icon>
+       </md-button>
+    </span>
+  </div>
+
+  <List :route="loadRoute"
+        :onClick="onEntryClick"
+        :showAvatar="playlistShowAvatar"
+        :actionsRight="listActions"
+        :toString1="entryToString1"
+        :toString3="entryToString3"></List>
+</div>

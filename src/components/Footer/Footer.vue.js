@@ -23,7 +23,7 @@ export default {
   
   computed: {
     routePlaylist: function() {
-      return paths.private.playlist;
+      return paths.private.playlists.current;
     },
     
     isLoading: function() {

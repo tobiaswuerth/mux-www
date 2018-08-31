@@ -2,11 +2,11 @@
   <template v-if="dataLoader">
     <md-list class="md-triple-list">
       <template v-for="item in dataLoader.dataSource.data">
-        <md-list-item class="clean-list-item" :key="Math.random()" @click="onClick(item, $route.params)">
+        <md-list-item class="clean-list-item" :key="Math.random()" @click="clickItem(item, $route.params)">
           <slot :item="item">
             <md-avatar class="md-avatar-icon" v-if="showAvatar"> {{getAvatar(item)}}</md-avatar>
 
-            <template v-for="action in actionsLeft">
+            <template v-for="action in visibleActionsLeft">
               <md-button :class="getActionStyle(action)" @click="performAction(action, item, $event)">
                 <md-icon>{{action.icon}}</md-icon>
               </md-button>
@@ -23,8 +23,8 @@
               </md-button>
             </template>
             <template v-else>
-              <template v-for="action in actionsRight">
-                <md-button :class="getActionStyle(action) + ` md-list-action`" @click="performAction(action, item, $event)">
+              <template v-for="action in visibleActionsRight">
+                <md-button :class="getActionStyle(action) + ``" @click="performAction(action, item, $event)">
                   <md-icon>{{action.icon}}</md-icon>
                 </md-button>
               </template>

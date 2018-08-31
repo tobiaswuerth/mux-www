@@ -10,6 +10,8 @@ import TracksModule from './modules/TracksModule';
 import GlobalModule from './modules/GlobalModule';
 import AudioModule from './modules/AudioModule';
 import InvitesModule from './modules/InvitesModule';
+import PlaylistsModule from './modules/PlaylistsModule';
+import UsersModule from './modules/UserModule';
 
 Vue.use(Vuex);
 
@@ -24,6 +26,8 @@ const store = new Vuex.Store({
     global: GlobalModule,
     audio: AudioModule,
     invites: InvitesModule,
+    playlists: PlaylistsModule,
+    users: UsersModule,
   },
 });
 

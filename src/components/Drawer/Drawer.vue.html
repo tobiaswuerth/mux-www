@@ -23,6 +23,11 @@
     <span class="md-list-item-text">Tracks</span>
   </md-list-item>
 
+  <md-list-item :to="routes.private.playlists.root">
+    <md-icon>playlist_play</md-icon>
+    <span class="md-list-item-text">Playlists</span>
+  </md-list-item>
+
   <template v-if="canInvite">
     <md-toolbar class="md-transparent" md-elevation="0">
       Other
