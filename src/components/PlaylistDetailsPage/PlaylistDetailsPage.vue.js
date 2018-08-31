@@ -72,85 +72,90 @@ export default {
     },
   
     onItemClicked: function(i) {
+      let buttons = [
+        {
+          type: 'primary',
+          text: 'Play now',
+          icon: 'play_arrow',
+          onClick: () => Store.dispatch('audio/play',
+            {title: i.Title, track: i.Track}).catch(console.error),
+        },
+        {
+          type: '',
+          text: 'Add to currently playing list',
+          icon: 'playlist_play',
+          onClick: () => Store.dispatch('audio/addToCurrentPlaylist',
+            {title: i.Title, track: i.Track}).catch(console.error),
+        },
+        {
+          type: '',
+          text: 'Add to a playlist',
+          icon: 'playlist_add',
+          onClick: () => Store.dispatch('audio/addToPlaylist',
+            {title: i.Title, trackId: i.Track.UniqueId}).catch(console.error),
+        }];
+    
+      if (this.isOwner) {
+        buttons.push({
+          type: 'accent',
+          text: 'Remove from playlist',
+          icon: 'delete',
+          onClick: () => {
+            let playlistId = this.id;
+            let entryId = i.UniqueId;
+            let self = this;
+          
+            Store.dispatch('global/displayOverlay', {
+              type: overlayTypes.none,
+              display: true,
+              text: `Are you sure you want to remove '${i.Title}' from this playlist?`,
+              buttons: [
+                {
+                  type: '',
+                  text: 'No, do not delete',
+                  icon: 'clear',
+                  onClick: () => Store.dispatch('global/displayOverlay',
+                    {display: false}).catch(console.error),
+                },
+                {
+                  type: 'accent',
+                  text: 'Yes, do delete playlist',
+                  icon: 'delete',
+                  onClick: async () => {
+                    await Store.dispatch('global/displayOverlay', {
+                      type: overlayTypes.spinner,
+                      display: true,
+                      text: 'Removing track from playlist...',
+                    }).catch(console.error);
+                    await Store.dispatch('playlists/deleteEntry',
+                      {playlistId: playlistId, entryId: entryId}).then(() => {
+                        let filtered = self.item.Entries.filter(
+                          (i) => i.UniqueId !== entryId);
+                        self.item.Entries.length = 0;
+                        filtered.forEach((e) => self.item.Entries.push(e));
+                      }).
+                      catch((r) => {
+                        console.error(r);
+                        Store.dispatch('global/hint',
+                          `Something went wrong: ${r}`).
+                          catch(console.error);
+                      });
+                  
+                    Store.dispatch('global/displayOverlay', {display: false}).
+                      catch(console.error);
+                  },
+                },],
+            }).catch(console.error);
+          },
+        });
+      }
+    
       Store.dispatch('global/displayOverlay', {
         type: overlayTypes.none,
         display: true,
         text: 'Actions',
         closeable: true,
-        buttons: [
-          {
-            type: 'primary',
-            text: 'Play now',
-            icon: 'play_arrow',
-            onClick: () => Store.dispatch('audio/play',
-              {title: i.Title, track: i.Track}).catch(console.error),
-          },
-          {
-            type: '',
-            text: 'Add to currently playing list',
-            icon: 'playlist_play',
-            onClick: () => Store.dispatch('audio/addToCurrentPlaylist',
-              {title: i.Title, track: i.Track}).catch(console.error),
-          },
-          {
-            type: '',
-            text: 'Add to a playlist',
-            icon: 'playlist_add',
-            onClick: () => Store.dispatch('audio/addToPlaylist',
-              {title: i.Title, trackId: i.Track.UniqueId}).catch(console.error),
-          },
-          {
-            type: 'accent',
-            text: 'Remove from playlist',
-            icon: 'delete',
-            onClick: () => {
-              let playlistId = this.id;
-              let entryId = i.UniqueId;
-              let self = this;
-            
-              Store.dispatch('global/displayOverlay', {
-                type: overlayTypes.none,
-                display: true,
-                text: `Are you sure you want to remove '${i.Title}' from this playlist?`,
-                buttons: [
-                  {
-                    type: '',
-                    text: 'No, do not delete',
-                    icon: 'clear',
-                    onClick: () => Store.dispatch('global/displayOverlay',
-                      {display: false}).catch(console.error),
-                  },
-                  {
-                    type: 'accent',
-                    text: 'Yes, do delete playlist',
-                    icon: 'delete',
-                    onClick: async () => {
-                      await Store.dispatch('global/displayOverlay', {
-                        type: overlayTypes.spinner,
-                        display: true,
-                        text: 'Removing track from playlist...',
-                      }).catch(console.error);
-                      await Store.dispatch('playlists/deleteEntry',
-                        {playlistId: playlistId, entryId: entryId}).then(() => {
-                          let filtered = self.item.Entries.filter(
-                            (i) => i.UniqueId !== entryId);
-                          self.item.Entries.length = 0;
-                          filtered.forEach((e) => self.item.Entries.push(e));
-                        }).
-                        catch((r) => {
-                          console.error(r);
-                          Store.dispatch('global/hint',
-                            `Something went wrong: ${r}`).
-                            catch(console.error);
-                        });
-                    
-                      Store.dispatch('global/displayOverlay', {display: false}).
-                        catch(console.error);
-                    },
-                  },],
-              }).catch(console.error);
-            },
-          }],
+        buttons: buttons,
       }).catch(console.error);
     },
   },
