@@ -22,6 +22,14 @@
 
 .buttons {
   margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.action-button {
+  flex-grow: 1;
+  margin-right: 0;
+  margin-left: 0;
 }
 
 .md-scrollbar {

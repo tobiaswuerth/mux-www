@@ -1,12 +1,11 @@
 import Router from '../../ecosystems/vue-router/Router';
 import Snackbar from '../Snackbar/Snackbar';
 import Store from './../../ecosystems/vuex/Store';
-import LoadingScreen from './../LoadingScreen/LoadingScreen';
-import InputScreen from './../InputScreen/InputScreen';
+import Overlay from './../Overlay/Overlay';
 
 export default {
   name: 'App', components: {
-    Router, Snackbar, LoadingScreen, InputScreen,
+    Router, Snackbar, Overlay,
   },
   
   mounted: function() {
@@ -37,12 +36,8 @@ export default {
       return Store.getters['global/hints'];
     },
   
-    loadingScreenData: function() {
-      return Store.getters['global/loadingScreenData'];
-    },
-  
-    inputScreenData: function() {
-      return Store.getters['global/inputScreenData'];
+    overlayData: function() {
+      return Store.getters['global/overlayData'];
     },
   },
 };

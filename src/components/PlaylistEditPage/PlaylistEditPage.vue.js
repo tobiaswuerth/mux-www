@@ -1,4 +1,6 @@
 import List from '../List/List';
+import {types as overlayTypes} from '../Overlay/Overlay.vue';
+import {types} from '../Overlay/Overlay.vue.js';
 import {simplyLoad} from '../../scripts/DataLoaderUtils';
 import Store from '../../ecosystems/vuex/Store';
 import {clone} from './../../scripts/DataUtils';
@@ -72,7 +74,8 @@ export default {
   
   methods: {
     deletePlaylist: function() {
-      Store.dispatch('global/displayInputScreen', {
+      Store.dispatch('global/displayOverlay', {
+          type: types.none,
           display: true,
           text: 'Are you sure you want to delete this playlist?',
           buttons: [
@@ -80,7 +83,7 @@ export default {
               type: '',
               text: 'No, do not delete',
               icon: 'clear',
-              onClick: () => Store.dispatch('global/displayInputScreen',
+              onClick: () => Store.dispatch('global/displayOverlay',
                 {display: false}).catch(console.error),
             },
             {
@@ -88,10 +91,13 @@ export default {
               text: 'Yes, do delete playlist',
               icon: 'delete',
               onClick: () => {
-                Store.dispatch('global/displayInputScreen', {display: false}).
+                Store.dispatch('global/displayOverlay', {display: false}).
                   catch(console.error);
-                Store.dispatch('global/displayLoadingScreen',
-                  {display: true, text: 'Deleting playlist...'}).
+                Store.dispatch('global/displayOverlay', {
+                    display: true,
+                    type: overlayTypes.spinner,
+                    text: 'Deleting playlist...',
+                  }).
                   catch(console.error);
                 Store.dispatch('playlists/delete', {id: this.item.UniqueId}).
                   then(() => Router.push(paths.private.playlists.root)).
@@ -102,8 +108,7 @@ export default {
                       catch(console.error);
                   }).
                   finally(() => {
-                    Store.dispatch('global/displayLoadingScreen',
-                      {display: false}).
+                    Store.dispatch('global/displayOverlay', {display: false}).
                       catch(console.error);
                   });
               },
@@ -116,7 +121,8 @@ export default {
       let user = item.User;
       let userId = user.UniqueId;
   
-      Store.dispatch('global/displayInputScreen', {
+      Store.dispatch('global/displayOverlay', {
+          type: types.none,
           display: true,
           text: `Are you sure you want to revoke the permissions for the user '${user.Username}'`,
           buttons: [
@@ -124,7 +130,7 @@ export default {
               type: '',
               text: 'No, do not revoke',
               icon: 'clear',
-              onClick: () => Store.dispatch('global/displayInputScreen',
+              onClick: () => Store.dispatch('global/displayOverlay',
                 {display: false}).catch(console.error),
             },
             {
@@ -136,7 +142,7 @@ export default {
                   p => p.User.UniqueId !== userId);
                 this.users.push(user);
                 this.modifies = this.modifies.filter(p => p !== userId);
-                Store.dispatch('global/displayInputScreen', {display: false}).
+                Store.dispatch('global/displayOverlay', {display: false}).
                   catch(console.error);
               },
             }],
@@ -168,8 +174,8 @@ export default {
       }
       
       // update playlist
-      Store.dispatch('global/displayLoadingScreen', {
-        display: true, text: 'Saving playlist...',
+      Store.dispatch('global/displayOverlay', {
+        display: true, types: overlayTypes.spinner, text: 'Saving playlist...',
       }).catch(console.error);
       
       if (this.isNew) {
@@ -183,7 +189,8 @@ export default {
       }
       
       // update permissions
-      Store.dispatch('global/displayLoadingScreen', {
+      Store.dispatch('global/displayOverlay', {
+        display: true, type: overlayTypes.spinner,
         text: 'Saving permissions...',
       }).catch(console.error);
       
@@ -233,7 +240,7 @@ export default {
           catch(console.error);
         console.error(r);
       }).finally(() => {
-        Store.dispatch('global/displayLoadingScreen', {
+        Store.dispatch('global/displayOverlay', {
           display: false,
         }).catch(console.error);
       });

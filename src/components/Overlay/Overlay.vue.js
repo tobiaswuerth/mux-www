@@ -1,12 +1,12 @@
 import List from './../List/List';
 
 let i = 0;
-export const inputTypes = {
-  buttonChoice: 1 << i++, list: 1 << i++,
+export const types = {
+  none: 1 << i++, list: 1 << i++, spinner: 1 << i++,
 };
 
 export default {
-  name: 'InputScreen',
+  name: 'Overlay',
   
   components: {
     List,
@@ -18,13 +18,17 @@ export default {
   
   data: () => {
     return {
-      inputTypes,
+      types,
     };
   },
   
   methods: {
     getStyle: function(btn) {
-      return btn.type ? `md-raised md-${btn.type}` : 'md-raised';
+      return btn.type ? `md-${btn.type}` : '';
+    },
+  
+    close: function() {
+      this.data.display = false;
     },
   },
 };

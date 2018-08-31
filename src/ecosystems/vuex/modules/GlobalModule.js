@@ -2,19 +2,16 @@ export default {
   namespaced: true,
   
   state: {
-    hints: [], loadingScreenData: {}, inputScreenData: {},
+    hints: [], overlayData: {},
   },
   
   getters: {
-    hints: s => s.hints,
-    loadingScreenData: s => s.loadingScreenData,
-    inputScreenData: s => s.inputScreenData,
+    hints: s => s.hints, overlayData: s => s.overlayData,
   },
   
   mutations: {
     hints: (s, payload) => s.hints = payload,
-    loadingScreenData: (s, payload) => s.loadingScreenData = payload,
-    inputScreenData: (s, payload) => s.inputScreenData = payload,
+    overlayData: (s, payload) => s.overlayData = payload,
   },
   
   actions: {
@@ -24,12 +21,8 @@ export default {
       });
     },
   
-    async displayLoadingScreen({getters, commit}, payload) {
-      commit('loadingScreenData', payload);
-    },
-  
-    async displayInputScreen({getters, commit}, payload) {
-      commit('inputScreenData', payload);
+    async displayOverlay({dispatch, getters, commit}, payload) {
+      commit('overlayData', payload);
     },
   },
 };
