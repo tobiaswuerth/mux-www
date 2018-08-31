@@ -1,7 +1,10 @@
-import {clone} from '../../../scripts/DataUtils';
 import {apiBase, routes} from './RepositoryModule';
 import Store from './../Store';
-import {getCurrentPlaylistEntryTimeMs} from './../../../scripts/DataUtils';
+import {
+  clone, getCurrentPlaylistEntryTimeMs,
+} from './../../../scripts/DataUtils';
+import {isIterable} from './../../../scripts/Utils';
+import {types as overlayTypes} from '../../../components/Overlay/Overlay.vue';
 
 let i = 0;
 export const states = {
@@ -54,15 +57,16 @@ let continueSource = async function(entry, getters, dispatch) {
 
 let createEntry = async function(getters, dispatch, payload) {
   if (!payload.track) {
-    return null;
+    return Promise.reject('undefined track');
   }
+  
   let entry = clone(emptyPlaylistEntry);
   entry.track = payload.track;
   let context = await dispatch('getContext').catch(console.error);
   entry.source = context.createBufferSource();
   entry.key = Math.random();
   entry.title = payload.title || entry.track.Path;
-  return entry;
+  return Promise.resolve(entry);
 };
 
 async function loadSource(entry, getters, dispatch) {
@@ -181,7 +185,7 @@ export default {
       // create new
       let playlist = getters.playlist;
       if (payload && payload.track) {
-        await dispatch('addToPlaylist', payload).catch(console.error);
+        await dispatch('addToCurrentPlaylist', payload).catch(console.error);
         await dispatch('setPlaylistIndex', playlist.length - 1).
           catch(console.error);
         return Promise.resolve();
@@ -190,8 +194,8 @@ export default {
       if (!entry) {
         return Promise.resolve();
       }
-      
-      // load & continue
+  
+      // load & continued
       if (entry.audioState === states.defined) {
         loadSource(entry, getters, dispatch).catch(console.error);
       } else if (entry.audioState === states.ready) {
@@ -247,29 +251,113 @@ export default {
       commit('playlistIndex', payload);
       await dispatch('play').catch(console.error);
     },
-    
-    addToPlaylist: async function({getters, dispatch}, payload) {
+  
+    addToCurrentPlaylist: async function({getters, dispatch}, payload) {
       // validate
-      if (!payload.track) {
+      if ((isIterable(payload) && payload.length === 0) ||
+        (!isIterable(payload) && !payload.track)) {
         return Promise.reject('undefined track');
       }
+    
+      Store.dispatch('global/displayOverlay', {
+        type: overlayTypes.spinner,
+        display: true,
+        text: 'Adding to currently playing list...',
+      }).catch(console.error);
       
       // create
-      let entry = await createEntry(getters, dispatch, payload).
-        catch(console.error);
-      if (!entry) {
-        return Promise.reject('creation failed');
+      let entries = isIterable(payload) ? payload : [payload];
+      let loaders = [];
+      let failed = [];
+      let created = [];
+      entries.forEach((e) => {
+        let loader = createEntry(getters, dispatch, e).then((e) => {
+          created.push(e);
+        }).catch((r) => {
+          failed.push(e);
+          console.error(r);
+        });
+      
+        loaders.push(loader);
+      });
+    
+      await Promise.all(loaders);
+    
+      Store.dispatch('global/displayOverlay', {
+        display: false,
+      }).catch(console.error);
+    
+      if (failed.length > 0) {
+        let titles = failed.map((e) => `'${e.title}'`);
+        let message = `Adding the following tracks failed: ${titles.join(
+          ', ')}`;
+      
+        Store.dispatch('global/hint', {message: message}).catch(console.error);
+        return Promise.reject(message);
       }
-      Store.dispatch('global/hint',
-        {message: `Added '${entry.title}' to playlist`}).catch(console.error);
+    
+      let titles = created.map((e) => `'${e.title}'`);
+      let message = `Successfully added the following tracks: ${titles.join(
+        ', ')}`;
+      Store.dispatch('global/hint', {message: message}).catch(console.error);
       
       // finalize
       let playlist = getters.playlist;
-      playlist.push(entry);
-      if (getters.playlistIndex >= playlist.length - 2) {
+      created.forEach((e) => playlist.push(e));
+      if (created.length > 0 && getters.playlistIndex >= playlist.length - 2) {
         // is next -> preload
-        loadSource(entry, getters, dispatch).catch(console.error);
+        loadSource(created[0], getters, dispatch).catch(console.error);
       }
+    },
+  
+    addToPlaylist: async function({getters, dispatch}, payload) {
+      Store.dispatch('global/displayOverlay', {
+        display: true,
+        type: overlayTypes.list,
+        text: 'Select the playlist to add to',
+        closeable: true,
+        config: {
+          route: 'playlists/all',
+          onAfter: (d) => d.dataSource.data = d.dataSource.data.filter(
+            (i) => i.CanModify),
+          onClick: (i) => {
+            Store.dispatch('global/displayOverlay', {
+                display: true,
+                type: overlayTypes.spinner,
+                text: 'Adding to playlist...',
+              }).
+              catch(console.error);
+          
+            let entries = isIterable(payload) ? payload : [payload];
+            let loaders = [];
+          
+            entries.forEach((e) => {
+              let loader = Store.dispatch('playlists/createEntry',
+                Object.assign(e, {id: i.UniqueId})).catch(console.error);
+              loaders.push(loader);
+            });
+          
+            Promise.all(loaders).then(() => {
+              Store.dispatch('global/hint', 'Successfully added to playlist').
+                catch(console.error);
+            }).catch((r) => {
+              console.error(r);
+              Store.dispatch('global/hint', `Something went wrong: ${r}`).
+                catch(console.error);
+            }).finally(() => {
+              Store.dispatch('global/displayOverlay', {display: false}).
+                catch(console.error);
+            });
+          },
+          showAvatar: true,
+          toString1: (i) => i.Name,
+          toString3: (i) => `Created by: ${i.CreateUser.Username}`,
+          actionsRight: [
+            {
+              icon: 'playlist_add_check', isRaised: false, isRound: true,
+            }],
+        },
+      }).catch(console.error);
     },
     
     next: async function({dispatch, getters}) {

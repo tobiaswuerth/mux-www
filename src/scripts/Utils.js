@@ -108,3 +108,8 @@ export const matchScale = [
     text: 'excellent',
     color: '#00ff00',
   }];
+
+export const isSmallDevice = function() {
+  let body = document.getElementsByTagName('body')[0];
+  return body.clientWidth <= 768;
+};

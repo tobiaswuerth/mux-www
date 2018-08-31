@@ -57,5 +57,10 @@ export default {
 };
 
 setInterval(async () => {
-  await Store.dispatch('repo/loginRefresh').catch(console.error);
+  if (await Store.dispatch('auth/isAuthenticated').catch(console.error)) {
+    await Store.dispatch('repo/loginRefresh').then((d) => {
+      Store.dispatch('auth/updateAuthentication', d.data.token).
+        catch(console.error);
+    }).catch(console.error);
+  }
 }, 1000 * 60 * 10);

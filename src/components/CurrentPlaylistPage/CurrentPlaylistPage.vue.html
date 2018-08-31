@@ -1,60 +1,8 @@
 <div>
   <div class="header-space">
-    <span class="md-title">Playlist - {todo}</span>
-
-    <span class="float-right">
-      <template v-if="isEditMode">
-        <md-button :key="Math.random()" class="md-raised md-icon-button" @click="selectAll">
-          <md-icon>select_all</md-icon>
-        </md-button>
-        <md-button :key="Math.random()" class="md-raised md-icon-button" @click="deleteSelected">
-          <md-icon>delete</md-icon>
-        </md-button>
-        <md-button :key="Math.random()" class="md-primary md-raised md-icon-button" @click="stopEditMode">
-          <md-icon>done</md-icon>
-        </md-button>
-      </template>
-      <template v-else>
-        <md-button :key="Math.random()" class="md-primary md-raised md-icon-button" @click="startEditMode">
-          <md-icon>mode_edit</md-icon>
-        </md-button>
-      </template>
-    </span>
+    <span class="md-title">Currently playing list</span>
   </div>
 
-  <md-list id="list">
-    <template v-for="i,k in items">
-      <md-list-item class="playlist-item">
-        <template v-if="isEditMode">
-          <md-checkbox class="checkbox" v-model="selectedItems" :value="k"></md-checkbox>
-        </template>
-        <template v-else>
-          <md-button class="play-button md-primary md-raised md-icon-button" @click="play(k, $event)">
-            <md-icon>play_arrow</md-icon>
-          </md-button>
-        </template>
+  <List :data="items" :toString1="toString1" :toString3="toString3" :actionsRight="actionsRight"></List>
 
-        <div class="md-list-item-text">
-          <span>{{i.title}}</span> <span class="">{{readableTime(i.track.Duration)}}</span>
-        </div>
-
-        <div class="md-list-action">
-          <template v-if="isEditMode">
-            <md-button class="md-icon-button" @click="removeItem(k, $event)">
-              <md-icon>delete</md-icon>
-            </md-button>
-          </template>
-          <template v-else>
-            <md-icon class="md-list-action draggable">reorder</md-icon>
-          </template>
-        </div>
-
-      </md-list-item>
-    </template>
-  </md-list>
-  <template v-if="items.length === 0">
-    <md-empty-state md-icon="playlist_play"
-                    md-label="Nothing to display"
-                    md-description="Your selected playlist is empty"></md-empty-state>
-  </template>
 </div>
