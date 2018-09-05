@@ -2,7 +2,17 @@
   <template v-if="data.display">
     <div class="content">
       <div class="details md-content">
-        <span class="md-subheading">{{data.text}}</span> <br/> <br/>
+        <template v-if="data.image">
+          <img :src="data.image" alt="overlay-image"/><br/><br/>
+        </template>
+
+        <template v-if="data.text">
+          <span class="md-subheading">{{data.text}}</span> <br/>
+        </template>
+        <template v-if="data.caption">
+          <span class="md-body-1">{{data.caption}}</span> <br/>
+        </template>
+        <br/>
 
         <template v-if="data.type === types.list">
           <md-content class="md-scrollbar">

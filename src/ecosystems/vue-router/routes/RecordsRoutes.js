@@ -115,7 +115,8 @@ export default [
               icon: 'playlist_play',
               type: '',
               text: 'Add to currently playing list',
-              onClick: (i) => Store.dispatch('audio/addToCurrentPlaylist', {track: i.Track}).
+              onClick: (i) => Store.dispatch('audio/addToCurrentPlaylist',
+                {track: i.Track}).
                 catch(console.error),
               isRaised: false,
               isRound: true,

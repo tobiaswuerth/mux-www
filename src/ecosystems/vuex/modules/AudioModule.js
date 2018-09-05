@@ -277,7 +277,7 @@ export default {
           failed.push(e);
           console.error(r);
         });
-      
+  
         loaders.push(loader);
       });
     
@@ -327,16 +327,16 @@ export default {
                 text: 'Adding to playlist...',
               }).
               catch(console.error);
-          
+  
             let entries = isIterable(payload) ? payload : [payload];
             let loaders = [];
-          
+  
             entries.forEach((e) => {
               let loader = Store.dispatch('playlists/createEntry',
                 Object.assign(e, {id: i.UniqueId})).catch(console.error);
               loaders.push(loader);
             });
-          
+  
             Promise.all(loaders).then(() => {
               Store.dispatch('global/hint', 'Successfully added to playlist').
                 catch(console.error);
