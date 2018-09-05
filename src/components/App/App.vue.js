@@ -33,7 +33,7 @@ export default {
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       let installPromptEvent = e;
-    
+  
       Store.dispatch('global/displayOverlay', {
         type: overlayTypes.none,
         display: true,
