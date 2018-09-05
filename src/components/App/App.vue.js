@@ -1,7 +1,7 @@
 import Router from '../../ecosystems/vue-router/Router';
 import Snackbar from '../Snackbar/Snackbar';
 import Store from './../../ecosystems/vuex/Store';
-import Overlay from './../Overlay/Overlay';
+import Overlay, {types as overlayTypes} from './../Overlay/Overlay.vue';
 
 export default {
   name: 'App', components: {
@@ -9,22 +9,24 @@ export default {
   },
   
   mounted: function() {
-    window.onerror = function(msg, url, lineNo, columnNo, error) {
-      let string = (msg || '').toLowerCase();
-      let substring = 'script error';
-      if (string.indexOf(substring) > -1) {
-        Store.dispatch('global/hint',
-          'Script Error: See Browser Console for Detail').catch(console.error);
-        return false;
-      }
+    window.addEventListener('error', function(e) {
+      let empty = 'N/A';
+      let message = (e.message || empty);
+      let file = (e.filename || empty);
+      let lineno = (e.lineno || empty);
+      let colno = (e.colno || empty);
+      let error = (e.error || {});
+    
+      let result = `An unhandled error occurred. Please provide the following
+      information to your system administrator. Message: '${message}', @${file}[${lineno}#${colno}], Details: ${JSON.stringify(
+        error)}`;
+    
+      Store.dispatch('global/displayOverlay', {
+        type: overlayTypes.none, display: true, text: result, closeable: true,
+      }).catch(console.error);
       
-      let message = [
-        'Message: ' + msg, 'URL: ' + url, 'Line: ' + lineNo,
-        'Column: ' + columnNo, 'Error object: ' + JSON.stringify(error)].join(
-        ' - ');
-      Store.dispatch('global/hint', message).catch(console.error);
       return false;
-    };
+    });
   },
   
   computed: {
