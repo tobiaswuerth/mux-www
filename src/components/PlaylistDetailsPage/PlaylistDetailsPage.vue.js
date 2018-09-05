@@ -104,7 +104,7 @@ export default {
             let playlistId = this.id;
             let entryId = i.UniqueId;
             let self = this;
-          
+  
             Store.dispatch('global/displayOverlay', {
               type: overlayTypes.none,
               display: true,
@@ -140,7 +140,7 @@ export default {
                           `Something went wrong: ${r}`).
                           catch(console.error);
                       });
-                  
+  
                     Store.dispatch('global/displayOverlay', {display: false}).
                       catch(console.error);
                   },

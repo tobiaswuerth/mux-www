@@ -6,7 +6,7 @@
   "lang": "en-US",
   "start_url": "/",
   "orientation": "any",
-  "prefer_related_applications": "false",
+  "prefer_related_applications": false,
   "related_applications": [],
   "scope": "/",
   "theme_color": "#1f1f1f",

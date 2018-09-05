@@ -12,7 +12,8 @@ export default [
     path: paths.root, component: clone(List), props: {
       route: 'tracks/all',
       toString1: (i) => i.Path,
-      toString2: (i) => secondsToReadableString(i.Duration), actionsRight: [
+      toString2: (i) => secondsToReadableString(i.Duration),
+      actionsRight: [
         {
           icon: 'playlist_add',
           type: '',
@@ -47,8 +48,10 @@ export default [
   }, {
     path: paths.search, component: clone(List), props: {
       route: 'tracks/likeName',
-      payload: async (p) => p, toString1: (i) => i.Path,
-      toString2: (i) => secondsToReadableString(i.Duration), actionsRight: [
+      payload: async (p) => p,
+      toString1: (i) => i.Path,
+      toString2: (i) => secondsToReadableString(i.Duration),
+      actionsRight: [
         {
           icon: 'playlist_add',
           type: '',

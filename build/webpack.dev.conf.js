@@ -65,7 +65,12 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         from: path.resolve(__dirname, '../static'),
         to: config.dev.assetsSubDirectory,
         ignore: ['.*'],
-      }]),
+      },
+      {
+        from: path.resolve(__dirname, '../ServiceWorker.js'),
+        to: '',
+        ignore: ['.*'],
+      },]),
     new VueBuilder({
       path: 'src/components/', folder: false,
     })],
