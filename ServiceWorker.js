@@ -33,7 +33,7 @@ self.addEventListener('fetch', function(event) {
           then((r) => {
             c.put(event.request, r.clone());
             return r;
-          });
+          }).catch(console.error);
       });
   }));
 });
