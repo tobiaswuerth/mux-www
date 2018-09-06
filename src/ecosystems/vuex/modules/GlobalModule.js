@@ -24,5 +24,25 @@ export default {
     async displayOverlay({dispatch, getters, commit}, payload) {
       commit('overlayData', payload);
     },
+  
+    async notify({dispatch}, payload) {
+      if (!('Notification' in window) || Notification.permission === 'denied') {
+        return Promise.resolve(false);
+      }
+    
+      if (Notification.permission !== 'granted') {
+        Notification.requestPermission().then((p) => {
+          if (p === 'granted') {
+            dispatch('notify', payload).catch(console.error);
+          }
+        }).catch(console.error);
+      } else {
+        let n = new Notification(payload.title, payload.options);
+        setTimeout(() => {
+          n.close();
+        }, payload.timeout || 3000);
+      }
+    
+    },
   },
 };
