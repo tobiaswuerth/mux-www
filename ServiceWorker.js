@@ -2,6 +2,7 @@ let getCache = () => caches.open('mux').catch(console.error);
 
 self.addEventListener('install', function(event) {
   console.log('installed');
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', function(event) {
