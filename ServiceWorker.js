@@ -2,6 +2,7 @@ let getCache = () => caches.open('mux').catch(console.error);
 
 self.addEventListener('install', function(event) {
   console.log('installed');
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', function(event) {
@@ -32,7 +33,7 @@ self.addEventListener('fetch', function(event) {
           then((r) => {
             c.put(event.request, r.clone());
             return r;
-          });
+          }).catch(console.error);
       });
   }));
 });
