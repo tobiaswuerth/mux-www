@@ -28,7 +28,7 @@ let updateNotification = (payload) => {
   }
 };
 
-let updateMediaSession = (dispatch, payload) => {
+let updateMediaSession = (payload) => {
   if (!('mediaSession' in navigator)) {
     return;
   }
