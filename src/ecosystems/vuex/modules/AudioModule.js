@@ -51,7 +51,9 @@ let continueSource = async function(entry, getters, dispatch) {
   source.buffer = entry.buffer;
   entry.pausedAt = null;
   source.start(0, timeMs / 1000);
-  navigator.mediaSession.playbackState = 'playing';
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.playbackState = 'playing';
+  }
   if (timeMs < 100) {
     Store.dispatch('global/notify', {
       title: entry.title, duration: entry.track.Duration,
@@ -182,7 +184,9 @@ export default {
       entry.audioState = states.ready;
       let context = await dispatch('getContext').catch(console.error);
       let result = context.suspend();
-      navigator.mediaSession.playbackState = 'paused';
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'paused';
+      }
       return result;
     },
     
