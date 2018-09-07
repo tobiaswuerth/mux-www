@@ -88,7 +88,7 @@ let updateMediaSession = (payload) => {
   navigator.mediaSession.setActionHandler('play',
     () => Store.dispatch('audio/play', {continue: true}).catch(console.error));
   navigator.mediaSession.setActionHandler('pause',
-    () => Store.dispatch('audio/pause')).catch(console.error);
+    () => Store.dispatch('audio/pause').catch(console.error));
   navigator.mediaSession.setActionHandler('seekbackward',
     () => Store.dispatch('audio/moveTime', -10).catch(console.error));
   navigator.mediaSession.setActionHandler('seekforward',
