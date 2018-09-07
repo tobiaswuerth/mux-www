@@ -44,13 +44,13 @@ export default {
     edit: function() {
       Router.push(prepareRoute(paths.private.playlists.edit, {id: this.id}));
     },
-  
+    
     entryToString1: (i) => i.Title,
-  
+    
     entryToString2: (i) => secondsToReadableString(i.Track.Duration),
-  
+    
     entryToString3: (i) => `Added by: ${i.CreateUser.Username}`,
-  
+    
     play: async function() {
       if (this.item.Entries.length > 0) {
         await Store.dispatch('audio/pause').catch(console.error);
@@ -70,7 +70,7 @@ export default {
           catch(console.error);
       }
     },
-  
+    
     onItemClicked: function(i) {
       let buttons = [
         {
@@ -94,7 +94,7 @@ export default {
           onClick: () => Store.dispatch('audio/addToPlaylist',
             {title: i.Title, trackId: i.Track.UniqueId}).catch(console.error),
         }];
-    
+      
       if (this.isOwner) {
         buttons.push({
           type: 'accent',
@@ -104,7 +104,7 @@ export default {
             let playlistId = this.id;
             let entryId = i.UniqueId;
             let self = this;
-  
+            
             Store.dispatch('global/displayOverlay', {
               type: overlayTypes.none,
               display: true,
@@ -140,7 +140,7 @@ export default {
                           `Something went wrong: ${r}`).
                           catch(console.error);
                       });
-  
+                    
                     Store.dispatch('global/displayOverlay', {display: false}).
                       catch(console.error);
                   },
@@ -149,7 +149,7 @@ export default {
           },
         });
       }
-    
+      
       Store.dispatch('global/displayOverlay', {
         type: overlayTypes.none,
         display: true,

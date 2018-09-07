@@ -120,7 +120,7 @@ export default {
     revoke: function(item) {
       let user = item.User;
       let userId = user.UniqueId;
-  
+      
       Store.dispatch('global/displayOverlay', {
           type: types.none,
           display: true,
@@ -190,7 +190,8 @@ export default {
       
       // update permissions
       Store.dispatch('global/displayOverlay', {
-        display: true, type: overlayTypes.spinner,
+        display: true,
+        type: overlayTypes.spinner,
         text: 'Saving permissions...',
       }).catch(console.error);
       

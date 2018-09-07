@@ -17,23 +17,23 @@ export default {
       let lineno = (e.lineno || empty);
       let colno = (e.colno || empty);
       let error = (e.error || {});
-  
+      
       let result = `An unhandled error occurred. Please provide the following
       information to your system administrator. Message: '${message}', @${file}[${lineno}#${colno}], Details: ${JSON.stringify(
         error)}`;
-  
+      
       Store.dispatch('global/displayOverlay', {
         type: overlayTypes.none, display: true, text: result, closeable: true,
       }).catch(console.error);
       
       return false;
     });
-  
+    
     // add to home screen popoup
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       let installPromptEvent = e;
-  
+      
       Store.dispatch('global/displayOverlay', {
         type: overlayTypes.none,
         display: true,
@@ -55,7 +55,7 @@ export default {
           }],
       }).catch(console.error);
     });
-  
+    
     // service workers
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/ServiceWorker.js', {scope: '/'}).
@@ -70,7 +70,7 @@ export default {
     dataSnackbar: function() {
       return Store.getters['global/hints'];
     },
-  
+    
     overlayData: function() {
       return Store.getters['global/overlayData'];
     },

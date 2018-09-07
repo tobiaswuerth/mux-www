@@ -9,7 +9,11 @@ export default {
   
   props: {
     // data loader
-    data: {}, route: {}, payload: {}, doPreload: {}, onAfter: {},
+    data: {},
+    route: {},
+    payload: {},
+    doPreload: {},
+    onAfter: {},
     
     // ui
     onClick: {},
@@ -35,7 +39,7 @@ export default {
   },
   
   methods: {
-  
+    
     clickItem: function(a, i) {
       if (isCallable(this.onClick)) {
         this.onClick(a, i);
@@ -112,7 +116,7 @@ export default {
         action.onClick.call(this, item);
       }
     },
-  
+    
     displayHiddenActions: function(a, i) {
       Store.dispatch('global/displayOverlay', {
         type: overlayTypes.none,
