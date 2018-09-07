@@ -53,13 +53,7 @@ let continueSource = async function(entry, getters, dispatch) {
   source.start(0, timeMs / 1000);
   if (timeMs < 100) {
     Store.dispatch('global/notify', {
-      title: entry.title, options: {
-        lang: 'en',
-        body: 'Now playing',
-        icon: '/static/logos/android-chrome-48x48.png',
-        silent: true,
-        noscreen: true,
-      },
+      title: entry.title, duration: entry.track.Duration,
     }).catch(console.error);
   }
   entry.startedAt = new Date(now - timeMs);
