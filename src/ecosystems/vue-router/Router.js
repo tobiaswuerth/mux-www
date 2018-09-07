@@ -19,7 +19,9 @@ const RegisterPage = () => import('../../components/RegisterPage/RegisterPage');
 
 const paths = {
   private: {
-    root: '/', invite: '/i', playlists: playlistsPaths,
+    root: '/',
+    invite: '/i',
+    playlists: playlistsPaths,
     artists: artistsPaths,
     tracks: tracksPaths,
     records: recordsPaths,

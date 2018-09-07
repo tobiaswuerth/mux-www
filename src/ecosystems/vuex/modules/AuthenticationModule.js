@@ -27,19 +27,19 @@ export default {
     isAuthenticated: async function({dispatch}) {
       return !!await dispatch('getToken').catch(console.error);
     },
-  
+    
     getClaims: async function({dispatch}) {
       let token = await dispatch('getToken').catch(console.error);
-    
+      
       if (!token) {
         return {};
       }
-    
+      
       let parts = token.split('.');
       if (parts.length < 3) {
         return {};
       }
-    
+      
       let sJsonClaims = atob(parts[1]);
       return JSON.parse(sJsonClaims);
     },

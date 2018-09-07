@@ -111,7 +111,8 @@ export default {
   },
   
   mutations: {
-    hints: (s, payload) => s.hints = payload, overlayData: (s, payload) => s.overlayData = payload,
+    hints: (s, payload) => s.hints = payload,
+    overlayData: (s, payload) => s.overlayData = payload,
   },
   
   actions: {

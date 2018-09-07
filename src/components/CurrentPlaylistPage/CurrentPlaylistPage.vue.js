@@ -69,7 +69,7 @@ export default {
       event.stopPropagation();
       Store.dispatch('audio/setPlaylistIndex', i).catch(console.error);
     },
-  
+    
     toString1: (i) => i.title,
     toString3: (i) => secondsToReadableString(i.track.Duration),
   },

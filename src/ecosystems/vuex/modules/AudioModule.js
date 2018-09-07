@@ -199,7 +199,7 @@ export default {
       if (!entry) {
         return Promise.resolve();
       }
-  
+      
       // load & continued
       if (entry.audioState === states.defined) {
         loadSource(entry, getters, dispatch).catch(console.error);
@@ -256,14 +256,14 @@ export default {
       commit('playlistIndex', payload);
       await dispatch('play').catch(console.error);
     },
-  
+    
     addToCurrentPlaylist: async function({getters, dispatch}, payload) {
       // validate
       if ((isIterable(payload) && payload.length === 0) ||
         (!isIterable(payload) && !payload.track)) {
         return Promise.reject('undefined track');
       }
-    
+      
       Store.dispatch('global/displayOverlay', {
         type: overlayTypes.spinner,
         display: true,
@@ -282,25 +282,25 @@ export default {
           failed.push(e);
           console.error(r);
         });
-  
+        
         loaders.push(loader);
       });
-    
+      
       await Promise.all(loaders);
-    
+      
       Store.dispatch('global/displayOverlay', {
         display: false,
       }).catch(console.error);
-    
+      
       if (failed.length > 0) {
         let titles = failed.map((e) => `'${e.title}'`);
         let message = `Adding the following tracks failed: ${titles.join(
           ', ')}`;
-      
+        
         Store.dispatch('global/hint', {message: message}).catch(console.error);
         return Promise.reject(message);
       }
-    
+      
       let titles = created.map((e) => `'${e.title}'`);
       let message = `Successfully added the following tracks: ${titles.join(
         ', ')}`;
@@ -314,7 +314,7 @@ export default {
         loadSource(created[0], getters, dispatch).catch(console.error);
       }
     },
-  
+    
     addToPlaylist: async function({getters, dispatch}, payload) {
       Store.dispatch('global/displayOverlay', {
         display: true,
@@ -332,16 +332,16 @@ export default {
                 text: 'Adding to playlist...',
               }).
               catch(console.error);
-  
+            
             let entries = isIterable(payload) ? payload : [payload];
             let loaders = [];
-  
+            
             entries.forEach((e) => {
               let loader = Store.dispatch('playlists/createEntry',
                 Object.assign(e, {id: i.UniqueId})).catch(console.error);
               loaders.push(loader);
             });
-  
+            
             Promise.all(loaders).then(() => {
               Store.dispatch('global/hint', 'Successfully added to playlist').
                 catch(console.error);

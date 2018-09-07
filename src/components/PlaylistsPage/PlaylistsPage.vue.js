@@ -29,7 +29,7 @@ export default {
             }).catch(console.error);
             simplyLoad('playlists/byId', {id: i.UniqueId}).then(async (d) => {
               let playlist = d[0];
-  
+              
               if (playlist.Entries.length > 0) {
                 await Store.dispatch('audio/pause').catch(console.error);
                 await Store.dispatch('audio/setPlaylist', []).
@@ -67,7 +67,7 @@ export default {
     },
     
     entryToString1: (i) => i.Name,
-  
+    
     entryToString3: (i) => `Created by: ${i.CreateUser.Username}`,
     
     onEntryClick: function(item) {

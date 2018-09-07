@@ -26,7 +26,7 @@ export default {
     getStyle: function(btn) {
       return btn.type ? `md-${btn.type}` : '';
     },
-  
+    
     close: function() {
       this.data.display = false;
     },
