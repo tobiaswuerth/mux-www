@@ -30,7 +30,6 @@ let updateNotification = (payload) => {
 
 let updateMediaSession = (payload) => {
   if (!('mediaSession' in navigator)) {
-    alert(JSON.stringify(navigator));
     return;
   }
   
