@@ -59,10 +59,8 @@ export default {
     // service workers
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/ServiceWorker.js', {scope: '/'}).
-        then(registration => console.log('Successfully registered service' +
-          ' worker, scope is:', registration.scope)).
-        catch(error => console.error('Service worker registration failed,' +
-          ' error:', error));
+        then((swr) => Store.commit('global/serviceWorker', swr)).
+        catch(console.error);
     }
   },
   

@@ -13,18 +13,29 @@ let updateNotification = (payload) => {
     }).catch(console.error);
   } else {
     let config = {
+      silent: true, renotify: true, noscreen: true, direction: 'auto',
       lang: 'en',
       body: 'Now playing',
       icon: '/static/logos/android-chrome-48x48.png',
-      silent: true,
-      noscreen: true,
       tag: 'mux',
     };
-    let n = new Notification(payload.title, config);
-    n.addEventListener('click', () => {
-      n.close();
-      window.focus();
-    });
+  
+    let sw = Store.getters['global/serviceWorker'];
+    if (sw) {
+      sw.showNotification(payload.title, config).catch(console.error);
+    } else {
+      // try to display notification without ServiceWorker registration
+      try {
+        let n = new Notification(payload.title, config);
+        n.addEventListener('click', () => {
+          n.close();
+          window.focus();
+        });
+      } catch (e) {
+        Store.dispatch('global/hint', `Could not display notification: ${e}`).
+          catch(console.error);
+      }
+    }
   }
 };
 
@@ -103,16 +114,19 @@ export default {
   namespaced: true,
   
   state: {
-    hints: [], overlayData: {},
+    hints: [], overlayData: {}, serviceWorker: null,
   },
   
   getters: {
-    hints: s => s.hints, overlayData: s => s.overlayData,
+    hints: s => s.hints,
+    overlayData: s => s.overlayData,
+    serviceWorker: s => s.serviceWorker,
   },
   
   mutations: {
     hints: (s, payload) => s.hints = payload,
     overlayData: (s, payload) => s.overlayData = payload,
+    serviceWorker: (s, payload) => s.serviceWorker = payload,
   },
   
   actions: {

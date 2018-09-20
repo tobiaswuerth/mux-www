@@ -37,3 +37,20 @@ self.addEventListener('fetch', function(event) {
       });
   }));
 });
+
+self.onnotificationclick = function(event) {
+  event.notification.close();
+  event.waitUntil(clients.matchAll({
+    type: 'window',
+  }).then(clients => {
+    for (let i = 0; i < clients.length; i++) {
+      let client = clients[i];
+      if (client.url === '/' && 'focus' in client) {
+        return client.focus();
+      }
+    }
+    if (clients.openWindow) {
+      return clients.openWindow('/');
+    }
+  }));
+};
