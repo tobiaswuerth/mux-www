@@ -1,4 +1,5 @@
 import Store from '../Store';
+import {secondsToReadableString} from './../../../scripts/Utils';
 
 let updateNotification = (payload) => {
   if (!('Notification' in window) || Notification.permission === 'denied') {
@@ -47,8 +48,7 @@ let updateMediaSession = (payload) => {
   
   navigator.mediaSession.metadata = new MediaMetadata({
     title: payload.title,
-    artist: 'Now playing',
-    album: payload.duration,
+    artist: 'Now playing', album: secondsToReadableString(payload.duration),
     artwork: [
       {
         src: '/static/logos/android-chrome-36x36.png',
