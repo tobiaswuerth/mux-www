@@ -11,6 +11,10 @@ export const states = {
   defined: 1 << i++, ready: 1 << i++, loading: 1 << i++, playing: 1 << i++,
 };
 
+// https://stackoverflow.com/questions/52226454/media-notifications-using-the-media-session-web-api-doesnt-work-with-web-audio
+const audioElement = new Audio('/static/audio/10-seconds-of-silence.mp3');
+audioElement.loop = true;
+
 const maxLoadRetry = 3;
 
 const emptyPlaylistEntry = {
@@ -51,6 +55,10 @@ let continueSource = async function(entry, getters, dispatch) {
   source.buffer = entry.buffer;
   entry.pausedAt = null;
   source.start(0, timeMs / 1000);
+  audioElement.play();
+  if ('mediaSession' in navigator) {
+    navigator.mediaSession.playbackState = 'playing';
+  }
   if (timeMs < 100) {
     Store.dispatch('global/notify', {
       title: entry.title, duration: entry.track.Duration,
@@ -175,12 +183,17 @@ export default {
         // ignore call
         return Promise.resolve();
       }
-      
+  
       entry.source.stop(0);
+      audioElement.pause();
       entry.pausedAt = new Date();
       entry.audioState = states.ready;
       let context = await dispatch('getContext').catch(console.error);
-      return context.suspend();
+      let result = context.suspend();
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'paused';
+      }
+      return result;
     },
     
     play: async function({commit, getters, dispatch}, payload) {

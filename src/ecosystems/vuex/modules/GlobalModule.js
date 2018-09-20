@@ -1,42 +1,54 @@
 import Store from '../Store';
+import {secondsToReadableString} from './../../../scripts/Utils';
 
 let updateNotification = (payload) => {
   if (!('Notification' in window) || Notification.permission === 'denied') {
-    return;
+    return false;
   }
   
   if (Notification.permission !== 'granted') {
     Notification.requestPermission().then((p) => {
       if (p === 'granted') {
-        updateNotification(payload);
+        return updateNotification(payload);
       }
     }).catch(console.error);
   } else {
     let config = {
+      silent: true, renotify: true, noscreen: true, direction: 'auto',
       lang: 'en',
       body: 'Now playing',
       icon: '/static/logos/android-chrome-48x48.png',
-      silent: true,
-      noscreen: true,
       tag: 'mux',
     };
-    let n = new Notification(payload.title, config);
-    n.addEventListener('click', () => {
-      n.close();
-      window.focus();
-    });
+  
+    let sw = Store.getters['global/serviceWorker'];
+    if (sw) {
+      sw.showNotification(payload.title, config).catch(console.error);
+      return true;
+    } else {
+      // try to display notification without ServiceWorker registration
+      try {
+        let n = new Notification(payload.title, config);
+        n.addEventListener('click', () => {
+          n.close();
+          window.focus();
+        });
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
   }
 };
 
 let updateMediaSession = (payload) => {
   if (!('mediaSession' in navigator)) {
-    return;
+    return false;
   }
   
   navigator.mediaSession.metadata = new MediaMetadata({
     title: payload.title,
-    artist: 'Now playing',
-    album: payload.duration,
+    artist: 'Now playing', album: secondsToReadableString(payload.duration),
     artwork: [
       {
         src: '/static/logos/android-chrome-36x36.png',
@@ -88,7 +100,7 @@ let updateMediaSession = (payload) => {
   navigator.mediaSession.setActionHandler('play',
     () => Store.dispatch('audio/play', {continue: true}).catch(console.error));
   navigator.mediaSession.setActionHandler('pause',
-    () => Store.dispatch('audio/pause')).catch(console.error);
+    () => Store.dispatch('audio/pause').catch(console.error));
   navigator.mediaSession.setActionHandler('seekbackward',
     () => Store.dispatch('audio/moveTime', -10).catch(console.error));
   navigator.mediaSession.setActionHandler('seekforward',
@@ -97,22 +109,27 @@ let updateMediaSession = (payload) => {
     () => Store.dispatch('audio/previous').catch(console.error));
   navigator.mediaSession.setActionHandler('nexttrack',
     () => Store.dispatch('audio/next').catch(console.error));
+  
+  return true;
 };
 
 export default {
   namespaced: true,
   
   state: {
-    hints: [], overlayData: {},
+    hints: [], overlayData: {}, serviceWorker: null,
   },
   
   getters: {
-    hints: s => s.hints, overlayData: s => s.overlayData,
+    hints: s => s.hints,
+    overlayData: s => s.overlayData,
+    serviceWorker: s => s.serviceWorker,
   },
   
   mutations: {
     hints: (s, payload) => s.hints = payload,
     overlayData: (s, payload) => s.overlayData = payload,
+    serviceWorker: (s, payload) => s.serviceWorker = payload,
   },
   
   actions: {
@@ -125,10 +142,12 @@ export default {
     async displayOverlay({dispatch, getters, commit}, payload) {
       commit('overlayData', payload);
     },
-    
-    async notify({}, payload) {
-      updateNotification(payload);
-      updateMediaSession(payload);
+  
+    async notify({dispatch}, payload) {
+      let notified = updateMediaSession(payload) || updateNotification(payload);
+      if (!notified) {
+        dispatch('hint', 'Cannot notify');
+      }
     },
   },
 };
