@@ -11,6 +11,10 @@ export const states = {
   defined: 1 << i++, ready: 1 << i++, loading: 1 << i++, playing: 1 << i++,
 };
 
+// https://stackoverflow.com/questions/52226454/media-notifications-using-the-media-session-web-api-doesnt-work-with-web-audio
+const audioElement = new Audio('/static/audio/10-seconds-of-silence.mp3');
+audioElement.loop = true;
+
 const maxLoadRetry = 3;
 
 const emptyPlaylistEntry = {
@@ -178,7 +182,8 @@ export default {
         // ignore call
         return Promise.resolve();
       }
-      
+  
+      audioElement.pause();
       entry.source.stop(0);
       entry.pausedAt = new Date();
       entry.audioState = states.ready;
@@ -208,6 +213,7 @@ export default {
       }
       
       // load & continued
+      audioElement.play();
       if (entry.audioState === states.defined) {
         loadSource(entry, getters, dispatch).catch(console.error);
       } else if (entry.audioState === states.ready) {
