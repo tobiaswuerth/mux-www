@@ -2,13 +2,13 @@ import Store from '../Store';
 
 let updateNotification = (payload) => {
   if (!('Notification' in window) || Notification.permission === 'denied') {
-    return;
+    return false;
   }
   
   if (Notification.permission !== 'granted') {
     Notification.requestPermission().then((p) => {
       if (p === 'granted') {
-        updateNotification(payload);
+        return updateNotification(payload);
       }
     }).catch(console.error);
   } else {
@@ -23,6 +23,7 @@ let updateNotification = (payload) => {
     let sw = Store.getters['global/serviceWorker'];
     if (sw) {
       sw.showNotification(payload.title, config).catch(console.error);
+      return true;
     } else {
       // try to display notification without ServiceWorker registration
       try {
@@ -31,9 +32,9 @@ let updateNotification = (payload) => {
           n.close();
           window.focus();
         });
+        return true;
       } catch (e) {
-        Store.dispatch('global/hint', `Could not display notification: ${e}`).
-          catch(console.error);
+        return false;
       }
     }
   }
@@ -41,7 +42,7 @@ let updateNotification = (payload) => {
 
 let updateMediaSession = (payload) => {
   if (!('mediaSession' in navigator)) {
-    return;
+    return false;
   }
   
   navigator.mediaSession.metadata = new MediaMetadata({
@@ -108,6 +109,8 @@ let updateMediaSession = (payload) => {
     () => Store.dispatch('audio/previous').catch(console.error));
   navigator.mediaSession.setActionHandler('nexttrack',
     () => Store.dispatch('audio/next').catch(console.error));
+  
+  return true;
 };
 
 export default {
@@ -139,10 +142,12 @@ export default {
     async displayOverlay({dispatch, getters, commit}, payload) {
       commit('overlayData', payload);
     },
-    
-    async notify({}, payload) {
-      updateNotification(payload);
-      updateMediaSession(payload);
+  
+    async notify({dispatch}, payload) {
+      let notified = updateMediaSession(payload) || updateNotification(payload);
+      if (!notified) {
+        dispatch('hint', 'Cannot notify');
+      }
     },
   },
 };
