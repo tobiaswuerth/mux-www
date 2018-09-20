@@ -14,6 +14,7 @@ export const states = {
 // https://stackoverflow.com/questions/52226454/media-notifications-using-the-media-session-web-api-doesnt-work-with-web-audio
 const audioElement = new Audio('/static/audio/10-seconds-of-silence.mp3');
 audioElement.loop = true;
+audioElement.play();
 
 const maxLoadRetry = 3;
 
