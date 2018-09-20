@@ -183,7 +183,6 @@ export default {
         return Promise.resolve();
       }
   
-      audioElement.pause();
       entry.source.stop(0);
       entry.pausedAt = new Date();
       entry.audioState = states.ready;
@@ -213,7 +212,6 @@ export default {
       }
       
       // load & continued
-      audioElement.play();
       if (entry.audioState === states.defined) {
         loadSource(entry, getters, dispatch).catch(console.error);
       } else if (entry.audioState === states.ready) {
